@@ -45,8 +45,7 @@ export class PlayerController {
     this.playerBoundingBox.expandByScalar(margin);
 
     // Check for intersections with other objects
-    for (const object of scene.children.filter(
-      // @ts-expect-error dunno why, it's def there...
+    for (const object of (scene.children as Mesh[]).filter(
       mesh => mesh?.geometry?.type === 'BoxGeometry'
     )) {
       if (object !== this.player) {

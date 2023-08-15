@@ -30,9 +30,6 @@ sunlight.target.position.set(0, 0, 0); // Point back at the center
 sunlight.castShadow = true; // Enable shadow casting for the light
 scene.add(sunlight);
 
-const lightHelper = new DirectionalLightHelper(sunlight, 5);
-scene.add(lightHelper);
-
 // Adjust shadow properties for the light
 const shadowMapSize = 4096; // Adjust the shadow map size based on your needs
 sunlight.shadow.mapSize.width = shadowMapSize;
@@ -93,7 +90,8 @@ function handleRender(renderer: WebGLRenderer) {
 
   // have the sun follow you to save of resources
   sunlight.target.position.copy(player.mesh.position);
-  lightHelper.position.copy(sunlight.target.position);
+  console.log(player.mesh.position)
+  sunlight.target.updateMatrixWorld();
 
   requestAnimationFrame(() => handleRender(renderer));
 
