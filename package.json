@@ -18,10 +18,12 @@
     "three": "0.155.0"
   },
   "devDependencies": {
+    "@types/graceful-fs": "^4.1.6",
+    "@types/node": "^20.4.5",
     "@types/three": "^0.155.0",
-    "typescript": "~5.1.6",
-    "vite": "^4.4.9",
+    "graceful-fs": "^4.2.11",
     "gts": "^5.0.0",
-    "@types/node": "^20.4.5"
+    "typescript": "~5.1.6",
+    "vite": "^4.4.9"
   }
 }

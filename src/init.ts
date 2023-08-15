@@ -7,12 +7,15 @@ import {
   Mesh,
   MeshStandardMaterial,
   DirectionalLight,
-  DirectionalLightHelper,
+  Vector3,
 } from 'three';
 import {devTools} from './devtools';
 import {Camera} from './camera';
 import {Character} from './models/character';
 import {PlayerController} from './models/player/controller';
+import { Gamestate } from './gamestate';
+
+const {gamestate} = new Gamestate();
 
 const {camera} = new Camera();
 
@@ -47,7 +50,7 @@ sunlight.shadow.camera.far = 5000; // Shadow camera far plane
 
 // Create a grassy plane
 const planeGeometry = new PlaneGeometry(2000, 2000);
-const grassMaterial = new MeshStandardMaterial({color: '#678c34'});
+const grassMaterial = new MeshStandardMaterial({color: '#5BA467'});
 const plane = new Mesh(planeGeometry, grassMaterial);
 plane.rotation.x = -Math.PI / 2; // Rotate to make it flat
 plane.receiveShadow = true;
@@ -59,9 +62,10 @@ const player = new Character({
   // add compositon elements here..
   // inventory: Inventory,
   // dialogue: Dialogue,
+}, {
+  position: gamestate.playerPosition ?? new Vector3(0.5, 0.5, 0.5)
 });
 
-player.mesh.position.set(0.5, 0.5, 0.5);
 scene.add(player.mesh);
 
 function resizeRendererToDisplaySize(renderer: WebGLRenderer) {
@@ -82,16 +86,19 @@ function handleRender(renderer: WebGLRenderer) {
     camera.updateProjectionMatrix();
   }
 
-  camera.position.lerp(player.mesh.position, 0.04);
-  camera.position.y = 10; // keep the elevation;
-  camera.position.z = camera.position.z + 0.5;
+  if (!window.savingInProgress) {
+    camera.position.lerp(player.mesh.position, 0.04);
+    gamestate.playerPosition = player.mesh.position;
+    camera.position.y = 10; // keep the elevation;
+    camera.position.z = camera.position.z + 0.5;
+  
+    player.controller.update(scene);
+  
+    // have the sun follow you to save of resources
+    sunlight.target.position.copy(player.mesh.position);
+    sunlight.target.updateMatrixWorld();
+  }
 
-  player.controller.update(scene);
-
-  // have the sun follow you to save of resources
-  sunlight.target.position.copy(player.mesh.position);
-  console.log(player.mesh.position)
-  sunlight.target.updateMatrixWorld();
 
   requestAnimationFrame(() => handleRender(renderer));
 
