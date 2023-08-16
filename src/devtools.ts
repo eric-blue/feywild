@@ -13,7 +13,7 @@ export function devTools(scene: Scene) {
 
   // Generate cubes
   for (let i = 0; i < numCubes; i++) {
-    const cubeGeometry = new BoxGeometry(1, 1, 1);
+    const cubeGeometry = new BoxGeometry(2, 8, 2);
     const cubeMaterial = new MeshStandardMaterial({color: 0xfff000}); // Random color
     const cube = new Mesh(cubeGeometry, cubeMaterial);
     cube.castShadow = true;

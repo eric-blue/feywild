@@ -81,8 +81,8 @@ function handleRender(renderer: WebGLRenderer) {
   ) {
     camera.position.lerp(player.mesh.position, 0.04);
     gamestate.playerPosition = player.mesh.position;
-    camera.position.y = 10; // keep the elevation;
-    camera.position.z = camera.position.z + 0.5;
+    camera.position.y = 15; // keep the elevation;
+    camera.position.z = camera.position.z + 0.75;
 
     player.controller.update(scene);
 

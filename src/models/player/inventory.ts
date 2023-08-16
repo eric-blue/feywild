@@ -7,7 +7,7 @@ export class Inventory {
   constructor(mesh: Mesh) {
     this.player = mesh;
     this.menu = document.querySelector('#inventory');
-    Array.from({length: 25}).forEach(() => {
+    Array.from({length: 20}).forEach(() => {
       const li = document.createElement('li');
       this.menu?.querySelector('#inventory-grid')?.appendChild(li);
     });

@@ -19,7 +19,7 @@ export class Character {
   inventory?: Inventory;
 
   constructor({controller, inventory}: CharacterComposition, setup: Setup) {
-    const geometry = new BoxGeometry(1, 1, 1);
+    const geometry = new BoxGeometry(1, 2, 1);
     const material = new MeshStandardMaterial({color: 'purple'});
 
     this.mesh = new Mesh(geometry, material);
