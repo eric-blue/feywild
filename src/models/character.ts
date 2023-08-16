@@ -1,7 +1,7 @@
 import {BoxGeometry, Mesh, MeshStandardMaterial} from 'three';
 import {AIController} from './ai/controller';
 import {PlayerController} from './player/controller';
-import type { GameState } from '../gamestate';
+import type {GameState} from '../gamestate';
 
 interface Setup {
   position: GameState['playerPosition'];
@@ -22,7 +22,11 @@ export class Character {
     this.mesh = new Mesh(geometry, material);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
-    this.mesh.position.set(setup.position.x, setup.position.y, setup.position.z);
+    this.mesh.position.set(
+      setup.position.x,
+      setup.position.y,
+      setup.position.z
+    );
 
     this.controller = new controller(this.mesh);
   }

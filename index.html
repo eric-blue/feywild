@@ -8,6 +8,26 @@
   </head>
   <body>
     <div id="app"></div>
+    <nav id="start-menu">
+      <h2>— Feywild —</h2>
+      <ol>
+        <li><button id="start-menu-continue" class="hidden">Continue</button></li>
+        <li><button id="start-menu-new">New Game</button></li>
+        <li><button id="start-menu-exit-desktop">Exit to Desktop</button></li>
+        <li><button id="start-menu-settings">Settings</button></li>
+      </ol>
+    </nav>
+    <nav id="pause-menu" class="hidden">
+      <h2>— Paused —</h2>
+      <ol>
+        <li><button id="pause-menu-continue">Continue</button></li>
+        <li><button id="pause-menu-save">Save</button></li>
+        <li><button id="pause-menu-load">Load Game</button></li>
+        <li><button id="pause-menu-exit-main">Exit to Main Menu</button></li>
+        <li><button id="pause-menu-exit-desktop">Exit to Desktop</button></li>
+        <li><button id="pause-menu-settings">Settings</button></li>
+      </ol>
+    </nav>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
