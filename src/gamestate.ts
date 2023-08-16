@@ -3,14 +3,16 @@ declare global {
     savingInProgress: boolean;
     gameIsLoading: boolean;
     paused: boolean;
+    lockPlayer: boolean;
   }
 }
 
 export const SAVE_KEY = 'feywild-save';
 
 window.savingInProgress = false;
-window.gameIsLoading = true;
+window.gameIsLoading = false;
 window.paused = false;
+window.lockPlayer = false;
 
 export interface GameState {
   playerPosition: {x: number; y: number; z: number};

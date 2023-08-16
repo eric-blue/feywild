@@ -11,6 +11,7 @@ import {devTools} from './devtools';
 import {Camera} from './camera';
 import {Character} from './models/character';
 import {PlayerController} from './models/player/controller';
+import {Inventory} from './models/player/inventory';
 import {Gamestate} from './gamestate';
 import {PauseMenu} from './menus/pause';
 import {Lights} from './lights';
@@ -42,7 +43,7 @@ const player = new Character(
   {
     controller: PlayerController,
     // add compositon elements here..
-    // inventory: Inventory,
+    inventory: Inventory,
     // dialogue: Dialogue,
   },
   {
@@ -72,7 +73,12 @@ function handleRender(renderer: WebGLRenderer) {
     camera.updateProjectionMatrix();
   }
 
-  if (!window.gameIsLoading && !window.savingInProgress && !window.paused) {
+  if (
+    !window.gameIsLoading &&
+    !window.savingInProgress &&
+    !window.paused &&
+    !window.lockPlayer
+  ) {
     camera.position.lerp(player.mesh.position, 0.04);
     gamestate.playerPosition = player.mesh.position;
     camera.position.y = 10; // keep the elevation;

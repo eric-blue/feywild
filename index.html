@@ -8,7 +8,7 @@
   </head>
   <body>
     <div id="app"></div>
-    <nav id="start-menu">
+    <nav id="start-menu" class="hidden">
       <h2>— Feywild —</h2>
       <ol>
         <li><button id="start-menu-continue" class="hidden">Continue</button></li>
@@ -28,6 +28,10 @@
         <li><button id="pause-menu-settings">Settings</button></li>
       </ol>
     </nav>
+    <menu id="inventory" class="hidden">
+      <h2>— Inventory —</h2>
+      <div id="inventory-grid"></div>
+    </menu>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
