@@ -20,8 +20,13 @@ export interface GameState {
   level: number;
 }
 
+function onStartGame(detail: string | {[key: string]: unknown}) {
+  dispatchEvent(new CustomEvent('startgame', {detail}));
+}
+
 export class Gamestate {
-  gamestate = {
+  state = {
+    saves: 0,
     playerPosition: {x: 0.5, y: 0.5, z: 0.5},
     health: 100,
     level: 3,
@@ -31,7 +36,7 @@ export class Gamestate {
 
   newGame = () => {
     window.gameIsLoading = false;
-    console.log('new game!');
+    onStartGame('new');
   };
 
   continueGame = () => {
@@ -40,7 +45,9 @@ export class Gamestate {
 
     if (serializedData) {
       const loadedGameState = JSON.parse(serializedData);
-      this.gamestate = loadedGameState;
+      this.state = loadedGameState;
+
+      onStartGame('continue');
     }
 
     window.gameIsLoading = false;
@@ -49,9 +56,8 @@ export class Gamestate {
   saveGame = () => {
     if (confirm("You're about to overwrite your progress. \nAre you sure?")) {
       window.savingInProgress = true;
-      const serializedData = JSON.stringify(this.gamestate);
-
-      console.log(serializedData);
+      this.state.saves += 1;
+      const serializedData = JSON.stringify(this.state);
       localStorage.setItem(SAVE_KEY, serializedData);
       window.savingInProgress = false;
     }
@@ -68,7 +74,7 @@ export class Gamestate {
 
       if (serializedData) {
         const loadedGameState = JSON.parse(serializedData);
-        this.gamestate = loadedGameState;
+        this.state = loadedGameState;
       }
 
       window.gameIsLoading = false;
@@ -94,4 +100,8 @@ export class Gamestate {
       console.log('do exit');
     }
   };
+
+  set(gamestate: Partial<GameState>) {
+    this.state = {...this.state, ...gamestate};
+  }
 }

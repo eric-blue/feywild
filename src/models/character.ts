@@ -1,11 +1,4 @@
-import {
-  BoxGeometry,
-  Mesh,
-  MeshStandardMaterial,
-  Scene,
-  Sprite,
-  Vector3,
-} from 'three';
+import {BoxGeometry, Mesh, MeshStandardMaterial, Scene, Vector3} from 'three';
 import {AIController} from './ai/controller';
 import {PlayerController} from './player/controller';
 import type {GameState} from '../gamestate';
@@ -29,10 +22,10 @@ interface CharacterComposition {
 }
 
 /**
- * A base actor class for spawning in NPCs or
- * player characters – basically anything you
- * expect to live, move, and breathe
- * 
+ * A base actor class for spawning in NPCs or player
+ * characters; basically anything you expect to live,
+ * move, and breathe.
+ *
  * Built using Composition principles (vs Inheritence)
  */
 export class Character {
@@ -58,7 +51,7 @@ export class Character {
       this.flipbook = new FlipbookModule(setup.spriteSheet);
       this.root.add(this.flipbook.sprite);
     }
-    
+
     this.controller = new Controller(this.root);
     this.inventory = InventoryModule ? new InventoryModule() : undefined;
   }
