@@ -1,9 +1,16 @@
-import {BoxGeometry, Mesh, MeshStandardMaterial, Scene, Sprite, Vector3} from 'three';
+import {
+  BoxGeometry,
+  Mesh,
+  MeshStandardMaterial,
+  Scene,
+  Sprite,
+  Vector3,
+} from 'three';
 import {AIController} from './ai/controller';
 import {PlayerController} from './player/controller';
 import type {GameState} from '../gamestate';
 import {Inventory} from './player/inventory';
-import { SpriteFlipbook } from './character-flipbook';
+import {SpriteFlipbook} from './character-flipbook';
 
 interface Setup {
   position: GameState['playerPosition'];
@@ -11,7 +18,7 @@ interface Setup {
 
 const config: Setup = {
   position: new Vector3(0.5, 0.5, 0.5),
-}
+};
 
 interface CharacterComposition {
   Controller: new (mesh: Mesh) => PlayerController | AIController;
@@ -20,12 +27,15 @@ interface CharacterComposition {
 }
 
 export class Character {
-  root: Mesh|Sprite;
+  root: Mesh | Sprite;
   controller: PlayerController | AIController;
   inventory?: Inventory;
   flipbook?: SpriteFlipbook;
 
-  constructor({Controller, InventoryModule, FlipbookModule}: CharacterComposition, setup = config) {
+  constructor(
+    {Controller, InventoryModule, FlipbookModule}: CharacterComposition,
+    setup = config
+  ) {
     const geometry = new BoxGeometry(1, 2, 1);
     const material = new MeshStandardMaterial({visible: false});
     this.root = new Mesh(geometry, material);

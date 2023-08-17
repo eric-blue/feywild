@@ -1,5 +1,5 @@
 import {Box3, Mesh, Scene, Vector3} from 'three';
-import { Direction, KeyboardState, WASD } from '../../types';
+import {Direction, KeyboardState, WASD} from '../../types';
 
 export class PlayerController {
   player: Mesh;
@@ -19,7 +19,7 @@ export class PlayerController {
       this.keyboardState[key] = true;
 
       if (event.key === ' ' && !event.repeat) {
-        console.log('ATTACK') // Call the attack function when spacebar is pressed
+        console.log('ATTACK'); // Call the attack function when spacebar is pressed
       }
 
       console.log(key);
@@ -36,7 +36,7 @@ export class PlayerController {
   checkCollisions(scene: Scene) {
     const tempBox = new Box3();
     const blockedDirections: WASD[] = [];
-    
+
     // Update playerBoundingBox to match player's position
     this.playerBoundingBox.setFromObject(this.player);
     // Add a margin or "smidge" to the bounding box
@@ -78,10 +78,10 @@ export class PlayerController {
     }
 
     return blockedDirections;
-  } 
-  
+  }
+
   simpleDirection(): Direction {
-    const {x, z} = this.direction
+    const {x, z} = this.direction;
 
     if (Math.abs(x) > Math.abs(z)) {
       this.previousDirection = x > 0 ? 'right' : 'left';
@@ -94,12 +94,15 @@ export class PlayerController {
     } else if (Math.abs(x) === z && z !== 0) {
       this.previousDirection = z > 0 ? 'left' : 'right';
     } else {
-      if (this.previousDirection.includes('up')) this.previousDirection = 'idle-up';
-      else if (this.previousDirection.includes('right')) this.previousDirection = 'idle-right';
-      else if (this.previousDirection.includes('left')) this.previousDirection = 'idle-left';
+      if (this.previousDirection.includes('up'))
+        this.previousDirection = 'idle-up';
+      else if (this.previousDirection.includes('right'))
+        this.previousDirection = 'idle-right';
+      else if (this.previousDirection.includes('left'))
+        this.previousDirection = 'idle-left';
       else this.previousDirection = 'idle-down';
     }
-    
+
     return this.previousDirection;
   }
 

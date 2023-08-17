@@ -1,13 +1,4 @@
-import {
-  Scene,
-  Color,
-  WebGLRenderer,
-  PlaneGeometry,
-  Mesh,
-  MeshStandardMaterial,
-  Vector3,
-  Clock,
-} from 'three';
+import {WebGLRenderer, Clock} from 'three';
 import {devTools} from './devtools';
 import {Camera} from './camera';
 import {Character} from './models/character';
@@ -18,12 +9,12 @@ import {PauseMenu} from './menus/pause';
 import {Lights} from './lights';
 import {StartMenu} from './menus/start';
 import {OpenWorldMap} from './levels/openWorld/scene';
-import { IDLE_RIGHT, SpriteFlipbook } from './models/character-flipbook';
+import {SpriteFlipbook} from './models/character-flipbook';
 
 const clock = new Clock();
 const GS = new Gamestate();
 const {gamestate} = GS;
-// new StartMenu(GS);
+new StartMenu(GS);
 new PauseMenu(GS);
 
 const {scene} = new OpenWorldMap();
@@ -45,7 +36,7 @@ const player = new Character(
   }
 );
 
-scene.add(player.root)
+scene.add(player.root);
 
 function resizeRendererToDisplaySize(renderer: WebGLRenderer) {
   const canvas = renderer.domElement;

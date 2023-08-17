@@ -1,4 +1,4 @@
-import { Direction } from "../../types";
+import {Direction} from '../../types';
 
 export class AIController {
   simpleDirection(): Direction {

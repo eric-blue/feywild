@@ -1,10 +1,4 @@
-import {
-  Color,
-  Mesh,
-  MeshStandardMaterial,
-  PlaneGeometry,
-  Scene,
-} from 'three';
+import {Color, Mesh, MeshStandardMaterial, PlaneGeometry, Scene} from 'three';
 
 // const textureLoader = new TextureLoader();
 
