@@ -1,11 +1,7 @@
-import {Mesh} from 'three';
-
 export class Inventory {
-  player: Mesh;
   menu: HTMLOListElement | null;
 
-  constructor(mesh: Mesh) {
-    this.player = mesh;
+  constructor() {
     this.menu = document.querySelector('#inventory');
     Array.from({length: 20}).forEach(() => {
       const li = document.createElement('li');

@@ -6,6 +6,7 @@ import {
   Mesh,
   MeshStandardMaterial,
   Vector3,
+  Clock,
 } from 'three';
 import {devTools} from './devtools';
 import {Camera} from './camera';
@@ -16,42 +17,35 @@ import {Gamestate} from './gamestate';
 import {PauseMenu} from './menus/pause';
 import {Lights} from './lights';
 import {StartMenu} from './menus/start';
+import {OpenWorldMap} from './levels/openWorld/scene';
+import { IDLE_RIGHT, SpriteFlipbook } from './models/character-flipbook';
 
+const clock = new Clock();
 const GS = new Gamestate();
 const {gamestate} = GS;
-new StartMenu(GS);
+// new StartMenu(GS);
 new PauseMenu(GS);
 
-const scene = new Scene();
-scene.background = new Color('white');
-
-if (import.meta.env.DEV) devTools(scene);
-
+const {scene} = new OpenWorldMap();
 const {sunlight} = new Lights(scene);
 const {camera} = new Camera();
 
-// Create a grassy plane
-const planeGeometry = new PlaneGeometry(2000, 2000);
-const grassMaterial = new MeshStandardMaterial({color: '#5BA467'});
-const plane = new Mesh(planeGeometry, grassMaterial);
-plane.rotation.x = -Math.PI / 2; // Rotate to make it flat
-plane.receiveShadow = true;
-
-scene.add(plane);
+if (import.meta.env.DEV) devTools(scene);
 
 const player = new Character(
   {
-    controller: PlayerController,
+    Controller: PlayerController,
+    InventoryModule: Inventory,
+    FlipbookModule: SpriteFlipbook,
     // add compositon elements here..
-    inventory: Inventory,
     // dialogue: Dialogue,
   },
   {
-    position: gamestate.playerPosition ?? new Vector3(0.5, 0.5, 0.5),
+    position: gamestate.playerPosition,
   }
 );
 
-scene.add(player.mesh);
+scene.add(player.root)
 
 function resizeRendererToDisplaySize(renderer: WebGLRenderer) {
   const canvas = renderer.domElement;
@@ -79,15 +73,17 @@ function handleRender(renderer: WebGLRenderer) {
     !window.paused &&
     !window.lockPlayer
   ) {
-    camera.position.lerp(player.mesh.position, 0.04);
-    gamestate.playerPosition = player.mesh.position;
+    const deltaTime = clock.getDelta();
+
+    camera.position.lerp(player.root.position, 0.04);
+    gamestate.playerPosition = player.root.position;
     camera.position.y = 15; // keep the elevation;
     camera.position.z = camera.position.z + 0.75;
 
-    player.controller.update(scene);
+    player.update(scene, deltaTime);
 
     // have the sun follow you to save of resources
-    sunlight.target.position.copy(player.mesh.position);
+    sunlight.target.position.copy(player.root.position);
     sunlight.target.updateMatrixWorld();
   }
 
