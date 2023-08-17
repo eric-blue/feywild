@@ -62,17 +62,13 @@ export class PlayerController {
 
           // Determine blocked directions based on collisionDirection
           if (Math.abs(collisionDirection.x) > Math.abs(collisionDirection.z)) {
-            if (collisionDirection.x > 0) {
-              blockedDirections.push('right'); // Prevent movement along the positive x-axis
-            } else {
-              blockedDirections.push('left'); // Prevent movement along the negative x-axis
-            }
+            // Prevent movement along the positive x-axis
+            if (collisionDirection.x > 0) blockedDirections.push('right');
+            else blockedDirections.push('left'); // Prevent movement along the negative x-axis
           } else {
-            if (collisionDirection.z > 0) {
-              blockedDirections.push('down'); // Prevent movement along the positive z-axis
-            } else {
-              blockedDirections.push('up'); // Prevent movement along the negative z-axis
-            }
+            // Prevent movement along the positive z-axis
+            if (collisionDirection.z > 0) blockedDirections.push('down');
+            else blockedDirections.push('up'); // Prevent movement along the negative z-axis
           }
         }
       }
@@ -95,13 +91,13 @@ export class PlayerController {
     } else if (Math.abs(x) === z && z !== 0) {
       this.previousDirection = z > 0 ? 'left' : 'right';
     } else {
-      if (this.previousDirection.includes('up'))
+      if (this.previousDirection.includes('up')) {
         this.previousDirection = 'idle-up';
-      else if (this.previousDirection.includes('right'))
+      } else if (this.previousDirection.includes('right')) {
         this.previousDirection = 'idle-right';
-      else if (this.previousDirection.includes('left'))
+      } else if (this.previousDirection.includes('left')) {
         this.previousDirection = 'idle-left';
-      else this.previousDirection = 'idle-down';
+      } else this.previousDirection = 'idle-down';
     }
 
     return this.previousDirection;
