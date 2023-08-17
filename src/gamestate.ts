@@ -15,9 +15,18 @@ window.paused = false;
 window.lockPlayer = false;
 
 export interface GameState {
+  saves: number;
   playerPosition: {x: number; y: number; z: number};
+  playerInventory: {};
+  npcState: {
+    [key: string]: {
+      position: {x: number; y: number; z: number};
+      inventory?: {};
+    };
+  };
   health: number;
   level: number;
+  scene: number;
 }
 
 function onStartGame(detail: string | {[key: string]: unknown}) {
@@ -25,14 +34,20 @@ function onStartGame(detail: string | {[key: string]: unknown}) {
 }
 
 export class Gamestate {
-  state = {
+  state: GameState = {
     saves: 0,
     playerPosition: {x: 0.5, y: 0.5, z: 0.5},
+    playerInventory: {},
+    npcState: {},
     health: 100,
     level: 3,
     scene: 1,
     // ...other game-related data
   };
+
+  setState(gamestate: Partial<GameState>) {
+    this.state = {...this.state, ...gamestate};
+  }
 
   newGame = () => {
     window.gameIsLoading = false;
@@ -100,8 +115,4 @@ export class Gamestate {
       console.log('do exit');
     }
   };
-
-  set(gamestate: Partial<GameState>) {
-    this.state = {...this.state, ...gamestate};
-  }
 }

@@ -1,14 +1,16 @@
 import {WebGLRenderer, Clock} from 'three';
-import {Camera} from './camera';
-import {Character} from './models/character';
-import {PlayerController} from './models/player/controller';
-import {Inventory} from './models/player/inventory';
 import {Gamestate} from './gamestate';
 import {PauseMenu} from './menus/pause';
-import {Lights} from './lights';
 import {StartMenu} from './menus/start';
-import {OpenWorldMap} from './levels/openWorld/scene';
-import {SpriteFlipbook} from './models/character-flipbook';
+import {SceneOne} from './levels/1';
+
+interface SceneMachine {
+  [key: number]: (state: Gamestate) => ReturnType<typeof SceneOne>;
+}
+
+const scenes: SceneMachine = {
+  1: SceneOne,
+};
 
 export function init(canvas?: HTMLCanvasElement) {
   try {
@@ -23,25 +25,13 @@ export function init(canvas?: HTMLCanvasElement) {
     addEventListener('startgame', () => {
       new PauseMenu(gamestate);
 
-      const {scene} = new OpenWorldMap(console.log);
-      const {sunlight} = new Lights(scene);
-      const {camera} = new Camera();
-
-      const player = new Character(
-        {
-          Controller: PlayerController,
-          InventoryModule: Inventory,
-          FlipbookModule: SpriteFlipbook,
-          // add compositon elements here..
-          // dialogue: Dialogue,
-        },
-        {
-          position: gamestate.state.playerPosition,
-          spriteSheet: './sprites/forest-sprite.png',
-        }
-      );
-
-      scene.add(player.root);
+      const {
+        scene,
+        sunlight,
+        camera,
+        player,
+        NPCs: [NPC1],
+      } = scenes[gamestate.state.scene](gamestate);
 
       function resizeRendererToDisplaySize(renderer: WebGLRenderer) {
         const canvas = renderer.domElement;
@@ -72,14 +62,15 @@ export function init(canvas?: HTMLCanvasElement) {
           !window.paused &&
           !window.lockPlayer
         ) {
-          const deltaTime = clock.getDelta();
+          const delta = clock.getDelta();
 
           camera.position.lerp(player.root.position, 0.04);
-          gamestate.set({playerPosition: player.root.position});
+          gamestate.setState({playerPosition: player.root.position});
           camera.position.y = 15; // keep the elevation;
           camera.position.z = camera.position.z + 0.75;
 
-          player.update(scene, deltaTime);
+          player.update(scene, delta);
+          NPC1.update(scene, delta);
 
           // have the sun follow you to save of resources
           sunlight.target.position.copy(player.root.position);
