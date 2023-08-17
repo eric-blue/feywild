@@ -14,10 +14,12 @@ import {SpriteFlipbook} from './character-flipbook';
 
 interface Setup {
   position: GameState['playerPosition'];
+  spriteSheet?: `./sprites/${string}.png`;
 }
 
 const config: Setup = {
   position: new Vector3(0.5, 0.5, 0.5),
+  spriteSheet: undefined,
 };
 
 interface CharacterComposition {
@@ -26,8 +28,15 @@ interface CharacterComposition {
   FlipbookModule?: new (texture: string) => SpriteFlipbook;
 }
 
+/**
+ * A base actor class for spawning in NPCs or
+ * player characters – basically anything you
+ * expect to live, move, and breathe
+ * 
+ * Built using Composition principles (vs Inheritence)
+ */
 export class Character {
-  root: Mesh | Sprite;
+  root: Mesh;
   controller: PlayerController | AIController;
   inventory?: Inventory;
   flipbook?: SpriteFlipbook;
@@ -45,10 +54,11 @@ export class Character {
       setup.position.z
     );
 
-    if (FlipbookModule) {
-      this.flipbook = new FlipbookModule('./sprites/forest-sprite.png');
+    if (FlipbookModule && setup.spriteSheet) {
+      this.flipbook = new FlipbookModule(setup.spriteSheet);
       this.root.add(this.flipbook.sprite);
     }
+    
     this.controller = new Controller(this.root);
     this.inventory = InventoryModule ? new InventoryModule() : undefined;
   }

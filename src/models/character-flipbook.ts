@@ -8,6 +8,7 @@ import {
 import {Direction} from '../types';
 
 export class SpriteFlipbook {
+  private textureLoader = new TextureLoader();
   private tilesHorizontal: number;
   private tilesVertical: number;
   private activeTile = 8;
@@ -26,7 +27,8 @@ export class SpriteFlipbook {
     this.tilesHorizontal = tilesHorizontal;
     this.tilesVertical = tilesVertical;
 
-    this.map = new TextureLoader().load(texture);
+    this.map = this.textureLoader.load(texture);
+
     this.map.magFilter = NearestFilter;
     this.map.repeat.set(1 / tilesHorizontal, 1 / tilesVertical);
     this.map.offset.set(0.125, 0.875); // this shouldn't be necessary
@@ -74,6 +76,12 @@ export class SpriteFlipbook {
       this.currentAnimation = nextAnimation;
       this.loop(this.currentAnimation.tiles, 0.45);
     }
+  }
+
+  swapTexture(texture: string) {
+    this.map = this.textureLoader.load(texture);
+    const material = new SpriteMaterial({map: this.map});
+    this.sprite = new Sprite(material);
   }
 }
 

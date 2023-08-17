@@ -33,6 +33,7 @@ const player = new Character(
   },
   {
     position: gamestate.playerPosition,
+    spriteSheet: './sprites/forest-sprite.png',
   }
 );
 
@@ -85,7 +86,7 @@ function handleRender(renderer: WebGLRenderer) {
 
 export function init(canvas?: HTMLCanvasElement) {
   try {
-    const renderer = new WebGLRenderer({canvas: canvas});
+    const renderer = new WebGLRenderer({canvas});
     renderer.shadowMap.enabled = true;
 
     requestAnimationFrame(() => handleRender(renderer));

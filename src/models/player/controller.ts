@@ -19,6 +19,7 @@ export class PlayerController {
       this.keyboardState[key] = true;
 
       if (event.key === ' ' && !event.repeat) {
+        // this should be moved to a diff module
         console.log('ATTACK'); // Call the attack function when spacebar is pressed
       }
 
