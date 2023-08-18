@@ -1,15 +1,20 @@
 import {Box3, Mesh, Scene, Vector3} from 'three';
-import {Direction, KeyboardState, WASD} from '../../types';
+import {Direction, KeyboardState} from '../../types';
+import { Pathfinding, PathfindingHelper } from 'three-pathfinding';
+import { checkCollisions, getSimpleDirection } from '../helpers';
 
 export class PlayerController {
-  player: Mesh;
-  playerBoundingBox = new Box3();
+  private player: Mesh;
+  public playerBoundingBox = new Box3();
 
-  keyboardState: KeyboardState = {};
+  private keyboardState: KeyboardState = {};
   // Set up initial character properties
-  direction = new Vector3();
-  previousDirection: Direction = 'idle-down';
-  velocity = new Vector3();
+  private direction = new Vector3();
+  private previousDirection: Direction = 'idle-down';
+  private velocity = new Vector3();
+  
+  pathfinder: Pathfinding|undefined; 
+  pathfindingHelper: PathfindingHelper|undefined;
 
   constructor(player: Mesh) {
     this.player = player;
@@ -34,105 +39,50 @@ export class PlayerController {
     addEventListener('blur', () => (this.keyboardState = {}));
   }
 
-  checkCollisions(scene: Scene) {
-    const tempBox = new Box3();
-    const blockedDirections: WASD[] = [];
-
-    // Update playerBoundingBox to match player's position
-    this.playerBoundingBox.setFromObject(this.player);
-    // Add a margin or "smidge" to the bounding box
-    const margin = 0.1; // Adjust this value to your preference
-    this.playerBoundingBox.expandByScalar(margin);
-
-    // Check for intersections with other objects
-    for (const object of (scene.children as Mesh[]).filter(
-      mesh => mesh?.geometry?.type === 'BoxGeometry'
-    )) {
-      if (object !== this.player) {
-        tempBox.setFromObject(object);
-        tempBox.expandByScalar(margin);
-
-        if (this.playerBoundingBox.intersectsBox(tempBox)) {
-          // Handle collision behavior here
-          const playerCenter = this.playerBoundingBox.getCenter(new Vector3());
-          const objectCenter = tempBox.getCenter(new Vector3());
-
-          const collisionDirection = new Vector3();
-          collisionDirection.subVectors(objectCenter, playerCenter).normalize();
-
-          // Determine blocked directions based on collisionDirection
-          if (Math.abs(collisionDirection.x) > Math.abs(collisionDirection.z)) {
-            // Prevent movement along the positive x-axis
-            if (collisionDirection.x > 0) blockedDirections.push('right');
-            else blockedDirections.push('left'); // Prevent movement along the negative x-axis
-          } else {
-            // Prevent movement along the positive z-axis
-            if (collisionDirection.z > 0) blockedDirections.push('down');
-            else blockedDirections.push('up'); // Prevent movement along the negative z-axis
-          }
-        }
-      }
-    }
-
-    return blockedDirections;
+  enablePathfinding(pathfinder: Pathfinding, pathfindingHelper?: PathfindingHelper) {
+    this.pathfinder = pathfinder;
+    this.pathfindingHelper = pathfindingHelper; // might only want in DEV
   }
 
   simpleDirection(): Direction {
-    const {x, z} = this.direction;
-
-    if (Math.abs(x) > Math.abs(z)) {
-      this.previousDirection = x > 0 ? 'right' : 'left';
-    } else if (Math.abs(z) > Math.abs(x)) {
-      this.previousDirection = z > 0 ? 'down' : 'up';
-    } else if (x === z && z !== 0) {
-      this.previousDirection = z > 0 ? 'right' : 'left';
-    } else if (x === Math.abs(z) && z !== 0) {
-      this.previousDirection = z > 0 ? 'left' : 'right';
-    } else if (Math.abs(x) === z && z !== 0) {
-      this.previousDirection = z > 0 ? 'left' : 'right';
-    } else {
-      if (this.previousDirection.includes('up')) {
-        this.previousDirection = 'idle-up';
-      } else if (this.previousDirection.includes('right')) {
-        this.previousDirection = 'idle-right';
-      } else if (this.previousDirection.includes('left')) {
-        this.previousDirection = 'idle-left';
-      } else this.previousDirection = 'idle-down';
-    }
-
-    return this.previousDirection;
+    return getSimpleDirection(this.direction, this.previousDirection);
   }
 
-  update(scene: Scene) {
+  move(speed: number, scene: Scene) {
     const {keyboardState, direction, player, velocity} = this;
     // Calculate character's velocity based on keyboard input
     velocity.set(0, 0, 0);
-    const running = keyboardState['SHIFT'] ? 0.1 : 0;
-    const moveSpeed = 0.1 + running;
 
-    const blockedDirection = this.checkCollisions(scene);
+    const blockedDirections = checkCollisions(scene, this.player, this.playerBoundingBox);
 
     if (keyboardState['ARROWUP'] || keyboardState['W']) {
       this.previousDirection = 'up';
-      if (!blockedDirection.includes('up')) velocity.z -= moveSpeed;
+      if (!blockedDirections.includes('up')) velocity.z -= speed;
     }
     if (keyboardState['ARROWDOWN'] || keyboardState['S']) {
       this.previousDirection = 'down';
-      if (!blockedDirection.includes('down')) velocity.z += moveSpeed;
+      if (!blockedDirections.includes('down')) velocity.z += speed;
     }
     if (keyboardState['ARROWLEFT'] || keyboardState['A']) {
       this.previousDirection = 'left';
-      if (!blockedDirection.includes('left')) velocity.x -= moveSpeed;
+      if (!blockedDirections.includes('left')) velocity.x -= speed;
     }
     if (keyboardState['ARROWRIGHT'] || keyboardState['D']) {
       this.previousDirection = 'right';
-      if (!blockedDirection.includes('right')) velocity.x += moveSpeed;
+      if (!blockedDirections.includes('right')) velocity.x += speed;
     }
 
     // Normalize velocity and apply it to character's position
     velocity.normalize();
     direction.copy(velocity);
-    direction.multiplyScalar(moveSpeed);
+    direction.multiplyScalar(speed);
     player.position.add(direction);
+  }
+
+  update(scene: Scene) {
+    const running = this.keyboardState['SHIFT'] ? 0.1 : 0;
+    const moveSpeed = 0.1 + running;
+
+    this.move(moveSpeed, scene)
   }
 }

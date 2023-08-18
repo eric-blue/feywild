@@ -5,3 +5,7 @@ export type Direction = WASD | IDLE;
 export interface KeyboardState {
   [key: string]: boolean;
 }
+
+export type Zone =
+  | 'village-square'
+  | 'village-west' // etc...

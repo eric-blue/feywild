@@ -22,16 +22,19 @@ export function init(canvas?: HTMLCanvasElement) {
 
     new StartMenu(gamestate);
 
-    addEventListener('startgame', () => {
+    addEventListener('startgame', async () => {
       new PauseMenu(gamestate);
 
       const {
         scene,
         sunlight,
         camera,
+        cameraClass,
         player,
-        NPCs: [NPC1],
+        NPCs,
       } = scenes[gamestate.state.scene](gamestate);
+
+      NPCs.forEach((npc) => npc.controller.update(scene))
 
       function resizeRendererToDisplaySize(renderer: WebGLRenderer) {
         const canvas = renderer.domElement;
@@ -64,13 +67,16 @@ export function init(canvas?: HTMLCanvasElement) {
         ) {
           const delta = clock.getDelta();
 
-          camera.position.lerp(player.root.position, 0.04);
           gamestate.setState({playerPosition: player.root.position});
-          camera.position.y = 15; // keep the elevation;
-          camera.position.z = camera.position.z + 0.75;
+
+          if (!import.meta.env.DEV || (import.meta.env.DEV && !window._orbitControls)) {
+            camera.position.lerp(player.root.position, 0.04);
+            camera.position.y = 15; // keep the elevation;
+            camera.position.z = camera.position.z + 0.75;
+          }
 
           player.update(scene, delta);
-          NPC1.update(scene, delta);
+          NPCs.forEach((npc) => npc.update(scene, delta))
 
           // have the sun follow you to save of resources
           sunlight.target.position.copy(player.root.position);
@@ -81,6 +87,11 @@ export function init(canvas?: HTMLCanvasElement) {
 
         renderer.render(scene, camera);
       }
+
+      if (import.meta.env.DEV) {
+        const {devtools} = await import('./dev-tools');
+        devtools({cameraClass, renderer})
+      };
 
       requestAnimationFrame(() => handleRender(renderer));
     });

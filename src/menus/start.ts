@@ -6,7 +6,6 @@ export class StartMenu {
   constructor(gamestate: Gamestate) {
     this.menu = document.querySelector('#start-menu');
     this.menu?.classList.remove('hidden');
-    window.gameIsLoading = true;
 
     const newGame = () => {
       this.menu?.classList.toggle('hidden');

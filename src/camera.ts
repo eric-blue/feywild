@@ -14,4 +14,9 @@ export class Camera {
     this.camera.up.set(0, 0, -1);
     this.camera.lookAt(0, 0, 0);
   }
+
+  reset() {
+    this.camera.up.set(0, 0, -1);
+    this.camera.lookAt(0, 0, 0);
+  }
 }

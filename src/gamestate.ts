@@ -1,9 +1,17 @@
+import { Scene } from "three";
+import { PathfindingHelper } from "three-pathfinding";
+
 declare global {
   interface Window {
     savingInProgress: boolean;
     gameIsLoading: boolean;
     paused: boolean;
     lockPlayer: boolean;
+
+    /** debug only */
+    _orbitControls: boolean;
+    _currentScene: Scene|undefined;
+    _pathfindingHelper: PathfindingHelper|undefined;
   }
 }
 
@@ -13,6 +21,10 @@ window.savingInProgress = false;
 window.gameIsLoading = false;
 window.paused = false;
 window.lockPlayer = false;
+
+window._orbitControls = false;
+window._currentScene;
+window._pathfindingHelper;
 
 export interface GameState {
   saves: number;
@@ -50,7 +62,7 @@ export class Gamestate {
   }
 
   newGame = () => {
-    window.gameIsLoading = false;
+    window.gameIsLoading = true;
     onStartGame('new');
   };
 
@@ -64,8 +76,6 @@ export class Gamestate {
 
       onStartGame('continue');
     }
-
-    window.gameIsLoading = false;
   };
 
   saveGame = () => {
@@ -91,8 +101,6 @@ export class Gamestate {
         const loadedGameState = JSON.parse(serializedData);
         this.state = loadedGameState;
       }
-
-      window.gameIsLoading = false;
     }
   };
 

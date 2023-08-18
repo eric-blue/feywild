@@ -15,7 +15,8 @@
     "posttest": "npm run lint"
   },
   "dependencies": {
-    "three": "0.155.0"
+    "three": "0.155.0",
+    "three-pathfinding": "^1.2.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.6",

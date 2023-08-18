@@ -4,19 +4,23 @@ import {PlayerController} from './player/controller';
 import type {GameState} from '../gamestate';
 import {Inventory} from './player/inventory';
 import {SpriteFlipbook} from './character-flipbook';
+import { Zone } from '../types';
 
 interface Setup {
+  name?: string;
   position: GameState['playerPosition'];
   spriteSheet?: `./sprites/${string}.png`;
+  zone: Zone;
 }
 
 const config: Setup = {
   position: new Vector3(0.5, 0.5, 0.5),
   spriteSheet: undefined,
+  zone: 'village-square',
 };
 
 interface CharacterComposition {
-  Controller: new (mesh: Mesh) => PlayerController | AIController;
+  Controller: new (mesh: Mesh, zone: Zone) => PlayerController | AIController;
   InventoryModule?: new () => Inventory;
   FlipbookModule?: new (texture: string) => SpriteFlipbook;
 }
@@ -46,13 +50,14 @@ export class Character {
       setup.position.y,
       setup.position.z
     );
+    this.root.name = setup.name || 'generic-character';
 
     if (FlipbookModule && setup.spriteSheet) {
       this.flipbook = new FlipbookModule(setup.spriteSheet);
       this.root.add(this.flipbook.sprite);
     }
 
-    this.controller = new Controller(this.root);
+    this.controller = new Controller(this.root, config.zone);
     this.inventory = InventoryModule ? new InventoryModule() : undefined;
   }
 
