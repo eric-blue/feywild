@@ -1,7 +1,7 @@
 import {Box3, Mesh, Scene, Vector3} from 'three';
 import {Direction, KeyboardState} from '../../types';
-import { Pathfinding, PathfindingHelper } from 'three-pathfinding';
-import { checkCollisions, getSimpleDirection } from '../helpers';
+import {Pathfinding, PathfindingHelper} from 'three-pathfinding';
+import {checkCollisions, getSimpleDirection} from '../helpers';
 
 export class PlayerController {
   private player: Mesh;
@@ -12,9 +12,9 @@ export class PlayerController {
   private direction = new Vector3();
   private previousDirection: Direction = 'idle-down';
   private velocity = new Vector3();
-  
-  pathfinder: Pathfinding|undefined; 
-  pathfindingHelper: PathfindingHelper|undefined;
+
+  pathfinder: Pathfinding | undefined;
+  pathfindingHelper: PathfindingHelper | undefined;
 
   constructor(player: Mesh) {
     this.player = player;
@@ -39,7 +39,10 @@ export class PlayerController {
     addEventListener('blur', () => (this.keyboardState = {}));
   }
 
-  enablePathfinding(pathfinder: Pathfinding, pathfindingHelper?: PathfindingHelper) {
+  enablePathfinding(
+    pathfinder: Pathfinding,
+    pathfindingHelper?: PathfindingHelper
+  ) {
     this.pathfinder = pathfinder;
     this.pathfindingHelper = pathfindingHelper; // might only want in DEV
   }
@@ -53,7 +56,11 @@ export class PlayerController {
     // Calculate character's velocity based on keyboard input
     velocity.set(0, 0, 0);
 
-    const blockedDirections = checkCollisions(scene, this.player, this.playerBoundingBox);
+    const blockedDirections = checkCollisions(
+      scene,
+      this.player,
+      this.playerBoundingBox
+    );
 
     if (keyboardState['ARROWUP'] || keyboardState['W']) {
       this.previousDirection = 'up';
@@ -83,6 +90,6 @@ export class PlayerController {
     const running = this.keyboardState['SHIFT'] ? 0.1 : 0;
     const moveSpeed = 0.1 + running;
 
-    this.move(moveSpeed, scene)
+    this.move(moveSpeed, scene);
   }
 }

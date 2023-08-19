@@ -4,7 +4,7 @@ import {PlayerController} from './player/controller';
 import type {GameState} from '../gamestate';
 import {Inventory} from './player/inventory';
 import {SpriteFlipbook} from './character-flipbook';
-import { Zone } from '../types';
+import {Zone} from '../types';
 
 interface Setup {
   name?: string;

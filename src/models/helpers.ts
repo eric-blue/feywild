@@ -1,13 +1,16 @@
-import { Box3, Mesh, Scene, Vector3 } from "three";
-import { Direction, WASD } from "../types";
+import {Box3, Mesh, Scene, Vector3} from 'three';
+import {Direction, WASD} from '../types';
 
 export function getPlayerPosition(scene: Scene) {
-  return scene.children.find(mesh => mesh.name === 'player')?.position
+  return scene.children.find(mesh => mesh.name === 'player')?.position;
 }
 
-export function getSimpleDirection(direction: Vector3, previousDirection: Direction): Direction {
+export function getSimpleDirection(
+  direction: Vector3,
+  previousDirection: Direction
+): Direction {
   const {x, z} = direction;
-  
+
   if (Math.abs(x) > Math.abs(z)) {
     return x > 0 ? 'right' : 'left';
   } else if (Math.abs(z) > Math.abs(x)) {
@@ -29,16 +32,22 @@ export function getSimpleDirection(direction: Vector3, previousDirection: Direct
   }
 }
 
-export function checkCollisions(scene: Scene, characterMesh: Mesh, boundingBox: Box3) {
+export function checkCollisions(
+  scene: Scene,
+  characterMesh: Mesh,
+  boundingBox: Box3
+) {
   const tempBox = new Box3();
   const blockedDirections: WASD[] = [];
 
   boundingBox.setFromObject(characterMesh);
-  const margin = 0.1; 
+  const margin = 0.1;
   boundingBox.expandByScalar(margin);
 
   // Check for intersections with other objects
-  const colliders = (scene.children as Mesh[]).filter(mesh => mesh?.geometry?.type === 'BoxGeometry');
+  const colliders = (scene.children as Mesh[]).filter(
+    mesh => mesh?.geometry?.type === 'BoxGeometry'
+  );
   for (const object of colliders) {
     if (object !== characterMesh) {
       tempBox.setFromObject(object);

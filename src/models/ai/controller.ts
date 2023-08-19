@@ -1,12 +1,16 @@
 import {Box3, Mesh, Scene, Vector3} from 'three';
-import { Pathfinding, PathfindingHelper } from 'three-pathfinding';
-import { Direction, Zone } from '../../types';
-import { checkCollisions, getPlayerPosition, getSimpleDirection } from '../helpers';
+import {Pathfinding, PathfindingHelper} from 'three-pathfinding';
+import {Direction, Zone} from '../../types';
+import {
+  checkCollisions,
+  getPlayerPosition,
+  getSimpleDirection,
+} from '../helpers';
 
 export class AIController {
   public boundingBox = new Box3();
-  private pathfinder: Pathfinding|undefined; 
-  private pathfindingHelper: PathfindingHelper|undefined;
+  private pathfinder: Pathfinding | undefined;
+  private pathfindingHelper: PathfindingHelper | undefined;
   private waypoint = new Vector3();
 
   // Set up initial character properties
@@ -14,13 +18,20 @@ export class AIController {
   private previousDirection: Direction = 'idle-down';
   private velocity = new Vector3();
 
-  constructor(public npc: Mesh, public zone: Zone) {}
+  constructor(
+    public npc: Mesh,
+    public zone: Zone
+  ) {}
 
   simpleDirection(): Direction {
+    // console.log(getSimpleDirection(this.direction, this.previousDirection))
     return getSimpleDirection(this.direction, this.previousDirection);
   }
 
-  enablePathfinding(pathfinder: Pathfinding, pathfindingHelper?: PathfindingHelper) {
+  enablePathfinding(
+    pathfinder: Pathfinding,
+    pathfindingHelper?: PathfindingHelper
+  ) {
     this.pathfinder = pathfinder;
     this.pathfindingHelper = pathfindingHelper; // might only want in DEV
   }
@@ -30,7 +41,11 @@ export class AIController {
     // Calculate character's velocity based on pathfinding waypoint
     velocity.set(0, 0, 0);
 
-    const blockedDirections = checkCollisions(scene, this.npc, this.boundingBox);
+    const blockedDirections = checkCollisions(
+      scene,
+      this.npc,
+      this.boundingBox
+    );
 
     if (waypoint.z < npc.position.z) {
       this.previousDirection = 'up';
@@ -57,29 +72,50 @@ export class AIController {
   }
 
   update(scene: Scene) {
-    const shouldNavigate = this.waypoint !== this.npc.position
+    const shouldNavigate = this.waypoint !== this.npc.position;
     if (!window.gameIsLoading && this.pathfinder && shouldNavigate) {
       // should not only target the player, some NPCs wanna just move around based on a timer
       const targetPosition = getPlayerPosition(scene); // get target from player position IF in view
-  
+
       if (targetPosition && this.zone) {
         const characterPosition = this.npc.position;
         // Set the player's default navigation mesh group (should be set by whatever is in save state)
-        const groupID = this.pathfinder.getGroup(this.zone, targetPosition, true); // todo this needs to be set on player controller?
-    
-        const targetGroupID = this.pathfinder.getGroup( this.zone, targetPosition, true );
-        const closestTargetNode = this.pathfinder.getClosestNode( targetPosition, this.zone, targetGroupID, false );
-    
-        this.pathfindingHelper?.setPlayerPosition( characterPosition );
-        this.pathfindingHelper?.setTargetPosition( targetPosition );
-        
+        const groupID = this.pathfinder.getGroup(
+          this.zone,
+          targetPosition,
+          true
+        ); // todo this needs to be set on player controller?
+
+        const targetGroupID = this.pathfinder.getGroup(
+          this.zone,
+          targetPosition,
+          true
+        );
+        const closestTargetNode = this.pathfinder.getClosestNode(
+          targetPosition,
+          this.zone,
+          targetGroupID,
+          false
+        );
+
+        this.pathfindingHelper?.setPlayerPosition(characterPosition);
+        this.pathfindingHelper?.setTargetPosition(targetPosition);
+
         // this.pathfindingHelper.reset().setPlayerPosition( targetPosition );
-        if ( closestTargetNode ) this.pathfindingHelper?.setNodePosition( closestTargetNode.centroid );
-        
+        if (closestTargetNode) {
+          this.pathfindingHelper?.setNodePosition(closestTargetNode.centroid);
+        }
+
         // Calculate a path to the target and store it
-        const navpath = this.pathfinder.findPath( characterPosition, targetPosition, this.zone, groupID );
-    
-        if (navpath?.length) { // clear path
+        const navpath = this.pathfinder.findPath(
+          characterPosition,
+          targetPosition,
+          this.zone,
+          groupID
+        );
+
+        if (navpath?.length) {
+          // clear path
           this.waypoint.copy(navpath[0]);
           this.pathfindingHelper?.setPath(navpath);
           this.pathfindingHelper?.setTargetPosition(targetPosition);

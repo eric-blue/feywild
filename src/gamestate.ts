@@ -1,5 +1,5 @@
-import { Scene } from "three";
-import { PathfindingHelper } from "three-pathfinding";
+import {Scene} from 'three';
+import {PathfindingHelper} from 'three-pathfinding';
 
 declare global {
   interface Window {
@@ -10,8 +10,8 @@ declare global {
 
     /** debug only */
     _orbitControls: boolean;
-    _currentScene: Scene|undefined;
-    _pathfindingHelper: PathfindingHelper|undefined;
+    _currentScene: Scene | undefined;
+    _pathfindingHelper: PathfindingHelper | undefined;
   }
 }
 

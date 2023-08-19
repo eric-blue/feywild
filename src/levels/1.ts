@@ -1,4 +1,3 @@
-
 import {Vector3} from 'three';
 import {Lights} from '../lights';
 import {AIController} from '../models/ai/controller';
