@@ -16,6 +16,8 @@ export class PlayerController {
   pathfinder: Pathfinding | undefined;
   pathfindingHelper: PathfindingHelper | undefined;
 
+  target?: Vector3;
+
   constructor(player: Mesh) {
     this.player = player;
 

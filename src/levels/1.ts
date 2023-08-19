@@ -8,6 +8,7 @@ import {Inventory} from '../models/player/inventory';
 import {OpenWorldMap} from './openWorld/scene';
 import {Camera} from '../camera';
 import {Gamestate} from '../gamestate';
+import { Orchestrator } from '../models/ai/orchestrator';
 
 /**
  * The Before-fore (pre-invasion map)
@@ -40,17 +41,21 @@ export function SceneOne(gamestate: Gamestate) {
     {
       Controller: AIController,
       FlipbookModule: SpriteFlipbook,
+      Orchestrator,
       // add compositon elements here..
       // dialogue: Dialogue,
     },
     {
       position: new Vector3(0, 0.5, 5),
       spriteSheet: './sprites/trout.png',
-      zone: 'village-square',
+      zone: 'village-square'
     }
   );
 
   scene.add(NPC1.root);
+
+  NPC1.controller.enablePathfinding(pathfinder, pathfindingHelper);
+  NPC1.controller.target = NPC1.orchestrator?.trackPlayer(scene);
 
   const NPC2 = new Character(
     {
@@ -68,7 +73,25 @@ export function SceneOne(gamestate: Gamestate) {
 
   scene.add(NPC2.root);
 
-  NPC1.controller.enablePathfinding(pathfinder, pathfindingHelper);
+  const NPC3 = new Character(
+    {
+      Controller: AIController,
+      FlipbookModule: SpriteFlipbook,
+      Orchestrator,
+      // add compositon elements here..
+      // dialogue: Dialogue,
+    },
+    {
+      position: new Vector3(-5, 0.5, 1),
+      spriteSheet: './sprites/forest-sprite.png',
+      zone: 'village-square',
+    }
+  );
 
-  return {scene, sunlight, camera, cameraClass, player, NPCs: [NPC1, NPC2]};
+  NPC3.controller.enablePathfinding(pathfinder, pathfindingHelper);
+  NPC3.controller.target = NPC1.orchestrator?.loop();
+
+  scene.add(NPC3.root);
+
+  return {scene, sunlight, camera, cameraClass, player, NPCs: [NPC1, NPC2, NPC3]};
 }

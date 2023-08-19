@@ -3,7 +3,6 @@ import {Pathfinding, PathfindingHelper} from 'three-pathfinding';
 import {Direction, Zone} from '../../types';
 import {
   checkCollisions,
-  getPlayerPosition,
   getSimpleDirection,
 } from '../helpers';
 
@@ -18,14 +17,25 @@ export class AIController {
   private previousDirection: Direction = 'idle-down';
   private velocity = new Vector3();
 
+  origin = new Vector3();
+  target?: Vector3;
+
   constructor(
     public npc: Mesh,
-    public zone: Zone
-  ) {}
+    public zone: Zone,
+    public onReachDestination?: () => void,
+  ) {
+    this.origin = npc.position
+  }
 
   simpleDirection(): Direction {
-    // console.log(getSimpleDirection(this.direction, this.previousDirection))
-    return getSimpleDirection(this.direction, this.previousDirection);
+    const distance = this.npc.position.distanceTo(this.waypoint);
+    const reach = 2.25;
+    if (distance > reach) {
+      return getSimpleDirection(this.direction, this.previousDirection);
+    } else {
+      return `idle-${this.previousDirection.replace('idle-', '')}` as Direction;
+    }
   }
 
   enablePathfinding(
@@ -73,29 +83,23 @@ export class AIController {
 
   update(scene: Scene) {
     const shouldNavigate = this.waypoint !== this.npc.position;
-    if (!window.gameIsLoading && this.pathfinder && shouldNavigate) {
-      // should not only target the player, some NPCs wanna just move around based on a timer
-      const targetPosition = getPlayerPosition(scene); // get target from player position IF in view
+    if (!window.gameIsLoading && this.pathfinder && shouldNavigate && this.target) {
+      const targetPosition = this.target;
 
       if (targetPosition && this.zone) {
         const characterPosition = this.npc.position;
-        // Set the player's default navigation mesh group (should be set by whatever is in save state)
-        const groupID = this.pathfinder.getGroup(
-          this.zone,
-          targetPosition,
-          true
-        ); // todo this needs to be set on player controller?
 
         const targetGroupID = this.pathfinder.getGroup(
           this.zone,
           targetPosition,
           true
         );
+
         const closestTargetNode = this.pathfinder.getClosestNode(
           targetPosition,
           this.zone,
           targetGroupID,
-          false
+          true
         );
 
         this.pathfindingHelper?.setPlayerPosition(characterPosition);
@@ -111,19 +115,22 @@ export class AIController {
           characterPosition,
           targetPosition,
           this.zone,
-          groupID
+          targetGroupID
         );
 
         if (navpath?.length) {
-          // clear path
           this.waypoint.copy(navpath[0]);
           this.pathfindingHelper?.setPath(navpath);
           this.pathfindingHelper?.setTargetPosition(targetPosition);
         }
 
         // maybe go home if the PC is too far away?
-
-        this.move(0.1, scene);
+        const distance = this.npc.position.distanceTo(this.waypoint);
+        const reach = 2.25;
+        const farsight = 10;
+        if (distance > reach) this.move(0.1, scene);
+        if (distance > farsight) this.waypoint.copy(this.origin);
+        if (distance <= reach) this.onReachDestination?.();
       }
     }
   }

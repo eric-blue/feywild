@@ -63,10 +63,8 @@ export function init(canvas?: HTMLCanvasElement) {
 
           gamestate.setState({playerPosition: player.root.position});
 
-          if (
-            !import.meta.env.DEV ||
-            (import.meta.env.DEV && !window._orbitControls)
-          ) {
+          const dev = import.meta.env.DEV;
+          if (!dev || (dev && !window._orbitControls)) {
             camera.position.lerp(player.root.position, 0.04);
             camera.position.y = 15; // keep the elevation;
             camera.position.z = camera.position.z + 0.75;

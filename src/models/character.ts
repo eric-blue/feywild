@@ -5,22 +5,19 @@ import type {GameState} from '../gamestate';
 import {Inventory} from './player/inventory';
 import {SpriteFlipbook} from './character-flipbook';
 import {Zone} from '../types';
+import { Orchestrator } from './ai/orchestrator';
 
 interface Setup {
   name?: string;
   position: GameState['playerPosition'];
   spriteSheet?: `./sprites/${string}.png`;
   zone: Zone;
+  onReachDestination?: () => void;
 }
 
-const config: Setup = {
-  position: new Vector3(0.5, 0.5, 0.5),
-  spriteSheet: undefined,
-  zone: 'village-square',
-};
-
 interface CharacterComposition {
-  Controller: new (mesh: Mesh, zone: Zone) => PlayerController | AIController;
+  Controller: new (mesh: Mesh, zone: Zone, onReachDestination?: () => void) => PlayerController | AIController;
+  Orchestrator?: new () => Orchestrator;
   InventoryModule?: new () => Inventory;
   FlipbookModule?: new (texture: string) => SpriteFlipbook;
 }
@@ -35,21 +32,23 @@ interface CharacterComposition {
 export class Character {
   root: Mesh;
   controller: PlayerController | AIController;
+  orchestrator?: Orchestrator;
   inventory?: Inventory;
   flipbook?: SpriteFlipbook;
 
   constructor(
-    {Controller, InventoryModule, FlipbookModule}: CharacterComposition,
-    setup = config
+    {Controller, Orchestrator, InventoryModule, FlipbookModule}: CharacterComposition,
+    setup: Setup = {
+      position: new Vector3(0.5, 0.5, 0.5),
+      spriteSheet: undefined,
+      zone: 'village-square',
+      onReachDestination: () => {},
+    }
   ) {
     const geometry = new BoxGeometry(1, 2, 1);
     const material = new MeshStandardMaterial({visible: false});
     this.root = new Mesh(geometry, material);
-    this.root.position.set(
-      setup.position.x,
-      setup.position.y,
-      setup.position.z
-    );
+    this.root.position.set(setup.position.x, setup.position.y, setup.position.z);
     this.root.name = setup.name || 'generic-character';
 
     if (FlipbookModule && setup.spriteSheet) {
@@ -57,7 +56,8 @@ export class Character {
       this.root.add(this.flipbook.sprite);
     }
 
-    this.controller = new Controller(this.root, config.zone);
+    this.orchestrator = Orchestrator ? new Orchestrator() : undefined;
+    this.controller = new Controller(this.root, setup.zone, this.orchestrator?.activeInstruction);
     this.inventory = InventoryModule ? new InventoryModule() : undefined;
   }
 
