@@ -42,11 +42,9 @@ export function SceneOne(gamestate: Gamestate) {
       Controller: AIController,
       FlipbookModule: SpriteFlipbook,
       Orchestrator,
-      // add compositon elements here..
-      // dialogue: Dialogue,
     },
     {
-      position: new Vector3(0, 0.5, 5),
+      position: new Vector3(0, 0.5, 8),
       spriteSheet: './sprites/trout.png',
       zone: 'village-square'
     }
@@ -61,11 +59,9 @@ export function SceneOne(gamestate: Gamestate) {
     {
       Controller: AIController,
       FlipbookModule: SpriteFlipbook,
-      // add compositon elements here..
-      // dialogue: Dialogue,
     },
     {
-      position: new Vector3(1, 0.5, 1),
+      position: new Vector3(1, 0.5, 12),
       spriteSheet: './sprites/mink.png',
       zone: 'village-square',
     }
@@ -73,23 +69,23 @@ export function SceneOne(gamestate: Gamestate) {
 
   scene.add(NPC2.root);
 
+
+  const NPC3Route = [new Vector3(-5, 0.5, 10),  new Vector3(5, 0.5, 10),  new Vector3(5, 0.5, 1), new Vector3(-5, 0.5, 1),]
   const NPC3 = new Character(
     {
       Controller: AIController,
       FlipbookModule: SpriteFlipbook,
       Orchestrator,
-      // add compositon elements here..
-      // dialogue: Dialogue,
     },
     {
       position: new Vector3(-5, 0.5, 1),
+      route: NPC3Route,
       spriteSheet: './sprites/forest-sprite.png',
       zone: 'village-square',
     }
   );
 
   NPC3.controller.enablePathfinding(pathfinder, pathfindingHelper);
-  NPC3.controller.target = NPC1.orchestrator?.loop();
 
   scene.add(NPC3.root);
 

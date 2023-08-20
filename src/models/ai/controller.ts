@@ -19,13 +19,16 @@ export class AIController {
 
   origin = new Vector3();
   target?: Vector3;
+  isNavigating: boolean = false;
+
+  public onReachDestination?: () => void;
 
   constructor(
     public npc: Mesh,
     public zone: Zone,
-    public onReachDestination?: () => void,
   ) {
     this.origin = npc.position
+    this.target = this.origin
   }
 
   simpleDirection(): Direction {
@@ -47,6 +50,7 @@ export class AIController {
   }
 
   move(speed: number, scene: Scene) {
+    this.isNavigating = true
     const {direction, npc, velocity, waypoint} = this;
     // Calculate character's velocity based on pathfinding waypoint
     velocity.set(0, 0, 0);
@@ -130,7 +134,10 @@ export class AIController {
         const farsight = 10;
         if (distance > reach) this.move(0.1, scene);
         if (distance > farsight) this.waypoint.copy(this.origin);
-        if (distance <= reach) this.onReachDestination?.();
+        if (distance <= reach && this.isNavigating) {
+          this.isNavigating = false;
+          this.onReachDestination?.();
+        };
       }
     }
   }
