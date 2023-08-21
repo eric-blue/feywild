@@ -2,14 +2,14 @@ import { Scene, Vector3 } from "three"
 import { getPlayerPosition } from "../helpers"
 
 export class Orchestrator {
-  public activeInstruction: () => void;
+  // public activeInstruction: () => void;
   public routeGenerator?: Generator<Vector3>;
   
   constructor(route?: Vector3[]) {
     // if run route
     if (route) this.setRoute(route);
     // if enemy
-    this.activeInstruction = this.attack;
+    // this.activeInstruction = this.attack;
     // this.activeDestination
   }
 
