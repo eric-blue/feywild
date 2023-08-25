@@ -103,6 +103,44 @@ menu {
   }
 }
 
+dialog {
+  background: white;
+  border-radius: 7px;
+  color: #000c00;
+  border-width: 2px;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  width: -webkit-fill-available;
+  padding: 0 20px;
+
+  > ol {
+    list-style: none;
+    padding: 0;
+  }
+
+  & button {
+    color: inherit;
+    padding: 5px 0;
+    position: relative;
+
+    &:hover {
+      border-color: transparent;
+      text-decoration: underline;
+    }
+    &:focus,
+    &:focus-visible {
+      outline: none;
+
+      &::before {
+        content: '⮕';
+        position: absolute;
+        left: -18px;
+      }
+    }
+  }
+}
+
 #game {
   position: fixed;
   top: 0;
