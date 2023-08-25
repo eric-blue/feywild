@@ -112,6 +112,7 @@ dialog {
   left: 10px;
   right: 10px;
   width: -webkit-fill-available;
+  max-width: 650px;
   padding: 0 20px;
 
   > ol {

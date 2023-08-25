@@ -136,7 +136,7 @@ export class Dialogue {
             current + increment > list.length ? 0 : current + increment
           ]?.focus();
 
-          window.soundManager.play('focus', {volume: 0.25});
+          window.soundManager.play('focus', {volume: 0.15});
         };
 
         const handleKeyDown = ({key}: KeyboardEvent) => {

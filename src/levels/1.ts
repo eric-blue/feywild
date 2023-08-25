@@ -44,7 +44,7 @@ export function SceneOne(gamestate: Gamestate) {
       Orchestrator,
     },
     {
-      position: new Vector3(0, 0.5, 8),
+      position: new Vector3(0, 0.5, 13),
       spriteSheet: './sprites/trout.png',
       zone: 'village-square',
     }
@@ -61,7 +61,7 @@ export function SceneOne(gamestate: Gamestate) {
       Dialogue,
     },
     {
-      position: new Vector3(1, 0.5, 12),
+      position: new Vector3(1, 0.5, 16),
       spriteSheet: './sprites/mink.png',
       dialogueJSON: '../../../public/dialogue/rebecca.json', // this is DEEP
       zone: 'village-square',
