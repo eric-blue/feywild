@@ -1,10 +1,7 @@
 import {Box3, Mesh, Scene, Vector3} from 'three';
 import {Pathfinding, PathfindingHelper} from 'three-pathfinding';
 import {Direction, Zone} from '../../types';
-import {
-  checkCollisions,
-  getSimpleDirection,
-} from '../helpers';
+import {checkCollisions, getSimpleDirection} from '../helpers';
 
 export class AIController {
   public boundingBox = new Box3();
@@ -19,16 +16,17 @@ export class AIController {
 
   origin = new Vector3();
   target?: Vector3;
-  isNavigating: boolean = false;
+  isNavigating = false;
 
   public onReachDestination?: () => void;
+  public pauseMovement = false;
 
   constructor(
     public npc: Mesh,
-    public zone: Zone,
+    public zone: Zone
   ) {
-    this.origin = npc.position
-    this.target = this.origin
+    this.origin = npc.position;
+    this.target = this.origin;
   }
 
   simpleDirection(): Direction {
@@ -50,7 +48,7 @@ export class AIController {
   }
 
   move(speed: number, scene: Scene) {
-    this.isNavigating = true
+    this.isNavigating = true;
     const {direction, npc, velocity, waypoint} = this;
     // Calculate character's velocity based on pathfinding waypoint
     velocity.set(0, 0, 0);
@@ -87,7 +85,13 @@ export class AIController {
 
   update(scene: Scene) {
     const shouldNavigate = this.waypoint !== this.npc.position;
-    if (!window.gameIsLoading && this.pathfinder && shouldNavigate && this.target) {
+    if (
+      !window.gameIsLoading &&
+      !this.pauseMovement &&
+      this.pathfinder &&
+      shouldNavigate &&
+      this.target
+    ) {
       const targetPosition = this.target;
 
       if (targetPosition && this.zone) {
@@ -137,7 +141,7 @@ export class AIController {
         if (distance <= reach && this.isNavigating) {
           this.isNavigating = false;
           this.onReachDestination?.();
-        };
+        }
       }
     }
   }

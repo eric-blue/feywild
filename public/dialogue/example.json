@@ -1,0 +1,16 @@
+{
+  "interaction_0": {
+    "sender": "H. Simpson",
+    "receiver": "Player",
+    "message": "I'm a famous historian, get outta my way!",
+    "options": [],
+    "nextId": "interaction_1"
+  },
+  "interaction_1": {
+    "sender": "Player",
+    "receiver": "H. Simpson",
+    "message": "Whatever.",
+    "options": [],
+    "nextId": null
+  }
+}

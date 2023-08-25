@@ -1,8 +1,11 @@
 import {Scene} from 'three';
 import {PathfindingHelper} from 'three-pathfinding';
+import { SoundEffects } from './sounds';
 
 declare global {
   interface Window {
+    soundManager: SoundEffects;
+
     savingInProgress: boolean;
     gameIsLoading: boolean;
     paused: boolean;
@@ -17,6 +20,7 @@ declare global {
 
 export const SAVE_KEY = 'feywild-save';
 
+window.soundManager;
 window.savingInProgress = false;
 window.gameIsLoading = false;
 window.paused = false;

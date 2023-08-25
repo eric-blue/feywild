@@ -1,0 +1,92 @@
+{
+  "interaction_0": {
+    "sender": "NPC1",
+    "receiver": "Player",
+    "message": "Hey little kitty! Are you lost??",
+    "options": [
+      "interaction_1",
+      "interaction_6"
+    ],
+    "nextId": null
+  },
+  "interaction_1": {
+    "sender": "Player",
+    "receiver": "NPC1",
+    "message": "Meow.",
+    "options": [],
+    "nextId": "interaction_2"
+  },
+  "interaction_2": {
+    "sender": "NPC1",
+    "receiver": "Player",
+    "message": "MEOW.",
+    "options": [
+      "interaction_3",
+      "interaction_5"
+    ],
+    "nextId": null
+  },
+  "interaction_3": {
+    "sender": "Player",
+    "receiver": "NPC1",
+    "message": "Meow.",
+    "options": [],
+    "nextId": "interaction_4"
+  },
+  "interaction_4": {
+    "sender": "NPC1",
+    "receiver": "Player",
+    "message": "MEOW.",
+    "options": [],
+    "nextId": "interaction_9"
+  },
+  "interaction_5": {
+    "sender": "Player",
+    "receiver": "NPC1",
+    "message": "leave. [exit]",
+    "options": [],
+    "nextId": null
+  },
+  "interaction_6": {
+    "sender": "Player",
+    "receiver": "NPC1",
+    "message": "I’m not a cat, I’m a mink. Well actually, I’m a… never mind.",
+    "options": [],
+    "nextId": "interaction_7"
+  },
+  "interaction_7": {
+    "sender": "NPC1",
+    "receiver": "Player",
+    "message": "?...",
+    "options": [],
+    "nextId": "interaction_8"
+  },
+  "interaction_8": {
+    "sender": "NPC1",
+    "receiver": "Player",
+    "message": "That's silly. You're a silly kitty!",
+    "options": [],
+    "nextId": "interaction_9"
+  },
+  "interaction_9": {
+    "sender": "NPC2",
+    "receiver": "NPC1",
+    "message": "Rebeccaaaa. Who is it you're talking to sweetie?",
+    "options": [],
+    "nextId": "interaction_10"
+  },
+  "interaction_10": {
+    "sender": "NPC1",
+    "receiver": "NPC2",
+    "message": "Nothing Mommmm!",
+    "options": [],
+    "nextId": "interaction_11"
+  },
+  "interaction_11": {
+    "sender": "NPC1",
+    "receiver": "Player",
+    "message": "I gotta go!.",
+    "options": [],
+    "nextId": null
+  }
+}

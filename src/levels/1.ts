@@ -8,7 +8,8 @@ import {Inventory} from '../models/player/inventory';
 import {OpenWorldMap} from './openWorld/scene';
 import {Camera} from '../camera';
 import {Gamestate} from '../gamestate';
-import { Orchestrator } from '../models/ai/orchestrator';
+import {Orchestrator} from '../models/ai/orchestrator';
+import {Dialogue} from '../models/ai/dialogue';
 
 /**
  * The Before-fore (pre-invasion map)
@@ -25,7 +26,6 @@ export function SceneOne(gamestate: Gamestate) {
       InventoryModule: Inventory,
       FlipbookModule: SpriteFlipbook,
       // add compositon elements here..
-      // dialogue: Dialogue,
     },
     {
       name: 'player',
@@ -35,7 +35,7 @@ export function SceneOne(gamestate: Gamestate) {
     }
   );
 
-  scene.add(player.root);
+  player.create(scene);
 
   const NPC1 = new Character(
     {
@@ -46,12 +46,11 @@ export function SceneOne(gamestate: Gamestate) {
     {
       position: new Vector3(0, 0.5, 8),
       spriteSheet: './sprites/trout.png',
-      zone: 'village-square'
+      zone: 'village-square',
     }
   );
 
-  scene.add(NPC1.root);
-
+  NPC1.create(scene);
   NPC1.controller.enablePathfinding(pathfinder, pathfindingHelper);
   NPC1.controller.target = NPC1.orchestrator?.trackPlayer(scene);
 
@@ -59,35 +58,55 @@ export function SceneOne(gamestate: Gamestate) {
     {
       Controller: AIController,
       FlipbookModule: SpriteFlipbook,
+      Dialogue,
     },
     {
       position: new Vector3(1, 0.5, 12),
       spriteSheet: './sprites/mink.png',
+      dialogueJSON: '../../../public/dialogue/rebecca.json', // this is DEEP
       zone: 'village-square',
     }
   );
 
-  scene.add(NPC2.root);
+  NPC2.onExit = () => console.log('goodbye');
+  NPC2.create(scene);
 
-
-  const NPC3Route = [new Vector3(-5, 0.5, 10),  new Vector3(5, 0.5, 10),  new Vector3(5, 0.5, 1), new Vector3(-5, 0.5, 1),]
+  const NPC3Route = [
+    new Vector3(-5, 0.5, 10),
+    new Vector3(5, 0.5, 10),
+    new Vector3(5, 0.5, 1),
+    new Vector3(-5, 0.5, 1),
+  ];
   const NPC3 = new Character(
     {
       Controller: AIController,
       FlipbookModule: SpriteFlipbook,
       Orchestrator,
+      Dialogue,
     },
     {
       position: new Vector3(-5, 0.5, 1),
       route: NPC3Route,
       spriteSheet: './sprites/forest-sprite.png',
+      dialogueJSON: '../../../public/dialogue/example.json',
       zone: 'village-square',
     }
   );
 
   NPC3.controller.enablePathfinding(pathfinder, pathfindingHelper);
 
-  scene.add(NPC3.root);
+  NPC3.onExit = () => {
+    console.log('kthxbye');
+    // NPC3.destroy(scene);
+  };
+  NPC3.create(scene);
 
-  return {scene, sunlight, camera, cameraClass, player, NPCs: [NPC1, NPC2, NPC3]};
+  return {
+    scene,
+    sunlight,
+    camera,
+    cameraClass,
+    player,
+    NPCs: [NPC1, NPC2, NPC3],
+  };
 }

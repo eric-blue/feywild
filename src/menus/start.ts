@@ -1,30 +1,46 @@
+import { Camera, Scene } from 'three';
 import {Gamestate, SAVE_KEY} from '../gamestate';
+import { SoundEffects } from '../sounds';
+import { addListener } from '../models/helpers';
 
 export class StartMenu {
+  topLevelScene = new Scene();
   menu: HTMLOListElement | null;
 
   constructor(gamestate: Gamestate) {
+    const soundManager = new SoundEffects(new Camera());
+  
+    soundManager.load(soundsToLoad, () => {
+      console.log('All sounds loaded!');
+      // soundManager.play('ambient', {loop: true, volume: 0.5});
+    });
+  
+    window.soundManager = soundManager;
+
     this.menu = document.querySelector('#start-menu');
     this.menu?.classList.remove('hidden');
 
     const newGame = () => {
       this.menu?.classList.toggle('hidden');
       gamestate.newGame();
+      window.soundManager.play('click', {volume: 0.25});
     };
-
+    
     const continueGame = () => {
       this.menu?.classList.toggle('hidden');
       gamestate.continueGame();
+      window.soundManager.play('click', {volume: 0.25});
     };
-
+    
     const toggleSettings = () => {
       console.log('open settings');
+      window.soundManager.play('click', {volume: 0.25});
     };
 
-    addMethod('#start-menu-continue', continueGame);
-    addMethod('#start-menu-new', newGame);
-    addMethod('#start-menu-exit-desktop', gamestate.exitToDesktop);
-    addMethod('#start-menu-settings', toggleSettings);
+    addListener('#start-menu-continue', continueGame);
+    addListener('#start-menu-new', newGame);
+    addListener('#start-menu-exit-desktop', gamestate.exitToDesktop);
+    addListener('#start-menu-settings', toggleSettings);
 
     if (localStorage.getItem(SAVE_KEY)) {
       const button = document.getElementById('start-menu-continue');
@@ -45,6 +61,8 @@ export class StartMenu {
       list[
         current + increment > list.length ? 0 : current + increment
       ]?.focus();
+      
+      window.soundManager.play('focus', {volume: 0.5});
     };
 
     addEventListener('keydown', ({key}) => {
@@ -59,6 +77,14 @@ export class StartMenu {
   }
 }
 
-function addMethod(id: `#${string}`, method: () => void) {
-  document.querySelector(id)?.addEventListener('click', () => method());
-}
+const soundsToLoad = {
+  // "ambient": 'sounds/ambient.ogg',
+  openMenu: 'sounds/Bank Card Placed Down 03.wav',
+  closeMenu: 'sounds/Wallet Close.wav',
+  hit: 'sounds/HIT_SHORT_04.wav',
+  click: 'sounds/MI_SFX 26.mp3',
+  select: 'sounds/MI_SFX 28.mp3',
+  focus: 'sounds/MI_SFX 29.mp3',
+  chatter: 'sounds/MI_SFX 35.mp3',
+  //... add more sounds as needed
+};

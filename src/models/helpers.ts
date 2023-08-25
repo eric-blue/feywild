@@ -5,6 +5,28 @@ export function getPlayerPosition(scene: Scene) {
   return scene.children.find(mesh => mesh.name === 'player')?.position;
 }
 
+export function getDistanceToPlayer(mesh: Mesh, scene: Scene) {
+  const player = getPlayerPosition(scene);
+  if (player) return mesh.position.distanceTo(player);
+  return Infinity;
+}
+
+export function isTouchingPlayer(reach: number, mesh: Mesh, scene: Scene) {
+  return getDistanceToPlayer(mesh, scene) <= reach;
+}
+
+export function addListener(id: `#${string}`, method: (id: string) => void) {
+  document
+    .querySelector(id)
+    ?.addEventListener('click', () => method(id.replace('#', '')));
+}
+
+export function removeListener(id: `#${string}`, method: (id: string) => void) {
+  document
+    .querySelector(id)
+    ?.removeEventListener('click', () => method(id.replace('#', '')));
+}
+
 export function getSimpleDirection(
   direction: Vector3,
   previousDirection: Direction

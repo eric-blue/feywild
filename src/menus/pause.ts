@@ -1,33 +1,37 @@
 import {Gamestate} from '../gamestate';
+import {addListener} from '../models/helpers';
 
 export class PauseMenu {
   menu: HTMLOListElement | null;
+  open = false;
 
   constructor(gamestate: Gamestate) {
     this.menu = document.querySelector('#pause-menu');
 
     const togglePause = () => {
       window.paused = !window.paused;
-      this.menu?.classList.toggle('hidden');
+      this.open = !this.menu?.classList.toggle('hidden');
 
-      if (!this.menu?.classList.contains('hidden')) {
-        const button = document.querySelector(
+      if (this.open) {
+        const button = document.querySelector<HTMLButtonElement>(
           '#pause-menu-continue'
-        ) as HTMLButtonElement;
-        button.focus();
+        );
+        button?.focus();
       }
+      
+      window.soundManager.play('click', {volume: 0.25});
     };
 
     const toggleSettings = () => {
       console.log('open settings');
     };
 
-    addMethod('#pause-menu-continue', togglePause);
-    addMethod('#pause-menu-save', gamestate.saveGame);
-    addMethod('#pause-menu-load', gamestate.loadGame);
-    addMethod('#pause-menu-exit-main', gamestate.exitToMain);
-    addMethod('#pause-menu-exit-desktop', gamestate.exitToDesktop);
-    addMethod('#pause-menu-settings', toggleSettings);
+    addListener('#pause-menu-continue', togglePause);
+    addListener('#pause-menu-save', gamestate.saveGame);
+    addListener('#pause-menu-load', gamestate.loadGame);
+    addListener('#pause-menu-exit-main', gamestate.exitToMain);
+    addListener('#pause-menu-exit-desktop', gamestate.exitToDesktop);
+    addListener('#pause-menu-settings', toggleSettings);
 
     const focusNext = (increment = 1) => {
       const list = Array.from(
@@ -40,6 +44,8 @@ export class PauseMenu {
       list[
         current + increment > list.length ? 0 : current + increment
       ]?.focus();
+
+      window.soundManager.play('focus', {volume: 0.5});
     };
 
     addEventListener('keydown', ({key}) => {
@@ -53,8 +59,4 @@ export class PauseMenu {
       }
     });
   }
-}
-
-function addMethod(id: `#${string}`, method: () => void) {
-  document.querySelector(id)?.addEventListener('click', () => method());
 }

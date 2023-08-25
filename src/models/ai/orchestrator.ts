@@ -1,19 +1,14 @@
-import { Scene, Vector3 } from "three"
-import { getPlayerPosition } from "../helpers"
+import {Scene, Vector3} from 'three';
+import {getPlayerPosition} from '../helpers';
 
 export class Orchestrator {
-  public activeInstruction: () => void;
   public routeGenerator?: Generator<Vector3>;
-  
+
   constructor(route?: Vector3[]) {
-    // if run route
     if (route) this.setRoute(route);
-    // if enemy
-    this.activeInstruction = this.attack;
-    // this.activeDestination
   }
 
-  * loop(route: Vector3[]): Generator<Vector3> {
+  *loop(route: Vector3[]): Generator<Vector3> {
     let index = 0;
 
     while (true) {
@@ -30,8 +25,8 @@ export class Orchestrator {
     return getPlayerPosition(scene);
   }
 
-  attack() {
-    console.log('attack!')
-    setInterval(() => console.log('attack!'), 1000);
+  attack(predicate: boolean) {
+    if (predicate) console.log('attack!');
+    setTimeout(() => this.attack(predicate), 1000);
   }
 }

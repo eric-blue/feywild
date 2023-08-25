@@ -18,6 +18,7 @@ export class PlayerController {
 
   target?: Vector3;
   public onReachDestination?: () => void;
+  public pauseMovement = false;
 
   constructor(player: Mesh) {
     this.player = player;
@@ -30,8 +31,6 @@ export class PlayerController {
         // this should be moved to a diff module
         console.log('ATTACK'); // Call the attack function when spacebar is pressed
       }
-
-      console.log(key);
     });
 
     addEventListener('keyup', event => {
@@ -55,38 +54,40 @@ export class PlayerController {
   }
 
   move(speed: number, scene: Scene) {
-    const {keyboardState, direction, player, velocity} = this;
-    // Calculate character's velocity based on keyboard input
-    velocity.set(0, 0, 0);
+    if (!window.lockPlayer) {
+      const {keyboardState, direction, player, velocity} = this;
+      // Calculate character's velocity based on keyboard input
+      velocity.set(0, 0, 0);
 
-    const blockedDirections = checkCollisions(
-      scene,
-      this.player,
-      this.playerBoundingBox
-    );
+      const blockedDirections = checkCollisions(
+        scene,
+        this.player,
+        this.playerBoundingBox
+      );
 
-    if (keyboardState['ARROWUP'] || keyboardState['W']) {
-      this.previousDirection = 'up';
-      if (!blockedDirections.includes('up')) velocity.z -= speed;
-    }
-    if (keyboardState['ARROWDOWN'] || keyboardState['S']) {
-      this.previousDirection = 'down';
-      if (!blockedDirections.includes('down')) velocity.z += speed;
-    }
-    if (keyboardState['ARROWLEFT'] || keyboardState['A']) {
-      this.previousDirection = 'left';
-      if (!blockedDirections.includes('left')) velocity.x -= speed;
-    }
-    if (keyboardState['ARROWRIGHT'] || keyboardState['D']) {
-      this.previousDirection = 'right';
-      if (!blockedDirections.includes('right')) velocity.x += speed;
-    }
+      if (keyboardState['ARROWUP'] || keyboardState['W']) {
+        this.previousDirection = 'up';
+        if (!blockedDirections.includes('up')) velocity.z -= speed;
+      }
+      if (keyboardState['ARROWDOWN'] || keyboardState['S']) {
+        this.previousDirection = 'down';
+        if (!blockedDirections.includes('down')) velocity.z += speed;
+      }
+      if (keyboardState['ARROWLEFT'] || keyboardState['A']) {
+        this.previousDirection = 'left';
+        if (!blockedDirections.includes('left')) velocity.x -= speed;
+      }
+      if (keyboardState['ARROWRIGHT'] || keyboardState['D']) {
+        this.previousDirection = 'right';
+        if (!blockedDirections.includes('right')) velocity.x += speed;
+      }
 
-    // Normalize velocity and apply it to character's position
-    velocity.normalize();
-    direction.copy(velocity);
-    direction.multiplyScalar(speed);
-    player.position.add(direction);
+      // Normalize velocity and apply it to character's position
+      velocity.normalize();
+      direction.copy(velocity);
+      direction.multiplyScalar(speed);
+      player.position.add(direction);
+    }
   }
 
   update(scene: Scene) {

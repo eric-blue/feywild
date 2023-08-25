@@ -56,8 +56,7 @@ export function init(canvas?: HTMLCanvasElement) {
         if (
           !window.gameIsLoading &&
           !window.savingInProgress &&
-          !window.paused &&
-          !window.lockPlayer
+          !window.paused
         ) {
           const delta = clock.getDelta();
 

@@ -12,7 +12,8 @@
     "clean": "gts clean",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
-    "posttest": "npm run lint"
+    "posttest": "npm run lint",
+    "dialogue": "node dialogue-compiler"
   },
   "dependencies": {
     "three": "0.155.0",
