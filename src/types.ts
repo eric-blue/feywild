@@ -6,4 +6,7 @@ export interface KeyboardState {
   [key: string]: boolean;
 }
 
-export type Zone = 'village-square' | 'village-west'; // etc...
+export type Zone = 
+| 'forest-grove-nw'
+| 'village-square' 
+| 'village-west'; // etc...

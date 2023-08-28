@@ -31,6 +31,7 @@ for (let i = 0; i < lines.length; i++) {
       message,
       options: [],
       nextId: null,
+      // include a "break" method to pause the interaction and play some sort of scene gimmick
     }
 
     // capture options as pointers for branching nested logic

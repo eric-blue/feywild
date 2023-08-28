@@ -3,18 +3,18 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {Camera} from './camera';
 
 interface Devtools {
-  cameraClass: Camera;
+  camera: Camera;
   renderer: WebGLRenderer;
 }
 
-export async function devtools({cameraClass, renderer}: Devtools) {
+export async function devtools({camera, renderer}: Devtools) {
   console.log(
     '%c[Dev Mode]',
     'font-size: 24px; font-weight: bold; color: red; background-color: black; padding: 10px;'
   );
 
   const orbitControls = new OrbitControls(
-    cameraClass.camera,
+    camera.camera,
     renderer.domElement
   );
   orbitControls.enableDamping = true;
@@ -27,7 +27,7 @@ export async function devtools({cameraClass, renderer}: Devtools) {
     if (key === 'F3') {
       orbitControls.enabled = window._orbitControls = !window._orbitControls;
       console.log(`orbit controls: ${orbitControls.enabled}`);
-      if (!orbitControls.enabled) cameraClass.reset();
+      if (!orbitControls.enabled) camera.reset();
     }
 
     if (key === 'F4') {

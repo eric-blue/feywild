@@ -103,45 +103,48 @@ export class AIController {
           true
         );
 
-        const closestTargetNode = this.pathfinder.getClosestNode(
-          targetPosition,
-          this.zone,
-          targetGroupID,
-          true
-        );
-
-        this.pathfindingHelper?.setPlayerPosition(characterPosition);
-        this.pathfindingHelper?.setTargetPosition(targetPosition);
-
-        // this.pathfindingHelper.reset().setPlayerPosition( targetPosition );
-        if (closestTargetNode) {
-          this.pathfindingHelper?.setNodePosition(closestTargetNode.centroid);
-        }
-
-        // Calculate a path to the target and store it
-        const navpath = this.pathfinder.findPath(
-          characterPosition,
-          targetPosition,
-          this.zone,
-          targetGroupID
-        );
-
-        if (navpath?.length) {
-          this.waypoint.copy(navpath[0]);
-          this.pathfindingHelper?.setPath(navpath);
+        if (targetGroupID) {
+          const closestTargetNode = this.pathfinder.getClosestNode(
+            targetPosition,
+            this.zone,
+            targetGroupID,
+            true
+          );
+  
+          this.pathfindingHelper?.setPlayerPosition(characterPosition);
           this.pathfindingHelper?.setTargetPosition(targetPosition);
+  
+          // this.pathfindingHelper.reset().setPlayerPosition( targetPosition );
+          if (closestTargetNode) {
+            this.pathfindingHelper?.setNodePosition(closestTargetNode.centroid);
+          }
+  
+          // Calculate a path to the target and store it
+          const navpath = this.pathfinder.findPath(
+            characterPosition,
+            targetPosition,
+            this.zone,
+            targetGroupID
+          );
+  
+          if (navpath?.length) {
+            this.waypoint.copy(navpath[0]);
+            this.pathfindingHelper?.setPath(navpath);
+            this.pathfindingHelper?.setTargetPosition(targetPosition);
+          }
+  
+          // maybe go home if the PC is too far away?
+          const distance = this.npc.position.distanceTo(this.waypoint);
+          const reach = 2.25;
+          const farsight = 10;
+          if (distance > reach) this.move(0.1, scene);
+          if (distance > farsight) this.waypoint.copy(this.origin);
+          if (distance <= reach && this.isNavigating) {
+            this.isNavigating = false;
+            this.onReachDestination?.();
+          }
         }
 
-        // maybe go home if the PC is too far away?
-        const distance = this.npc.position.distanceTo(this.waypoint);
-        const reach = 2.25;
-        const farsight = 10;
-        if (distance > reach) this.move(0.1, scene);
-        if (distance > farsight) this.waypoint.copy(this.origin);
-        if (distance <= reach && this.isNavigating) {
-          this.isNavigating = false;
-          this.onReachDestination?.();
-        }
       }
     }
   }

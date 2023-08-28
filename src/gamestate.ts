@@ -19,6 +19,7 @@ declare global {
 }
 
 export const SAVE_KEY = 'feywild-save';
+export const PLAYER_BEGIN_POS = {x: 441, y: 0.5, z: 153};
 
 window.soundManager;
 window.savingInProgress = false;
@@ -52,7 +53,7 @@ function onStartGame(detail: string | {[key: string]: unknown}) {
 export class Gamestate {
   state: GameState = {
     saves: 0,
-    playerPosition: {x: 0.5, y: 0.5, z: 0.5},
+    playerPosition: PLAYER_BEGIN_POS,
     playerInventory: {},
     npcState: {},
     health: 100,

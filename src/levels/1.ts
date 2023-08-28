@@ -10,32 +10,34 @@ import {Camera} from '../camera';
 import {Gamestate} from '../gamestate';
 import {Orchestrator} from '../models/ai/orchestrator';
 import {Dialogue} from '../models/ai/dialogue';
+import { getPlayerPosition } from '../models/helpers';
 
 /**
  * The Before-fore (pre-invasion map)
  */
 export function SceneOne(gamestate: Gamestate) {
-  const {scene, pathfinder, pathfindingHelper} = new OpenWorldMap(console.log);
+  const {scene, pathfinder, pathfindingHelper, playerSpawnPoint} = new OpenWorldMap(console.log);
   const {sunlight} = new Lights(scene);
-  const cameraClass = new Camera();
-  const {camera} = cameraClass;
+  const camera = new Camera();
+
+  console.log(gamestate.state.playerPosition || playerSpawnPoint, gamestate.state.playerPosition, playerSpawnPoint)
 
   const player = new Character(
     {
       Controller: PlayerController,
       InventoryModule: Inventory,
       FlipbookModule: SpriteFlipbook,
-      // add compositon elements here..
     },
     {
       name: 'player',
-      position: gamestate.state.playerPosition,
+      position: gamestate.state.playerPosition || playerSpawnPoint,
       spriteSheet: './sprites/forest-sprite.png',
-      zone: 'village-square',
+      zone: 'forest-grove-nw',
     }
   );
 
   player.create(scene);
+  camera.setTarget(() => getPlayerPosition(scene));
 
   const NPC1 = new Character(
     {
@@ -105,7 +107,6 @@ export function SceneOne(gamestate: Gamestate) {
     scene,
     sunlight,
     camera,
-    cameraClass,
     player,
     NPCs: [NPC1, NPC2, NPC3],
   };
