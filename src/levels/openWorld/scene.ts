@@ -1,42 +1,40 @@
-import {Color, Mesh, MeshBasicMaterial, ObjectLoader, Scene, Vector3} from 'three';
+import {
+  Color,
+  Mesh,
+  MeshBasicMaterial,
+  ObjectLoader,
+  Scene,
+  Vector3,
+} from 'three';
 import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
-import {Pathfinding, PathfindingHelper} from 'three-pathfinding';
+import {Pathfinding} from 'three-pathfinding';
 
-export class OpenWorldMap {
-  scene = new Scene();
-  loader = new ObjectLoader();
+export async function OpenWorldMap() {
+  const scene = new Scene();
+  const loader = new ObjectLoader();
+  const pathfinder = new Pathfinding();
+  const playerSpawnPoint = new Vector3();
 
-  pathfinder = new Pathfinding();
-  pathfindingHelper = new PathfindingHelper();
+  scene.background = new Color('white');
+  if (import.meta.env.DEV) window._currentScene = scene;
 
-  playerSpawnPoint = new Vector3();
+  const map = await loadWorld('scenes/open-world.json');
+  const navmesh = await loadNavmeshes('scenes/open-world.glb');
+  const ready = map && navmesh;
 
-  constructor(render: () => void) {
-    this.scene.background = new Color('white');
-    if (import.meta.env.DEV) window._currentScene = this.scene;
-
-    new Promise(async (resolve) => {
-      const map = await this.loadWorld('scenes/open-world.json', render);
-      const navmesh = await this.loadNavmeshes('scenes/open-world.glb');
-      if (map && navmesh) resolve(true);
-    })
-  }
-
-  async loadWorld(path: string, onSuccess?: () => void) {
+  async function loadWorld(path: string) {
     return new Promise((resolve, reject) => {
-      this.loader.load(
+      loader.load(
         path,
         loadedScene => {
-          this.scene.add(...loadedScene.children);
-          onSuccess?.();
-  
-          const spawn = this.scene.children.find(({name}) => name === 'Spawn');
-          console.log(spawn)
+          scene.add(...loadedScene.children);
+          const spawn = scene.children.find(({name}) => name === 'Spawn');
+
           if (spawn) {
-            this.playerSpawnPoint.copy(spawn.position)
-            this.scene.remove(spawn);
+            playerSpawnPoint.copy(spawn.position);
+            scene.remove(spawn);
           }
-  
+
           resolve(true);
         },
         progress => {
@@ -50,16 +48,10 @@ export class OpenWorldMap {
           reject();
         }
       );
-    })
+    });
   }
 
-  async loadNavmeshes(path: string) {
-    if (import.meta.env.DEV) {
-      this.pathfindingHelper.visible = false;
-      this.scene.add(this.pathfindingHelper);
-      window._pathfindingHelper = this.pathfindingHelper;
-    }
-
+  async function loadNavmeshes(path: string) {
     const ZONE = 'village-square'; // this should be matched to the current navmesh
 
     const loader = new GLTFLoader();
@@ -74,15 +66,15 @@ export class OpenWorldMap {
               const navWireframe = new Mesh(navmesh.geometry, material);
               navWireframe.name = 'navmesh';
               navWireframe.visible = false;
-              this.scene.add(navWireframe);
-  
+              scene.add(navWireframe);
+
               const zone = Pathfinding.createZone(navmesh.geometry);
-              this.pathfinder.setZoneData(ZONE, zone);
-  
+              pathfinder.setZoneData(ZONE, zone);
+
               window.gameIsLoading = false; // this should be at the far end of the first render loop
             }
           });
-  
+
           resolve(true);
         },
         progress => {
@@ -100,4 +92,12 @@ export class OpenWorldMap {
       );
     });
   }
+
+  return {
+    ready,
+    scene,
+    loader,
+    pathfinder,
+    playerSpawnPoint,
+  };
 }

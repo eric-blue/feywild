@@ -11,7 +11,7 @@ export class Inventory {
 
     const toggleInventory = () => {
       window.lockPlayer = !window.lockPlayer;
-      this.open = !(this.menu?.classList.toggle('hidden'));
+      this.open = !this.menu?.classList.toggle('hidden');
       if (this.open) window.soundManager.play('openMenu', {volume: 0.5});
       if (!this.open) window.soundManager.play('closeMenu', {volume: 0.5});
     };

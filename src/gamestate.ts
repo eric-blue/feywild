@@ -1,6 +1,6 @@
 import {Scene} from 'three';
-import {PathfindingHelper} from 'three-pathfinding';
-import { SoundEffects } from './sounds';
+import {SoundEffects} from './sounds';
+import {Zone} from './types';
 
 declare global {
   interface Window {
@@ -14,12 +14,10 @@ declare global {
     /** debug only */
     _orbitControls: boolean;
     _currentScene: Scene | undefined;
-    _pathfindingHelper: PathfindingHelper | undefined;
   }
 }
 
 export const SAVE_KEY = 'feywild-save';
-export const PLAYER_BEGIN_POS = {x: 441, y: 0.5, z: 153};
 
 window.soundManager;
 window.savingInProgress = false;
@@ -29,12 +27,12 @@ window.lockPlayer = false;
 
 window._orbitControls = false;
 window._currentScene;
-window._pathfindingHelper;
 
 export interface GameState {
   saves: number;
-  playerPosition: {x: number; y: number; z: number};
+  playerPosition: {x: number; y: number; z: number} | undefined;
   playerInventory: {};
+  playerZone: Zone;
   npcState: {
     [key: string]: {
       position: {x: number; y: number; z: number};
@@ -53,8 +51,9 @@ function onStartGame(detail: string | {[key: string]: unknown}) {
 export class Gamestate {
   state: GameState = {
     saves: 0,
-    playerPosition: PLAYER_BEGIN_POS,
+    playerPosition: undefined,
     playerInventory: {},
+    playerZone: 'forest-grove-nw',
     npcState: {},
     health: 100,
     level: 3,

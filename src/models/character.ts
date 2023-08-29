@@ -25,10 +25,20 @@ interface Props {
 }
 
 interface CharacterComposition {
-  Controller: new (...args: ConstructorParameters<typeof PlayerController|typeof AIController>) => PlayerController | AIController;
-  Orchestrator?: new (...args: ConstructorParameters<typeof Orchestrator>) => Orchestrator;
-  InventoryModule?: new (...args: ConstructorParameters<typeof Inventory>) => Inventory;
-  FlipbookModule?: new (...args: ConstructorParameters<typeof SpriteFlipbook>) => SpriteFlipbook;
+  Controller: new (
+    ...args: ConstructorParameters<
+      typeof PlayerController | typeof AIController
+    >
+  ) => PlayerController | AIController;
+  Orchestrator?: new (
+    ...args: ConstructorParameters<typeof Orchestrator>
+  ) => Orchestrator;
+  InventoryModule?: new (
+    ...args: ConstructorParameters<typeof Inventory>
+  ) => Inventory;
+  FlipbookModule?: new (
+    ...args: ConstructorParameters<typeof SpriteFlipbook>
+  ) => SpriteFlipbook;
   Dialogue?: new (...args: ConstructorParameters<typeof Dialogue>) => Dialogue;
 }
 
@@ -72,14 +82,18 @@ export class Character {
   ) {
     const geometry = new BoxGeometry(0.25, 2, 2);
     const material = new MeshStandardMaterial({visible: false});
+
     this.root = new Mesh(geometry, material);
-    this.root.position.set(
-      props.position.x,
-      props.position.y,
-      props.position.z
-    );
     this.root.name = props.name || 'generic-character';
     this.specs = props.specs;
+
+    if (props.position) {
+      this.root.position.set(
+        props.position.x,
+        props.position.y,
+        props.position.z
+      );
+    }
 
     if (FlipbookModule && props.spriteSheet) {
       this.flipbook = new FlipbookModule(props.spriteSheet);

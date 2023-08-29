@@ -19,7 +19,8 @@ export class Camera {
   }
 
   update() {
-    const follow = typeof this.target === "function" ? this.target() : this.target;
+    const follow =
+      typeof this.target === 'function' ? this.target() : this.target;
 
     this.camera.position.copy(follow);
     this.camera.position.y = this.camera.position.y + 18; // keep the elevation;

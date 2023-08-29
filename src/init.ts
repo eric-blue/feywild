@@ -25,8 +25,9 @@ export function init(canvas?: HTMLCanvasElement) {
     addEventListener('startgame', async () => {
       new PauseMenu(gamestate);
 
-      const {scene, sunlight, camera, player, NPCs} =
-        scenes[gamestate.state.scene](gamestate);
+      const {scene, sunlight, camera, player, NPCs} = await scenes[
+        gamestate.state.scene
+      ](gamestate);
 
       NPCs.forEach(npc => npc.controller.update(scene));
 

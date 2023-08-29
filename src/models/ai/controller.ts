@@ -6,7 +6,7 @@ import {checkCollisions, getSimpleDirection} from '../helpers';
 export class AIController {
   public boundingBox = new Box3();
   private pathfinder: Pathfinding | undefined;
-  private pathfindingHelper: PathfindingHelper | undefined;
+  private pathfindingHelper = new PathfindingHelper();
   private waypoint = new Vector3();
 
   // Set up initial character properties
@@ -39,12 +39,11 @@ export class AIController {
     }
   }
 
-  enablePathfinding(
-    pathfinder: Pathfinding,
-    pathfindingHelper?: PathfindingHelper
-  ) {
+  enablePathfinding(pathfinder: Pathfinding, scene: Scene) {
     this.pathfinder = pathfinder;
-    this.pathfindingHelper = pathfindingHelper; // might only want in DEV
+    this.pathfindingHelper.visible = false;
+
+    if (import.meta.env.DEV) scene.add(this.pathfindingHelper);
   }
 
   move(speed: number, scene: Scene) {
@@ -103,22 +102,22 @@ export class AIController {
           true
         );
 
-        if (targetGroupID) {
+        if (targetGroupID !== undefined && targetGroupID !== null) {
           const closestTargetNode = this.pathfinder.getClosestNode(
             targetPosition,
             this.zone,
             targetGroupID,
             true
           );
-  
+
           this.pathfindingHelper?.setPlayerPosition(characterPosition);
           this.pathfindingHelper?.setTargetPosition(targetPosition);
-  
+
           // this.pathfindingHelper.reset().setPlayerPosition( targetPosition );
           if (closestTargetNode) {
             this.pathfindingHelper?.setNodePosition(closestTargetNode.centroid);
           }
-  
+
           // Calculate a path to the target and store it
           const navpath = this.pathfinder.findPath(
             characterPosition,
@@ -126,13 +125,13 @@ export class AIController {
             this.zone,
             targetGroupID
           );
-  
+
           if (navpath?.length) {
             this.waypoint.copy(navpath[0]);
             this.pathfindingHelper?.setPath(navpath);
             this.pathfindingHelper?.setTargetPosition(targetPosition);
           }
-  
+
           // maybe go home if the PC is too far away?
           const distance = this.npc.position.distanceTo(this.waypoint);
           const reach = 2.25;
@@ -144,7 +143,6 @@ export class AIController {
             this.onReachDestination?.();
           }
         }
-
       }
     }
   }

@@ -10,17 +10,20 @@ import {Camera} from '../camera';
 import {Gamestate} from '../gamestate';
 import {Orchestrator} from '../models/ai/orchestrator';
 import {Dialogue} from '../models/ai/dialogue';
-import { getPlayerPosition } from '../models/helpers';
+import {getPlayerPosition} from '../models/helpers';
 
 /**
  * The Before-fore (pre-invasion map)
  */
-export function SceneOne(gamestate: Gamestate) {
-  const {scene, pathfinder, pathfindingHelper, playerSpawnPoint} = new OpenWorldMap(console.log);
+export async function SceneOne(gamestate: Gamestate) {
+  const {ready, scene, pathfinder, playerSpawnPoint} = await OpenWorldMap();
+
+  await ready;
+
   const {sunlight} = new Lights(scene);
   const camera = new Camera();
 
-  console.log(gamestate.state.playerPosition || playerSpawnPoint, gamestate.state.playerPosition, playerSpawnPoint)
+  const {playerPosition, playerZone} = gamestate.state;
 
   const player = new Character(
     {
@@ -30,9 +33,9 @@ export function SceneOne(gamestate: Gamestate) {
     },
     {
       name: 'player',
-      position: gamestate.state.playerPosition || playerSpawnPoint,
+      position: playerPosition || playerSpawnPoint,
       spriteSheet: './sprites/forest-sprite.png',
-      zone: 'forest-grove-nw',
+      zone: playerZone,
     }
   );
 
@@ -53,7 +56,7 @@ export function SceneOne(gamestate: Gamestate) {
   );
 
   NPC1.create(scene);
-  NPC1.controller.enablePathfinding(pathfinder, pathfindingHelper);
+  NPC1.controller.enablePathfinding(pathfinder, scene);
   NPC1.controller.target = NPC1.orchestrator?.trackPlayer(scene);
 
   const NPC2 = new Character(
@@ -95,7 +98,7 @@ export function SceneOne(gamestate: Gamestate) {
     }
   );
 
-  NPC3.controller.enablePathfinding(pathfinder, pathfindingHelper);
+  NPC3.controller.enablePathfinding(pathfinder, scene);
 
   NPC3.onExit = () => {
     console.log('kthxbye');

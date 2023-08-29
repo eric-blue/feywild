@@ -2,7 +2,10 @@ import {Box3, Mesh, Scene, Vector3} from 'three';
 import {Direction, WASD} from '../types';
 
 export function getPlayerPosition(scene: Scene) {
-  return scene.children.find(mesh => mesh.name === 'player')?.position || new Vector3();
+  return (
+    scene.children.find(mesh => mesh.name === 'player')?.position ||
+    new Vector3()
+  );
 }
 
 export function getDistanceToPlayer(mesh: Mesh, scene: Scene) {
@@ -66,10 +69,10 @@ export function checkCollisions(
 
   // Check for intersections with other objects
   const colliders = (scene.children as Mesh[]).filter(
-    mesh => mesh?.geometry?.type === 'BoxGeometry' && 
-    mesh.geometry.name !== 'floor'
+    mesh =>
+      mesh?.geometry?.type === 'BoxGeometry' && mesh.geometry.name !== 'floor'
   );
-  
+
   for (const object of colliders) {
     if (object !== characterMesh) {
       tempBox.setFromObject(object);
@@ -80,7 +83,7 @@ export function checkCollisions(
           boundingBox.max.x - tempBox.min.x,
           tempBox.max.x - boundingBox.min.x
         );
-        
+
         const zPenetration = Math.min(
           boundingBox.max.z - tempBox.min.z,
           tempBox.max.z - boundingBox.min.z
@@ -88,13 +91,19 @@ export function checkCollisions(
 
         // Determine which direction has the least penetration
         if (xPenetration < zPenetration) {
-          if (boundingBox.max.x > tempBox.min.x && boundingBox.min.x < tempBox.min.x) {
+          if (
+            boundingBox.max.x > tempBox.min.x &&
+            boundingBox.min.x < tempBox.min.x
+          ) {
             blockedDirections.push('right');
           } else {
             blockedDirections.push('left');
           }
         } else {
-          if (boundingBox.max.z > tempBox.min.z && boundingBox.min.z < tempBox.min.z) {
+          if (
+            boundingBox.max.z > tempBox.min.z &&
+            boundingBox.min.z < tempBox.min.z
+          ) {
             blockedDirections.push('down');
           } else {
             blockedDirections.push('up');
@@ -106,4 +115,3 @@ export function checkCollisions(
 
   return blockedDirections;
 }
-

@@ -90,7 +90,7 @@ export class Dialogue {
       window.soundManager.play('chatter', {volume: 0.25});
 
       this.activeInteraction = interaction;
-      const {message, sender, options} = this.interactions?.[interaction];
+      const {message, sender, options} = this.interactions[interaction];
       const msg = message.replace(' [exit]', '');
       let html = interaction
         ? `<p>
@@ -105,7 +105,7 @@ export class Dialogue {
           ${options
             .map(
               option => `<li>
-            <button autofocus id="option-${option}">${this.interactions?.[option]?.message}</button>
+            <button id="option-${option}">${this.interactions?.[option]?.message}</button>
           </li>`
             )
             .join('')}
