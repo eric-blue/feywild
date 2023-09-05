@@ -1,5 +1,4 @@
 import {Scene} from 'three';
-import {PathfindingHelper} from 'three-pathfinding';
 import {SoundEffects} from './sounds';
 import {Zone} from './types';
 
