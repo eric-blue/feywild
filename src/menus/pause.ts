@@ -18,7 +18,7 @@ export class PauseMenu {
         );
         button?.focus();
       }
-      
+
       window.soundManager.play('click', {volume: 0.25});
     };
 

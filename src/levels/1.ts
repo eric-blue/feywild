@@ -10,6 +10,7 @@ import {Camera} from '../camera';
 import {Gamestate} from '../gamestate';
 import {Orchestrator} from '../models/ai/orchestrator';
 import {Dialogue} from '../models/ai/dialogue';
+import {Bodyswap} from '../models/player/bodyswap';
 
 /**
  * The Before-fore (pre-invasion map)
@@ -25,6 +26,8 @@ export function SceneOne(gamestate: Gamestate) {
       Controller: PlayerController,
       InventoryModule: Inventory,
       FlipbookModule: SpriteFlipbook,
+      BodyswapModule: Bodyswap,
+
       // add compositon elements here..
     },
     {

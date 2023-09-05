@@ -1,6 +1,6 @@
 import {Scene} from 'three';
 import {PathfindingHelper} from 'three-pathfinding';
-import { SoundEffects } from './sounds';
+import {SoundEffects} from './sounds';
 
 declare global {
   interface Window {

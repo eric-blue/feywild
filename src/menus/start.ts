@@ -1,7 +1,7 @@
-import { Camera, Scene } from 'three';
+import {Camera, Scene} from 'three';
 import {Gamestate, SAVE_KEY} from '../gamestate';
-import { SoundEffects } from '../sounds';
-import { addListener } from '../models/helpers';
+import {SoundEffects} from '../sounds';
+import {addListener} from '../models/helpers';
 
 export class StartMenu {
   topLevelScene = new Scene();
@@ -9,12 +9,12 @@ export class StartMenu {
 
   constructor(gamestate: Gamestate) {
     const soundManager = new SoundEffects(new Camera());
-  
+
     soundManager.load(soundsToLoad, () => {
       console.log('All sounds loaded!');
       // soundManager.play('ambient', {loop: true, volume: 0.5});
     });
-  
+
     window.soundManager = soundManager;
 
     this.menu = document.querySelector('#start-menu');
@@ -25,13 +25,13 @@ export class StartMenu {
       gamestate.newGame();
       window.soundManager.play('click', {volume: 0.25});
     };
-    
+
     const continueGame = () => {
       this.menu?.classList.toggle('hidden');
       gamestate.continueGame();
       window.soundManager.play('click', {volume: 0.25});
     };
-    
+
     const toggleSettings = () => {
       console.log('open settings');
       window.soundManager.play('click', {volume: 0.25});
@@ -61,7 +61,7 @@ export class StartMenu {
       list[
         current + increment > list.length ? 0 : current + increment
       ]?.focus();
-      
+
       window.soundManager.play('focus', {volume: 0.5});
     };
 

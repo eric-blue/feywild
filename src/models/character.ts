@@ -6,9 +6,9 @@ import {Inventory} from './player/inventory';
 import {SpriteFlipbook} from './character-flipbook';
 import {Zone} from '../types';
 import {Orchestrator} from './ai/orchestrator';
-import {Dialogue, DialogueNodes} from './ai/dialogue';
-
+import {Dialogue} from './ai/dialogue';
 import {isTouchingPlayer} from './helpers';
+import {Bodyswap} from './player/bodyswap';
 
 interface Props {
   name?: string;
@@ -28,6 +28,7 @@ interface CharacterComposition {
   InventoryModule?: new () => Inventory;
   FlipbookModule?: new (texture: string) => SpriteFlipbook;
   Dialogue?: new (mesh: Mesh, json: string) => Dialogue;
+  BodyswapModule?: new (flipbook: SpriteFlipbook) => Bodyswap;
 }
 
 /**
@@ -49,6 +50,8 @@ export class Character {
   onAppear?: () => void;
   onExit?: () => void;
 
+  bodyswap?: Bodyswap;
+
   constructor(
     {
       Controller,
@@ -56,6 +59,7 @@ export class Character {
       InventoryModule,
       FlipbookModule,
       Dialogue,
+      BodyswapModule,
     }: CharacterComposition,
     props: Props = {
       position: new Vector3(0.5, 0.5, 0.5),
@@ -79,6 +83,9 @@ export class Character {
 
     if (FlipbookModule && props.spriteSheet) {
       this.flipbook = new FlipbookModule(props.spriteSheet);
+      this.bodyswap = BodyswapModule
+        ? new BodyswapModule(this.flipbook)
+        : undefined;
       this.root.add(this.flipbook.sprite);
     }
 
