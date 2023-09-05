@@ -26,19 +26,11 @@ interface Props {
 
 interface CharacterComposition {
   Controller: new (
-    ...args: ConstructorParameters<
-      typeof PlayerController | typeof AIController
-    >
+    ...args: ConstructorParameters<typeof PlayerController | typeof AIController>
   ) => PlayerController | AIController;
-  Orchestrator?: new (
-    ...args: ConstructorParameters<typeof Orchestrator>
-  ) => Orchestrator;
-  InventoryModule?: new (
-    ...args: ConstructorParameters<typeof Inventory>
-  ) => Inventory;
-  FlipbookModule?: new (
-    ...args: ConstructorParameters<typeof SpriteFlipbook>
-  ) => SpriteFlipbook;
+  Orchestrator?: new (...args: ConstructorParameters<typeof Orchestrator>) => Orchestrator;
+  InventoryModule?: new (...args: ConstructorParameters<typeof Inventory>) => Inventory;
+  FlipbookModule?: new (...args: ConstructorParameters<typeof SpriteFlipbook>) => SpriteFlipbook;
   Dialogue?: new (...args: ConstructorParameters<typeof Dialogue>) => Dialogue;
 }
 
@@ -62,13 +54,7 @@ export class Character {
   onExit?: () => void;
 
   constructor(
-    {
-      Controller,
-      Orchestrator,
-      InventoryModule,
-      FlipbookModule,
-      Dialogue,
-    }: CharacterComposition,
+    {Controller, Orchestrator, InventoryModule, FlipbookModule, Dialogue}: CharacterComposition,
     props: Props = {
       position: new Vector3(0.5, 0.5, 0.5),
       spriteSheet: undefined,
@@ -88,11 +74,7 @@ export class Character {
     this.specs = props.specs;
 
     if (props.position) {
-      this.root.position.set(
-        props.position.x,
-        props.position.y,
-        props.position.z
-      );
+      this.root.position.set(props.position.x, props.position.y, props.position.z);
     }
 
     if (FlipbookModule && props.spriteSheet) {
@@ -102,13 +84,8 @@ export class Character {
 
     this.inventory = InventoryModule ? new InventoryModule() : undefined;
     this.controller = new Controller(this.root, props.zone);
-    this.orchestrator = Orchestrator
-      ? new Orchestrator(props.route)
-      : undefined;
-    this.dialogue =
-      Dialogue && props.dialogueJSON
-        ? new Dialogue(this.root, props.dialogueJSON)
-        : undefined;
+    this.orchestrator = Orchestrator ? new Orchestrator(props.route) : undefined;
+    this.dialogue = Dialogue && props.dialogueJSON ? new Dialogue(this.root, props.dialogueJSON) : undefined;
   }
 
   create(scene: Scene) {
@@ -134,11 +111,7 @@ export class Character {
       } else {
         // assume enemy
         this.controller.onReachDestination = () => {
-          const predicate = isTouchingPlayer(
-            this.specs?.reach || 1,
-            this.root,
-            scene
-          );
+          const predicate = isTouchingPlayer(this.specs?.reach || 1, this.root, scene);
           this.orchestrator!.attack(predicate);
         };
       }

@@ -4,7 +4,7 @@ export class Lights {
   sunlight = new DirectionalLight(0xffffff, 5);
 
   constructor(scene: Scene) {
-    this.sunlight.position.set(1000, 800, 1000); // Position at the top middle
+    this.sunlight.position.set(200, 800, 0); // Position at the top middle
     this.sunlight.target.position.set(0, 0, 0); // Point back at the center
     this.sunlight.castShadow = true; // Enable shadow casting for the light
 

@@ -1,10 +1,4 @@
-import {
-  BoxGeometry,
-  Mesh,
-  MeshStandardMaterial,
-  PlaneGeometry,
-  Scene,
-} from 'three';
+import {BoxGeometry, Mesh, MeshStandardMaterial, PlaneGeometry, Scene} from 'three';
 
 /**
  * this is a test sandbox

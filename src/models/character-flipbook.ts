@@ -1,10 +1,4 @@
-import {
-  Sprite,
-  TextureLoader,
-  SpriteMaterial,
-  Texture,
-  NearestFilter,
-} from 'three';
+import {Sprite, TextureLoader, SpriteMaterial, Texture, NearestFilter} from 'three';
 import {Direction} from '../types';
 
 export class SpriteFlipbook {
@@ -55,17 +49,12 @@ export class SpriteFlipbook {
 
     if (this.maxDisplayTime > 0 && this.elapsedTime >= this.maxDisplayTime) {
       this.elapsedTime = 0;
-      this.runningTileArrayIndex =
-        (this.runningTileArrayIndex + 1) % this.playSpriteIndices.length;
+      this.runningTileArrayIndex = (this.runningTileArrayIndex + 1) % this.playSpriteIndices.length;
       this.activeTile = this.playSpriteIndices[this.runningTileArrayIndex];
 
-      const offsetX =
-        (this.activeTile % this.tilesHorizontal) / this.tilesHorizontal;
+      const offsetX = (this.activeTile % this.tilesHorizontal) / this.tilesHorizontal;
       const offsetY =
-        (this.tilesVertical -
-          Math.floor(this.activeTile / this.tilesHorizontal) -
-          1) /
-        this.tilesVertical;
+        (this.tilesVertical - Math.floor(this.activeTile / this.tilesHorizontal) - 1) / this.tilesVertical;
 
       this.map.offset.set(offsetX, offsetY);
     }
@@ -97,22 +86,10 @@ export const IDLE_LEFT = new SpriteAnimation([24, 25, 26, 27], 'IDLE_LEFT');
 export const IDLE_DOWN = new SpriteAnimation([24, 25, 26, 27], 'IDLE_DOWN'); // TBD
 export const IDLE_RIGHT = new SpriteAnimation([0, 1, 2, 3], 'IDLE_RIGHT');
 
-export const RUN_UP = new SpriteAnimation(
-  [8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21],
-  'RUN_UP'
-); // TBD
-export const RUN_LEFT = new SpriteAnimation(
-  [32, 33, 34, 35, 36, 37, 40, 41, 42, 43, 44, 45],
-  'RUN_LEFT'
-);
-export const RUN_DOWN = new SpriteAnimation(
-  [32, 33, 34, 35, 36, 37, 40, 41, 42, 43, 44, 45],
-  'RUN_DOWN'
-); // TBD
-export const RUN_RIGHT = new SpriteAnimation(
-  [8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21],
-  'RUN_RIGHT'
-);
+export const RUN_UP = new SpriteAnimation([8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21], 'RUN_UP'); // TBD
+export const RUN_LEFT = new SpriteAnimation([32, 33, 34, 35, 36, 37, 40, 41, 42, 43, 44, 45], 'RUN_LEFT');
+export const RUN_DOWN = new SpriteAnimation([32, 33, 34, 35, 36, 37, 40, 41, 42, 43, 44, 45], 'RUN_DOWN'); // TBD
+export const RUN_RIGHT = new SpriteAnimation([8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21], 'RUN_RIGHT');
 
 const animations = {
   'idle-up': IDLE_UP,

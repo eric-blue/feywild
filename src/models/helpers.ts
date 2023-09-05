@@ -2,10 +2,7 @@ import {Box3, Mesh, Scene, Vector3} from 'three';
 import {Direction, WASD} from '../types';
 
 export function getPlayerPosition(scene: Scene) {
-  return (
-    scene.children.find(mesh => mesh.name === 'player')?.position ||
-    new Vector3()
-  );
+  return scene.children.find(mesh => mesh.name === 'player')?.position || new Vector3();
 }
 
 export function getDistanceToPlayer(mesh: Mesh, scene: Scene) {
@@ -19,21 +16,14 @@ export function isTouchingPlayer(reach: number, mesh: Mesh, scene: Scene) {
 }
 
 export function addListener(id: `#${string}`, method: (id: string) => void) {
-  document
-    .querySelector(id)
-    ?.addEventListener('click', () => method(id.replace('#', '')));
+  document.querySelector(id)?.addEventListener('click', () => method(id.replace('#', '')));
 }
 
 export function removeListener(id: `#${string}`, method: (id: string) => void) {
-  document
-    .querySelector(id)
-    ?.removeEventListener('click', () => method(id.replace('#', '')));
+  document.querySelector(id)?.removeEventListener('click', () => method(id.replace('#', '')));
 }
 
-export function getSimpleDirection(
-  direction: Vector3,
-  previousDirection: Direction
-): Direction {
+export function getSimpleDirection(direction: Vector3, previousDirection: Direction): Direction {
   const {x, z} = direction;
 
   if (Math.abs(x) > Math.abs(z)) {
@@ -57,53 +47,34 @@ export function getSimpleDirection(
   }
 }
 
-export function checkCollisions(
-  scene: Scene,
-  characterMesh: Mesh,
-  boundingBox: Box3
-) {
+export function checkCollisions(scene: Scene, characterMesh: Mesh) {
+  const boundingBox = new Box3().setFromObject(characterMesh);
   const tempBox = new Box3();
   const blockedDirections: WASD[] = [];
 
-  boundingBox.setFromObject(characterMesh);
-
   // Check for intersections with other objects
   const colliders = (scene.children as Mesh[]).filter(
-    mesh =>
-      mesh?.geometry?.type === 'BoxGeometry' && mesh.geometry.name !== 'floor'
+    mesh => mesh?.geometry?.type === 'BoxGeometry' && mesh.geometry.name !== 'floor'
   );
 
   for (const object of colliders) {
-    if (object !== characterMesh) {
+    if (object.uuid !== characterMesh.uuid) {
       tempBox.setFromObject(object);
 
       if (boundingBox.intersectsBox(tempBox)) {
         // Calculate penetration depths in x and z
-        const xPenetration = Math.min(
-          boundingBox.max.x - tempBox.min.x,
-          tempBox.max.x - boundingBox.min.x
-        );
-
-        const zPenetration = Math.min(
-          boundingBox.max.z - tempBox.min.z,
-          tempBox.max.z - boundingBox.min.z
-        );
+        const xPenetration = Math.min(boundingBox.max.x - tempBox.min.x, tempBox.max.x - boundingBox.min.x);
+        const zPenetration = Math.min(boundingBox.max.z - tempBox.min.z, tempBox.max.z - boundingBox.min.z);
 
         // Determine which direction has the least penetration
         if (xPenetration < zPenetration) {
-          if (
-            boundingBox.max.x > tempBox.min.x &&
-            boundingBox.min.x < tempBox.min.x
-          ) {
+          if (boundingBox.max.x > tempBox.min.x && boundingBox.min.x < tempBox.min.x) {
             blockedDirections.push('right');
           } else {
             blockedDirections.push('left');
           }
         } else {
-          if (
-            boundingBox.max.z > tempBox.min.z &&
-            boundingBox.min.z < tempBox.min.z
-          ) {
+          if (boundingBox.max.z > tempBox.min.z && boundingBox.min.z < tempBox.min.z) {
             blockedDirections.push('down');
           } else {
             blockedDirections.push('up');

@@ -19,12 +19,11 @@ export class Camera {
   }
 
   update() {
-    const follow =
-      typeof this.target === 'function' ? this.target() : this.target;
+    const follow = typeof this.target === 'function' ? this.target() : this.target;
 
     this.camera.position.copy(follow);
-    this.camera.position.y = this.camera.position.y + 18; // keep the elevation;
-    this.camera.position.z = this.camera.position.z + 14.75;
+    this.camera.position.y += 18;
+    this.camera.position.z += 14.75;
     this.camera.lookAt(follow);
   }
 }

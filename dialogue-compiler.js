@@ -13,9 +13,7 @@ const regexPattern = /^(.*?)\s*->\s*(.*?):\s*(.*?)$/;
 // const leadingSpacesRegex = /^(\s*)/;
 
 const lines = zenumlContent.split('\n').filter(line => {
-  return (
-    line.trim() !== '' && !line.startsWith('//') && !line.startsWith('@Actor')
-  );
+  return line.trim() !== '' && !line.startsWith('//') && !line.startsWith('@Actor');
 }); // Remove empty lines
 
 const output = {};

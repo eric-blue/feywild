@@ -1,6 +1,7 @@
-import {WebGLRenderer} from 'three';
+import {Scene, WebGLRenderer} from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {Camera} from './camera';
+import {getPlayerPosition} from './models/helpers';
 
 interface Devtools {
   camera: Camera;
@@ -24,6 +25,7 @@ export async function devtools({camera, renderer}: Devtools) {
     if (key === 'F3') {
       orbitControls.enabled = window._orbitControls = !window._orbitControls;
       console.log(`orbit controls: ${orbitControls.enabled}`);
+      orbitControls.target = getPlayerPosition(window._currentScene as Scene);
       if (!orbitControls.enabled) camera.setTarget(camera.camera.position);
     }
   });

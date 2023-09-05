@@ -13,9 +13,7 @@ export class PauseMenu {
       this.open = !this.menu?.classList.toggle('hidden');
 
       if (this.open) {
-        const button = document.querySelector<HTMLButtonElement>(
-          '#pause-menu-continue'
-        );
+        const button = document.querySelector<HTMLButtonElement>('#pause-menu-continue');
         button?.focus();
       }
 
@@ -34,16 +32,10 @@ export class PauseMenu {
     addListener('#pause-menu-settings', toggleSettings);
 
     const focusNext = (increment = 1) => {
-      const list = Array.from(
-        this.menu?.querySelectorAll('li button') ?? []
-      ) as HTMLButtonElement[];
-      const current = list?.findIndex(
-        button => button === document.activeElement
-      );
+      const list = Array.from(this.menu?.querySelectorAll('li button') ?? []) as HTMLButtonElement[];
+      const current = list?.findIndex(button => button === document.activeElement);
 
-      list[
-        current + increment > list.length ? 0 : current + increment
-      ]?.focus();
+      list[current + increment > list.length ? 0 : current + increment]?.focus();
 
       window.soundManager.play('focus', {volume: 0.5});
     };

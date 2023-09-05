@@ -1,8 +1,5 @@
 declare module 'three-pathfinding' {
-  import {
-    Pathfinding,
-    PathfindingHelper,
-  } from 'three-pathfinding/src/Pathfinding.js';
+  import {Pathfinding, PathfindingHelper} from 'three-pathfinding/src/Pathfinding.js';
 
   // Export the Pathfinding class from the module
   export {Pathfinding, PathfindingHelper};

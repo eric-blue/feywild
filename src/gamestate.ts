@@ -93,11 +93,7 @@ export class Gamestate {
   };
 
   loadGame = () => {
-    if (
-      confirm(
-        'Any unsaved progress will be lost to the waters of time. \nAre you sure?'
-      )
-    ) {
+    if (confirm('Any unsaved progress will be lost to the waters of time. \nAre you sure?')) {
       window.gameIsLoading = true;
       const serializedData = localStorage.getItem(SAVE_KEY);
 
@@ -109,21 +105,13 @@ export class Gamestate {
   };
 
   exitToMain = () => {
-    if (
-      confirm(
-        'Any unsaved progress will be lost to the waters of time. \nAre you sure?'
-      )
-    ) {
+    if (confirm('Any unsaved progress will be lost to the waters of time. \nAre you sure?')) {
       console.log('do exit');
     }
   };
 
   exitToDesktop = () => {
-    if (
-      confirm(
-        'Any unsaved progress will be lost to the waters of time. \nAre you sure?'
-      )
-    ) {
+    if (confirm('Any unsaved progress will be lost to the waters of time. \nAre you sure?')) {
       console.log('do exit');
     }
   };

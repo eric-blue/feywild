@@ -1,11 +1,10 @@
-import {Box3, Mesh, Scene, Vector3} from 'three';
-import {Direction, KeyboardState, Zone} from '../../types';
+import {Mesh, Scene, Vector3} from 'three';
+import {Direction, KeyboardState} from '../../types';
 import {Pathfinding, PathfindingHelper} from 'three-pathfinding';
 import {checkCollisions, getSimpleDirection} from '../helpers';
 
 export class PlayerController {
   private player: Mesh;
-  public playerBoundingBox = new Box3();
 
   private keyboardState: KeyboardState = {};
   // Set up initial character properties
@@ -20,7 +19,7 @@ export class PlayerController {
   public onReachDestination?: () => void;
   public pauseMovement = false;
 
-  constructor(player: Mesh, _zone: Zone) {
+  constructor(player: Mesh) {
     this.player = player;
 
     addEventListener('keydown', event => {
@@ -58,11 +57,7 @@ export class PlayerController {
       // Calculate character's velocity based on keyboard input
       velocity.set(0, 0, 0);
 
-      const blockedDirections = checkCollisions(
-        scene,
-        this.player,
-        this.playerBoundingBox
-      );
+      const blockedDirections = checkCollisions(scene, this.player);
 
       if (keyboardState['ARROWUP'] || keyboardState['W']) {
         this.previousDirection = 'up';

@@ -1,13 +1,7 @@
-import {
-  Color,
-  Mesh,
-  MeshBasicMaterial,
-  ObjectLoader,
-  Scene,
-  Vector3,
-} from 'three';
+import {Color, Mesh, MeshBasicMaterial, ObjectLoader, Scene, Vector3} from 'three';
 import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {Pathfinding} from 'three-pathfinding';
+import {Tree} from '../../models/game-objects/tree';
 
 export async function OpenWorldMap() {
   const scene = new Scene();
@@ -28,20 +22,34 @@ export async function OpenWorldMap() {
         path,
         loadedScene => {
           scene.add(...loadedScene.children);
-          const spawn = scene.children.find(({name}) => name === 'Spawn');
+          const spawn = scene.children.find(({name}) => name === 'spawn');
 
           if (spawn) {
             playerSpawnPoint.copy(spawn.position);
             scene.remove(spawn);
           }
 
+          const trees = scene.children.filter(({name}) => name === 'tree');
+          trees?.forEach((placeholder, i) => {
+            const tree = Tree({
+              position: placeholder.position,
+              seed: i,
+            });
+
+            scene.remove(placeholder);
+            scene.add(tree.root);
+          });
+
+          const barriers = (scene.children as Mesh[]).filter(({name}) => name === 'barrier');
+          barriers?.forEach(mesh => {
+            mesh.visible = false;
+          });
+
           resolve(true);
         },
         progress => {
           window.gameIsLoading = true;
-          console.log(
-            (progress.loaded / progress.total) * 100 + '% loaded scene'
-          );
+          console.log((progress.loaded / progress.total) * 100 + '% loaded scene');
         },
         error => {
           console.error('An error occurred while loading the scene:', error);
@@ -80,9 +88,7 @@ export async function OpenWorldMap() {
         progress => {
           window.gameIsLoading = true;
           if (import.meta.env.DEV) {
-            console.log(
-              (progress.loaded / progress.total) * 100 + '% loaded navmesh'
-            );
+            console.log((progress.loaded / progress.total) * 100 + '% loaded navmesh');
           }
         },
         error => {
