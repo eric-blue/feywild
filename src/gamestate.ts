@@ -1,6 +1,7 @@
 import {Scene} from 'three';
 import {PathfindingHelper} from 'three-pathfinding';
 import {SoundEffects} from './sounds';
+import {Zone} from './types';
 
 declare global {
   interface Window {
@@ -14,7 +15,6 @@ declare global {
     /** debug only */
     _orbitControls: boolean;
     _currentScene: Scene | undefined;
-    _pathfindingHelper: PathfindingHelper | undefined;
   }
 }
 
@@ -28,12 +28,12 @@ window.lockPlayer = false;
 
 window._orbitControls = false;
 window._currentScene;
-window._pathfindingHelper;
 
 export interface GameState {
   saves: number;
-  playerPosition: {x: number; y: number; z: number};
+  playerPosition: {x: number; y: number; z: number} | undefined;
   playerInventory: {};
+  playerZone: Zone;
   npcState: {
     [key: string]: {
       position: {x: number; y: number; z: number};
@@ -52,8 +52,9 @@ function onStartGame(detail: string | {[key: string]: unknown}) {
 export class Gamestate {
   state: GameState = {
     saves: 0,
-    playerPosition: {x: 0.5, y: 0.5, z: 0.5},
+    playerPosition: undefined,
     playerInventory: {},
+    playerZone: 'forest-grove-nw',
     npcState: {},
     health: 100,
     level: 3,

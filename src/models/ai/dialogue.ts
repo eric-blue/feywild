@@ -34,10 +34,7 @@ export class Dialogue {
     this.activeInteraction = `${this.uuid}_interaction_0`;
 
     import(jsonPath).then(({default: json}) => {
-      const swapUUIDs = JSON.stringify(json).replaceAll(
-        'interaction_',
-        `${this.uuid}_interaction_`
-      );
+      const swapUUIDs = JSON.stringify(json).replaceAll('interaction_', `${this.uuid}_interaction_`);
       this.interactions = JSON.parse(swapUUIDs);
     });
 
@@ -51,11 +48,7 @@ export class Dialogue {
     };
 
     addEventListener('keypress', event => {
-      if (
-        !window.paused &&
-        (event.key === ' ' || event.key === 'Enter') &&
-        !event.repeat
-      ) {
+      if (!window.paused && (event.key === ' ' || event.key === 'Enter') && !event.repeat) {
         if (!this.dialog?.open && this.isTouchingPlayer?.()) toggleDialog();
         if (this.open) {
           const current = this.interactions?.[this.activeInteraction];
@@ -90,84 +83,67 @@ export class Dialogue {
       window.soundManager.play('chatter', {volume: 0.25});
 
       this.activeInteraction = interaction;
+      const {message, sender, options} = this.interactions[interaction];
+      const msg = message.replace(' [exit]', '');
+      let html = interaction
+        ? `<p>
+        <strong>${sender}</strong>: <br/>${sender === 'Player' ? `<em>${msg}</em>` : msg}
+      </p>`
+        : '';
 
-      if (this.interactions) {
-        const {message, sender, options} = this.interactions[interaction];
-        const msg = message.replace(' [exit]', '');
-        let html = interaction
-          ? `<p>
-          <strong>${sender}</strong>: <br/>${
-            sender === 'Player' ? `<em>${msg}</em>` : msg
+      if (this.interactions && options.length > 0) {
+        html += `<ol>
+          ${options
+            .map(
+              option => `<li>
+            <button id="option-${option}">${this.interactions?.[option]?.message}</button>
+          </li>`
+            )
+            .join('')}
+        </ol>`;
+      }
+
+      this.dialog!.innerHTML = html;
+
+      if (options.length > 0) {
+        options.forEach((option, i) => {
+          if (i === 0) {
+            document.querySelector<HTMLButtonElement>(`#option-${option}`)?.focus();
           }
-        </p>`
-          : '';
+          addListener(`#option-${option}`, id => this.answer(id));
+        });
 
-        if (options.length > 0) {
-          html += `<ol>
-              ${options
-                .map(
-                  option => `<li>
-                <button autofocus id="option-${option}">${this.interactions?.[option]?.message}</button>
-              </li>`
-                )
-                .join('')}
-            </ol>`;
-        }
+        const focusNext = (increment = 1) => {
+          const list = Array.from(this.dialog?.querySelectorAll('li button') ?? []) as HTMLButtonElement[];
+          const current = list?.findIndex(button => button === document.activeElement);
 
-        this.dialog!.innerHTML = html;
+          list[current + increment > list.length ? 0 : current + increment]?.focus();
 
-        if (options.length > 0) {
-          options.forEach((option, i) => {
-            if (i === 0) {
-              document
-                .querySelector<HTMLButtonElement>(`#option-${option}`)
-                ?.focus();
-            }
-            addListener(`#option-${option}`, id => this.answer(id));
+          window.soundManager.play('focus', {volume: 0.15});
+        };
+
+        const handleKeyDown = ({key}: KeyboardEvent) => {
+          if (this.open && !window.paused) {
+            if (key === 'ArrowUp' || key.toUpperCase() === 'W') focusNext(-1);
+            if (key === 'ArrowLeft' || key.toUpperCase() === 'A') focusNext(-1);
+            if (key === 'ArrowDown' || key.toUpperCase() === 'S') focusNext();
+            if (key === 'ArrowRight' || key.toUpperCase() === 'D') focusNext();
+          }
+        };
+        addEventListener('keydown', handleKeyDown);
+
+        const cleanup = () => {
+          this.dialog?.removeEventListener('close', cleanup);
+          removeEventListener('keydown', handleKeyDown);
+
+          options.forEach(option => {
+            removeListener(`#option-${option}`, id => this.answer(id));
           });
 
-          const focusNext = (increment = 1) => {
-            const list = Array.from(
-              this.dialog?.querySelectorAll('li button') ?? []
-            ) as HTMLButtonElement[];
-            const current = list?.findIndex(
-              button => button === document.activeElement
-            );
+          this.exitDialogue();
+        };
 
-            list[
-              current + increment > list.length ? 0 : current + increment
-            ]?.focus();
-
-            window.soundManager.play('focus', {volume: 0.25});
-          };
-
-          const handleKeyDown = ({key}: KeyboardEvent) => {
-            if (this.open && !window.paused) {
-              if (key === 'ArrowUp' || key.toUpperCase() === 'W') focusNext(-1);
-              if (key === 'ArrowLeft' || key.toUpperCase() === 'A') {
-                focusNext(-1);
-              }
-              if (key === 'ArrowDown' || key.toUpperCase() === 'S') focusNext();
-              if (key === 'ArrowRight' || key.toUpperCase() === 'D') {
-                focusNext();
-              }
-            }
-          };
-          addEventListener('keydown', handleKeyDown);
-
-          const cleanup = () => {
-            this.dialog?.removeEventListener('close', cleanup);
-            removeEventListener('keydown', handleKeyDown);
-
-            options.forEach(option => {
-              removeListener(`#option-${option}`, id => this.answer(id));
-            });
-
-            this.exitDialogue();
-          };
-
-          this.dialog?.addEventListener('close', cleanup);
-        }
+        this.dialog?.addEventListener('close', cleanup);
       }
     } else {
       this.dialog!.innerHTML = '';

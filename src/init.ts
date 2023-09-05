@@ -25,8 +25,9 @@ export function init(canvas?: HTMLCanvasElement) {
     addEventListener('startgame', async () => {
       new PauseMenu(gamestate);
 
-      const {scene, sunlight, camera, cameraClass, player, NPCs} =
-        scenes[gamestate.state.scene](gamestate);
+      const {scene, sunlight, camera, player, NPCs} = await scenes[
+        gamestate.state.scene
+      ](gamestate);
 
       NPCs.forEach(npc => npc.controller.update(scene));
 
@@ -45,29 +46,18 @@ export function init(canvas?: HTMLCanvasElement) {
 
       function handleRender(renderer: WebGLRenderer) {
         if (resizeRendererToDisplaySize(renderer)) {
-          const canvas = renderer.domElement;
-
-          if (camera) {
-            camera.aspect = canvas.clientWidth / canvas.clientHeight;
-            camera.updateProjectionMatrix();
-          }
+          camera?.updateAspectRatio(renderer.domElement);
         }
 
-        if (
-          !window.gameIsLoading &&
-          !window.savingInProgress &&
-          !window.paused
-        ) {
+        const {gameIsLoading, savingInProgress, paused} = window;
+
+        if (!gameIsLoading && !savingInProgress && !paused) {
           const delta = clock.getDelta();
 
           gamestate.setState({playerPosition: player.root.position});
 
           const dev = import.meta.env.DEV;
-          if (!dev || (dev && !window._orbitControls)) {
-            camera.position.lerp(player.root.position, 0.04);
-            camera.position.y = 15; // keep the elevation;
-            camera.position.z = camera.position.z + 0.75;
-          }
+          if (!dev || (dev && !window._orbitControls)) camera.update();
 
           player.update(scene, delta);
           NPCs.forEach(npc => npc.update(scene, delta));
@@ -79,12 +69,12 @@ export function init(canvas?: HTMLCanvasElement) {
 
         requestAnimationFrame(() => handleRender(renderer));
 
-        renderer.render(scene, camera);
+        renderer.render(scene, camera.camera);
       }
 
       if (import.meta.env.DEV) {
         const {devtools} = await import('./dev-tools');
-        devtools({cameraClass, renderer});
+        devtools({camera, renderer});
       }
 
       requestAnimationFrame(() => handleRender(renderer));

@@ -7,8 +7,9 @@ import {SpriteFlipbook} from './character-flipbook';
 import {Zone} from '../types';
 import {Orchestrator} from './ai/orchestrator';
 import {Dialogue} from './ai/dialogue';
-import {isTouchingPlayer} from './helpers';
 import {Bodyswap} from './player/bodyswap';
+
+import {isTouchingPlayer} from './helpers';
 
 interface Props {
   name?: string;
@@ -19,16 +20,18 @@ interface Props {
   route?: Vector3[];
   specs?: {
     reach: number;
+    farsight: number;
+    speed: number;
   };
 }
 
 interface CharacterComposition {
-  Controller: new (mesh: Mesh, zone: Zone) => PlayerController | AIController;
-  Orchestrator?: new (route?: Vector3[]) => Orchestrator;
-  InventoryModule?: new () => Inventory;
-  FlipbookModule?: new (texture: string) => SpriteFlipbook;
-  Dialogue?: new (mesh: Mesh, json: string) => Dialogue;
-  BodyswapModule?: new (flipbook: SpriteFlipbook) => Bodyswap;
+  Controller: new (...args: ConstructorParameters<typeof PlayerController | typeof AIController>) => PlayerController | AIController;
+  Orchestrator?: new (...args: ConstructorParameters<typeof Orchestrator>) => Orchestrator;
+  InventoryModule?: new (...args: ConstructorParameters<typeof Inventory>) => Inventory;
+  FlipbookModule?: new (...args: ConstructorParameters<typeof SpriteFlipbook>) => SpriteFlipbook;
+  Dialogue?: new (...args: ConstructorParameters<typeof Dialogue>) => Dialogue;
+  BodyswapModule?: new (...args: ConstructorParameters<typeof Bodyswap>) => Bodyswap;
 }
 
 /**
@@ -67,19 +70,25 @@ export class Character {
       zone: 'village-square',
       specs: {
         reach: 2.25,
+        farsight: 10,
+        speed: 0.1,
       },
     }
   ) {
-    const geometry = new BoxGeometry(1, 2, 1);
+    const geometry = new BoxGeometry(0.25, 2, 2);
     const material = new MeshStandardMaterial({visible: false});
+
     this.root = new Mesh(geometry, material);
-    this.root.position.set(
-      props.position.x,
-      props.position.y,
-      props.position.z
-    );
     this.root.name = props.name || 'generic-character';
     this.specs = props.specs;
+
+    if (props.position) {
+      this.root.position.set(
+        props.position.x,
+        props.position.y,
+        props.position.z
+      );
+    }
 
     if (FlipbookModule && props.spriteSheet) {
       this.flipbook = new FlipbookModule(props.spriteSheet);

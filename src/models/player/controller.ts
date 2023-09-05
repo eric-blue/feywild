@@ -1,5 +1,5 @@
 import {Box3, Mesh, Scene, Vector3} from 'three';
-import {Direction, KeyboardState} from '../../types';
+import {Direction, KeyboardState, Zone} from '../../types';
 import {Pathfinding, PathfindingHelper} from 'three-pathfinding';
 import {checkCollisions, getSimpleDirection} from '../helpers';
 
@@ -14,13 +14,13 @@ export class PlayerController {
   private velocity = new Vector3();
 
   pathfinder: Pathfinding | undefined;
-  pathfindingHelper: PathfindingHelper | undefined;
+  private pathfindingHelper = new PathfindingHelper();
 
   target?: Vector3;
   public onReachDestination?: () => void;
   public pauseMovement = false;
 
-  constructor(player: Mesh) {
+  constructor(player: Mesh, _zone: Zone) {
     this.player = player;
 
     addEventListener('keydown', event => {
@@ -41,12 +41,11 @@ export class PlayerController {
     addEventListener('blur', () => (this.keyboardState = {}));
   }
 
-  enablePathfinding(
-    pathfinder: Pathfinding,
-    pathfindingHelper?: PathfindingHelper
-  ) {
+  enablePathfinding(pathfinder: Pathfinding, scene: Scene) {
     this.pathfinder = pathfinder;
-    this.pathfindingHelper = pathfindingHelper; // might only want in DEV
+    this.pathfindingHelper.visible = false;
+
+    if (import.meta.env.DEV) scene.add(this.pathfindingHelper);
   }
 
   simpleDirection(): Direction {

@@ -1,4 +1,4 @@
-import {PerspectiveCamera} from 'three';
+import {PerspectiveCamera, Vector3} from 'three';
 
 const fov = 45;
 const aspect = 2; // the canvas default
@@ -7,16 +7,24 @@ const far = 100;
 
 export class Camera {
   camera = new PerspectiveCamera(fov, aspect, near, far);
+  target: Vector3 | (() => Vector3) = new Vector3();
 
-  constructor() {
-    // make the camera look down
-    this.camera.position.set(0, 10, 12.5);
-    this.camera.up.set(0, 0, -1);
-    this.camera.lookAt(0, 0, 0);
+  setTarget(target: Vector3 | (() => Vector3)) {
+    this.target = target;
   }
 
-  reset() {
-    this.camera.up.set(0, 0, -1);
-    this.camera.lookAt(0, 0, 0);
+  updateAspectRatio(canvas: HTMLCanvasElement) {
+    this.camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    this.camera.updateProjectionMatrix();
+  }
+
+  update() {
+    const follow =
+      typeof this.target === 'function' ? this.target() : this.target;
+
+    this.camera.position.copy(follow);
+    this.camera.position.y = this.camera.position.y + 18; // keep the elevation;
+    this.camera.position.z = this.camera.position.z + 14.75;
+    this.camera.lookAt(follow);
   }
 }

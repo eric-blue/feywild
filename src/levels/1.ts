@@ -12,14 +12,20 @@ import {Orchestrator} from '../models/ai/orchestrator';
 import {Dialogue} from '../models/ai/dialogue';
 import {Bodyswap} from '../models/player/bodyswap';
 
+import {getPlayerPosition} from '../models/helpers';
+
 /**
  * The Before-fore (pre-invasion map)
  */
-export function SceneOne(gamestate: Gamestate) {
-  const {scene, pathfinder, pathfindingHelper} = new OpenWorldMap(console.log);
+export async function SceneOne(gamestate: Gamestate) {
+  const {ready, scene, pathfinder, playerSpawnPoint} = await OpenWorldMap();
+
+  await ready;
+
   const {sunlight} = new Lights(scene);
-  const cameraClass = new Camera();
-  const {camera} = cameraClass;
+  const camera = new Camera();
+
+  const {playerPosition, playerZone} = gamestate.state;
 
   const player = new Character(
     {
@@ -27,18 +33,17 @@ export function SceneOne(gamestate: Gamestate) {
       InventoryModule: Inventory,
       FlipbookModule: SpriteFlipbook,
       BodyswapModule: Bodyswap,
-
-      // add compositon elements here..
     },
     {
       name: 'player',
-      position: gamestate.state.playerPosition,
+      position: playerPosition || playerSpawnPoint,
       spriteSheet: './sprites/forest-sprite.png',
-      zone: 'village-square',
+      zone: playerZone,
     }
   );
 
   player.create(scene);
+  camera.setTarget(() => getPlayerPosition(scene));
 
   const NPC1 = new Character(
     {
@@ -47,14 +52,14 @@ export function SceneOne(gamestate: Gamestate) {
       Orchestrator,
     },
     {
-      position: new Vector3(0, 0.5, 8),
+      position: new Vector3(0, 0.5, 13),
       spriteSheet: './sprites/trout.png',
       zone: 'village-square',
     }
   );
 
   NPC1.create(scene);
-  NPC1.controller.enablePathfinding(pathfinder, pathfindingHelper);
+  NPC1.controller.enablePathfinding(pathfinder, scene);
   NPC1.controller.target = NPC1.orchestrator?.trackPlayer(scene);
 
   const NPC2 = new Character(
@@ -64,7 +69,7 @@ export function SceneOne(gamestate: Gamestate) {
       Dialogue,
     },
     {
-      position: new Vector3(1, 0.5, 12),
+      position: new Vector3(1, 0.5, 16),
       spriteSheet: './sprites/mink.png',
       dialogueJSON: '../../../public/dialogue/rebecca.json', // this is DEEP
       zone: 'village-square',
@@ -96,7 +101,7 @@ export function SceneOne(gamestate: Gamestate) {
     }
   );
 
-  NPC3.controller.enablePathfinding(pathfinder, pathfindingHelper);
+  NPC3.controller.enablePathfinding(pathfinder, scene);
 
   NPC3.onExit = () => {
     console.log('kthxbye');
@@ -108,7 +113,6 @@ export function SceneOne(gamestate: Gamestate) {
     scene,
     sunlight,
     camera,
-    cameraClass,
     player,
     NPCs: [NPC1, NPC2, NPC3],
   };

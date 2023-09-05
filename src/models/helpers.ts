@@ -2,7 +2,10 @@ import {Box3, Mesh, Scene, Vector3} from 'three';
 import {Direction, WASD} from '../types';
 
 export function getPlayerPosition(scene: Scene) {
-  return scene.children.find(mesh => mesh.name === 'player')?.position;
+  return (
+    scene.children.find(mesh => mesh.name === 'player')?.position ||
+    new Vector3()
+  );
 }
 
 export function getDistanceToPlayer(mesh: Mesh, scene: Scene) {
@@ -63,35 +66,48 @@ export function checkCollisions(
   const blockedDirections: WASD[] = [];
 
   boundingBox.setFromObject(characterMesh);
-  const margin = 0.1;
-  boundingBox.expandByScalar(margin);
 
   // Check for intersections with other objects
   const colliders = (scene.children as Mesh[]).filter(
-    mesh => mesh?.geometry?.type === 'BoxGeometry'
+    mesh =>
+      mesh?.geometry?.type === 'BoxGeometry' && mesh.geometry.name !== 'floor'
   );
+
   for (const object of colliders) {
     if (object !== characterMesh) {
       tempBox.setFromObject(object);
-      tempBox.expandByScalar(margin);
 
       if (boundingBox.intersectsBox(tempBox)) {
-        // Handle collision behavior here
-        const playerCenter = boundingBox.getCenter(new Vector3());
-        const objectCenter = tempBox.getCenter(new Vector3());
+        // Calculate penetration depths in x and z
+        const xPenetration = Math.min(
+          boundingBox.max.x - tempBox.min.x,
+          tempBox.max.x - boundingBox.min.x
+        );
 
-        const collisionDirection = new Vector3();
-        collisionDirection.subVectors(objectCenter, playerCenter).normalize();
+        const zPenetration = Math.min(
+          boundingBox.max.z - tempBox.min.z,
+          tempBox.max.z - boundingBox.min.z
+        );
 
-        // Determine blocked directions based on collisionDirection
-        if (Math.abs(collisionDirection.x) > Math.abs(collisionDirection.z)) {
-          // Prevent movement along the positive x-axis
-          if (collisionDirection.x > 0) blockedDirections.push('right');
-          else blockedDirections.push('left'); // Prevent movement along the negative x-axis
+        // Determine which direction has the least penetration
+        if (xPenetration < zPenetration) {
+          if (
+            boundingBox.max.x > tempBox.min.x &&
+            boundingBox.min.x < tempBox.min.x
+          ) {
+            blockedDirections.push('right');
+          } else {
+            blockedDirections.push('left');
+          }
         } else {
-          // Prevent movement along the positive z-axis
-          if (collisionDirection.z > 0) blockedDirections.push('down');
-          else blockedDirections.push('up'); // Prevent movement along the negative z-axis
+          if (
+            boundingBox.max.z > tempBox.min.z &&
+            boundingBox.min.z < tempBox.min.z
+          ) {
+            blockedDirections.push('down');
+          } else {
+            blockedDirections.push('up');
+          }
         }
       }
     }
