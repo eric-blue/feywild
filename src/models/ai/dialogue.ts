@@ -34,10 +34,7 @@ export class Dialogue {
     this.activeInteraction = `${this.uuid}_interaction_0`;
 
     import(jsonPath).then(({default: json}) => {
-      const swapUUIDs = JSON.stringify(json).replaceAll(
-        'interaction_',
-        `${this.uuid}_interaction_`
-      );
+      const swapUUIDs = JSON.stringify(json).replaceAll('interaction_', `${this.uuid}_interaction_`);
       this.interactions = JSON.parse(swapUUIDs);
     });
 
@@ -51,11 +48,7 @@ export class Dialogue {
     };
 
     addEventListener('keypress', event => {
-      if (
-        !window.paused &&
-        (event.key === ' ' || event.key === 'Enter') &&
-        !event.repeat
-      ) {
+      if (!window.paused && (event.key === ' ' || event.key === 'Enter') && !event.repeat) {
         if (!this.dialog?.open && this.isTouchingPlayer?.()) toggleDialog();
         if (this.open) {
           const current = this.interactions?.[this.activeInteraction];
@@ -94,9 +87,7 @@ export class Dialogue {
       const msg = message.replace(' [exit]', '');
       let html = interaction
         ? `<p>
-        <strong>${sender}</strong>: <br/>${
-          sender === 'Player' ? `<em>${msg}</em>` : msg
-        }
+        <strong>${sender}</strong>: <br/>${sender === 'Player' ? `<em>${msg}</em>` : msg}
       </p>`
         : '';
 
@@ -117,24 +108,16 @@ export class Dialogue {
       if (options.length > 0) {
         options.forEach((option, i) => {
           if (i === 0) {
-            document
-              .querySelector<HTMLButtonElement>(`#option-${option}`)
-              ?.focus();
+            document.querySelector<HTMLButtonElement>(`#option-${option}`)?.focus();
           }
           addListener(`#option-${option}`, id => this.answer(id));
         });
 
         const focusNext = (increment = 1) => {
-          const list = Array.from(
-            this.dialog?.querySelectorAll('li button') ?? []
-          ) as HTMLButtonElement[];
-          const current = list?.findIndex(
-            button => button === document.activeElement
-          );
+          const list = Array.from(this.dialog?.querySelectorAll('li button') ?? []) as HTMLButtonElement[];
+          const current = list?.findIndex(button => button === document.activeElement);
 
-          list[
-            current + increment > list.length ? 0 : current + increment
-          ]?.focus();
+          list[current + increment > list.length ? 0 : current + increment]?.focus();
 
           window.soundManager.play('focus', {volume: 0.15});
         };

@@ -10,6 +10,8 @@ import {Camera} from '../camera';
 import {Gamestate} from '../gamestate';
 import {Orchestrator} from '../models/ai/orchestrator';
 import {Dialogue} from '../models/ai/dialogue';
+import {Bodyswap} from '../models/player/bodyswap';
+
 import {getPlayerPosition} from '../models/helpers';
 
 /**
@@ -30,6 +32,7 @@ export async function SceneOne(gamestate: Gamestate) {
       Controller: PlayerController,
       InventoryModule: Inventory,
       FlipbookModule: SpriteFlipbook,
+      BodyswapModule: Bodyswap,
     },
     {
       name: 'player',
