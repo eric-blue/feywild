@@ -1,7 +1,8 @@
-import {Sprite, TextureLoader, SpriteMaterial, Texture, NearestFilter} from 'three';
+import {Sprite, TextureLoader, SpriteMaterial, Texture, NearestFilter, Mesh} from 'three';
 import {Direction} from '../types';
 
 export class SpriteFlipbook {
+  private player: Mesh;
   private textureLoader = new TextureLoader();
   private tilesHorizontal: number;
   private tilesVertical: number;
@@ -17,23 +18,19 @@ export class SpriteFlipbook {
   private playSpriteIndices: number[] = [];
   sprite: Sprite;
 
-  constructor(texture: string, tilesHorizontal = 8, tilesVertical = 8) {
+  constructor(player: Mesh, texture: string, tilesHorizontal = 8, tilesVertical = 8) {
+    this.player = player;
     this.tilesHorizontal = tilesHorizontal;
     this.tilesVertical = tilesVertical;
 
-    this.map = this.textureLoader.load(texture);
-
-    this.map.magFilter = NearestFilter;
-    this.map.repeat.set(1 / tilesHorizontal, 1 / tilesVertical);
-    this.map.offset.set(0.125, 0.875); // this shouldn't be necessary
+    const {map, sprite} = loadSprite(this.textureLoader.load(texture), tilesHorizontal, tilesVertical);
+    this.map = map
+    this.sprite = sprite;
 
     this.update(0);
-
-    const material = new SpriteMaterial({map: this.map});
-    this.sprite = new Sprite(material);
-    this.sprite.position.set(0, 0.5, 0);
-    this.sprite.scale.set(2, 2, 1);
     this.loop(IDLE_DOWN.tiles, 0.45);
+    
+    this.player.add(this.sprite);
   }
 
   loop(playSpriteIndices: number[], totalDuration: number) {
@@ -68,12 +65,30 @@ export class SpriteFlipbook {
   }
 
   swapTexture(texture: `./sprites/${string}.png`) {
-    this.map = this.textureLoader.load(texture);
-    const material = new SpriteMaterial({map: this.map});
-    this.sprite = new Sprite(material);
+    this.player.remove(this.sprite);
+    
+    const {map, sprite} = loadSprite(this.textureLoader.load(texture), this.tilesHorizontal, this.tilesVertical);
+    this.map = map
+    this.sprite = sprite;
 
-    console.log('swapTexture pressed');
+    this.player.add(this.sprite);
   }
+}
+
+function loadSprite(loadedTexture: Texture, tilesHorizontal: number, tilesVertical: number) {
+  const map = loadedTexture;
+
+  map.magFilter = NearestFilter;
+  map.repeat.set(1 / tilesHorizontal, 1 / tilesVertical);
+  map.offset.set(0.125, 0.875); // this shouldn't be necessary
+
+  const material = new SpriteMaterial({map});
+  const sprite = new Sprite(material);
+  
+  sprite.position.set(0, 0.5, 0);
+  sprite.scale.set(2, 2, 1);
+
+  return {map, sprite};
 }
 
 export class SpriteAnimation {
