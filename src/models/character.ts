@@ -7,6 +7,7 @@ import {SpriteFlipbook} from './character-flipbook';
 import {Zone} from '../types';
 import {Orchestrator} from './ai/orchestrator';
 import {Dialogue} from './ai/dialogue';
+import {Bodyswap} from './player/bodyswap';
 
 import {isTouchingPlayer} from './helpers';
 
@@ -32,6 +33,7 @@ interface CharacterComposition {
   InventoryModule?: new (...args: ConstructorParameters<typeof Inventory>) => Inventory;
   FlipbookModule?: new (...args: ConstructorParameters<typeof SpriteFlipbook>) => SpriteFlipbook;
   Dialogue?: new (...args: ConstructorParameters<typeof Dialogue>) => Dialogue;
+  BodyswapModule?: new (...args: ConstructorParameters<typeof Bodyswap>) => Bodyswap;
 }
 
 /**
@@ -53,8 +55,10 @@ export class Character {
   onAppear?: () => void;
   onExit?: () => void;
 
+  bodyswap?: Bodyswap;
+
   constructor(
-    {Controller, Orchestrator, InventoryModule, FlipbookModule, Dialogue}: CharacterComposition,
+    {Controller, Orchestrator, InventoryModule, FlipbookModule, Dialogue, BodyswapModule}: CharacterComposition,
     props: Props = {
       position: new Vector3(0.5, 0.5, 0.5),
       spriteSheet: undefined,
@@ -79,6 +83,7 @@ export class Character {
 
     if (FlipbookModule && props.spriteSheet) {
       this.flipbook = new FlipbookModule(props.spriteSheet);
+      this.bodyswap = BodyswapModule ? new BodyswapModule(this.flipbook) : undefined;
       this.root.add(this.flipbook.sprite);
     }
 

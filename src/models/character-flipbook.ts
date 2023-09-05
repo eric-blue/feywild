@@ -67,10 +67,12 @@ export class SpriteFlipbook {
     }
   }
 
-  swapTexture(texture: string) {
+  swapTexture(texture: `./sprites/${string}.png`) {
     this.map = this.textureLoader.load(texture);
     const material = new SpriteMaterial({map: this.map});
     this.sprite = new Sprite(material);
+
+    console.log('swapTexture pressed');
   }
 }
 
