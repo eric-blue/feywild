@@ -50,12 +50,12 @@ export class Character {
   inventory?: Inventory;
   flipbook?: SpriteFlipbook;
   dialogue?: Dialogue;
-  specs?: Props['specs'];
+  bodyswap?: Bodyswap;
 
+  specs?: Props['specs'];
   onAppear?: () => void;
   onExit?: () => void;
 
-  bodyswap?: Bodyswap;
 
   constructor(
     {Controller, Orchestrator, InventoryModule, FlipbookModule, Dialogue, BodyswapModule}: CharacterComposition,
@@ -82,9 +82,8 @@ export class Character {
     }
 
     if (FlipbookModule && props.spriteSheet) {
-      this.flipbook = new FlipbookModule(props.spriteSheet);
+      this.flipbook = new FlipbookModule(this.root, props.spriteSheet);
       this.bodyswap = BodyswapModule ? new BodyswapModule(this.flipbook) : undefined;
-      this.root.add(this.flipbook.sprite);
     }
 
     this.inventory = InventoryModule ? new InventoryModule() : undefined;
@@ -98,6 +97,7 @@ export class Character {
       this.dialogue.isTouchingPlayer = () => {
         return isTouchingPlayer(2.2, this.root, scene);
       };
+
       this.dialogue.onDialogueEnd = () => {
         this.controller.pauseMovement = false;
         this.onExit?.();
@@ -107,6 +107,7 @@ export class Character {
         this.controller.pauseMovement = true;
       };
     }
+
     if (this.orchestrator) {
       if (this.orchestrator.routeGenerator) {
         this.controller.onReachDestination = () => {
