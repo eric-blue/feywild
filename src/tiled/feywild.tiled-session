@@ -1,0 +1,93 @@
+{
+    "activeFile": "forest-grove-nw.json",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "adasdasdasd.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "forest-foliage.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 3.7693,
+            "scaleInEditor": 1
+        },
+        "forest-grove-nw.json": {
+            "scale": 0.7949,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 474.9025034595546,
+                "y": 350.9875456032205
+            }
+        },
+        "forest.json": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1.3609,
+            "scaleInEditor": 3
+        },
+        "forest.png": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "forest.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "sdgsdfsdfsdfsdf.json": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/forest.png": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "trees.json": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "trees.tsj": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "trees.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1.0568,
+            "scaleInEditor": 1
+        },
+        "trees1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "/Users/ericberndt/Code/feywild/src/tiled/tilesets",
+    "openFiles": [
+        "forest-grove-nw.json",
+        "trees.json"
+    ],
+    "project": "feywild.tiled-project",
+    "property.type": "object",
+    "recentFiles": [
+        "trees.json",
+        "forest-grove-nw.json",
+        "trees.tsj",
+        "forest-foliage.tsx",
+        "trees1.tsx",
+        "trees.tsx",
+        "forest.tsx",
+        "forest.json",
+        "sdgsdfsdfsdfsdf.json",
+        "adasdasdasd.tsx"
+    ],
+    "tileset.lastUsedFormat": "json",
+    "tileset.tileSize": {
+        "height": 96,
+        "width": 64
+    }
+}

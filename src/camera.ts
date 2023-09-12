@@ -23,7 +23,7 @@ export class Camera {
 
     this.camera.position.copy(follow);
     this.camera.position.y += 18;
-    this.camera.position.z += 14.75;
+    this.camera.position.z += 10.75;
     this.camera.lookAt(follow);
   }
 }

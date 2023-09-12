@@ -24,12 +24,20 @@ export class SpriteFlipbook {
     this.tilesVertical = tilesVertical;
 
     const {map, sprite} = loadSprite(this.textureLoader.load(texture), tilesHorizontal, tilesVertical);
+<<<<<<< Updated upstream
     this.map = map
+=======
+    this.map = map;
+>>>>>>> Stashed changes
     this.sprite = sprite;
 
     this.update(0);
     this.loop(IDLE_DOWN.tiles, 0.45);
+<<<<<<< Updated upstream
     
+=======
+
+>>>>>>> Stashed changes
     this.player.add(this.sprite);
   }
 
@@ -66,11 +74,19 @@ export class SpriteFlipbook {
 
   swapTexture(texture: `./sprites/${string}.png`) {
     this.player.remove(this.sprite);
+<<<<<<< Updated upstream
     
     const {map, sprite} = loadSprite(this.textureLoader.load(texture), this.tilesHorizontal, this.tilesVertical);
     this.map = map
     this.sprite = sprite;
 
+=======
+
+    const {map, sprite} = loadSprite(this.textureLoader.load(texture), this.tilesHorizontal, this.tilesVertical);
+    this.map = map;
+    this.sprite = sprite;
+
+>>>>>>> Stashed changes
     this.player.add(this.sprite);
   }
 }
@@ -84,7 +100,11 @@ function loadSprite(loadedTexture: Texture, tilesHorizontal: number, tilesVertic
 
   const material = new SpriteMaterial({map});
   const sprite = new Sprite(material);
+<<<<<<< Updated upstream
   
+=======
+
+>>>>>>> Stashed changes
   sprite.position.set(0, 0.5, 0);
   sprite.scale.set(2, 2, 1);
 
