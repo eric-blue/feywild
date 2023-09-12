@@ -24,7 +24,7 @@ export class SpriteFlipbook {
     this.tilesVertical = tilesVertical;
 
     const {map, sprite} = loadSprite(this.textureLoader.load(texture), tilesHorizontal, tilesVertical);
-    this.map = map
+    this.map = map;
     this.sprite = sprite;
 
     this.update(0);
@@ -66,9 +66,9 @@ export class SpriteFlipbook {
 
   swapTexture(texture: `./sprites/${string}.png`) {
     this.player.remove(this.sprite);
-    
+
     const {map, sprite} = loadSprite(this.textureLoader.load(texture), this.tilesHorizontal, this.tilesVertical);
-    this.map = map
+    this.map = map;
     this.sprite = sprite;
 
     this.player.add(this.sprite);
@@ -84,7 +84,6 @@ function loadSprite(loadedTexture: Texture, tilesHorizontal: number, tilesVertic
 
   const material = new SpriteMaterial({map});
   const sprite = new Sprite(material);
-  
   sprite.position.set(0, 0.5, 0);
   sprite.scale.set(2, 2, 1);
 

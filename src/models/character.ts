@@ -18,7 +18,7 @@ interface Props {
   dialogueJSON?: string;
   zone: Zone;
   route?: Vector3[];
-  specs?: {
+  stats?: {
     reach: number;
     farsight: number;
     speed: number;
@@ -36,6 +36,12 @@ interface CharacterComposition {
   BodyswapModule?: new (...args: ConstructorParameters<typeof Bodyswap>) => Bodyswap;
 }
 
+const defaultStats = {
+  reach: 2.25,
+  farsight: 10,
+  speed: 0.1,
+};
+
 /**
  * A base actor class for spawning in NPCs or player
  * characters; basically anything you expect to live,
@@ -52,10 +58,9 @@ export class Character {
   dialogue?: Dialogue;
   bodyswap?: Bodyswap;
 
-  specs?: Props['specs'];
+  stats?: Props['stats'] = defaultStats;
   onAppear?: () => void;
   onExit?: () => void;
-
 
   constructor(
     {Controller, Orchestrator, InventoryModule, FlipbookModule, Dialogue, BodyswapModule}: CharacterComposition,
@@ -63,11 +68,6 @@ export class Character {
       position: new Vector3(0.5, 0.5, 0.5),
       spriteSheet: undefined,
       zone: 'village-square',
-      specs: {
-        reach: 2.25,
-        farsight: 10,
-        speed: 0.1,
-      },
     }
   ) {
     const geometry = new BoxGeometry(0.25, 2, 2);
@@ -75,7 +75,7 @@ export class Character {
 
     this.root = new Mesh(geometry, material);
     this.root.name = props.name || 'generic-character';
-    this.specs = props.specs;
+    if (props.stats) this.stats = {...this.stats, ...props.stats};
 
     if (props.position) {
       this.root.position.set(props.position.x, props.position.y, props.position.z);
@@ -117,8 +117,7 @@ export class Character {
       } else {
         // assume enemy
         this.controller.onReachDestination = () => {
-          const predicate = isTouchingPlayer(this.specs?.reach || 1, this.root, scene);
-          this.orchestrator!.attack(predicate);
+          // this.orchestrator!.attack(() => isTouchingPlayer(this.stats?.reach || 2, this.root, scene));
         };
       }
     }

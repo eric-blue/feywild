@@ -54,7 +54,9 @@ export function checkCollisions(scene: Scene, characterMesh: Mesh) {
 
   // Check for intersections with other objects
   const colliders = (scene.children as Mesh[]).filter(
-    mesh => mesh?.geometry?.type === 'BoxGeometry' && mesh.geometry.name !== 'floor'
+    mesh =>
+      (mesh?.geometry?.type === 'BoxGeometry' || mesh.geometry?.type === 'ExtrudeGeometry') &&
+      mesh.geometry.name !== 'floor'
   );
 
   for (const object of colliders) {

@@ -25,8 +25,8 @@ export class Orchestrator {
     return getPlayerPosition(scene);
   }
 
-  attack(predicate: boolean) {
-    if (predicate) console.log('attack!');
-    setTimeout(() => this.attack(predicate), 1000);
+  attack(predicate: () => boolean) {
+    if (predicate()) console.log('attack!');
+    setTimeout(() => this.attack(() => predicate()), 1000);
   }
 }
