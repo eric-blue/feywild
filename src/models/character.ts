@@ -58,18 +58,10 @@ export class Character {
   dialogue?: Dialogue;
   bodyswap?: Bodyswap;
 
-<<<<<<< Updated upstream
-  specs?: Props['specs'];
-  onAppear?: () => void;
-  onExit?: () => void;
-
-
-=======
   stats?: Props['stats'] = defaultStats;
   onAppear?: () => void;
   onExit?: () => void;
 
->>>>>>> Stashed changes
   constructor(
     {Controller, Orchestrator, InventoryModule, FlipbookModule, Dialogue, BodyswapModule}: CharacterComposition,
     props: Props = {
