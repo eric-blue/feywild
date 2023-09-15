@@ -21,7 +21,7 @@ export function Tree({position, width, height, depth, spriteSheet, tilesPosition
       position,
       spriteSheet,
       spriteScale: [large ? 8 : 4, large ? 8 : 5, 1],
-      spriteMarginBottom: large ? 2 : 0.65,
+      spriteMarginBottom: large ? 2 : 1,
       tilesHorizontal: large ? 2 : 6,
       tilesVertical: large ? 2 : 4,
       tilesPosition,

@@ -49,7 +49,7 @@ export class Static {
       this.staticSprite.sprite.position.set(
         this.root.position.x, 
         this.root.position.y - (props.spriteMarginBottom ?? 0), 
-        this.root.position.z - 2
+        this.root.position.z - (props.spriteMarginBottom ?? 0)
       );
 
       if (props.spriteScale) this.staticSprite.sprite.scale.set(...props.spriteScale); 
