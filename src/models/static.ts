@@ -4,11 +4,19 @@ import {StaticSprite} from './static/sprite';
 interface Props {
   name?: string;
   position: Vector3;
-  spriteSheet?: `./sprites/${string}.png`;
+  spriteSheet?: string;
+  spriteScale?: SpriteScale;
+  spriteMarginBottom?: number;
   tilesHorizontal?: number;
   tilesVertical?: number;
   tilesPosition?: number;
+
+  width?: number;
+  height?: number;
+  depth?: number;
 }
+
+type SpriteScale = [x: number, y: number, z: number];
 
 interface StaticComposition {
   // interactions
@@ -20,7 +28,7 @@ export class Static {
   staticSprite?: StaticSprite;
 
   constructor({StaticSprite}: StaticComposition, props: Props) {
-    const geometry = new BoxGeometry(0.5, 5, 0.5);
+    const geometry = new BoxGeometry(props.width ?? 0.5, props.height ?? 0.5, props.depth ?? 0.5);
     const material = new MeshStandardMaterial({visible: false, wireframe: true});
 
     this.root = new Mesh(geometry, material);
@@ -37,7 +45,14 @@ export class Static {
         props.tilesVertical,
         props.tilesPosition
       );
-      this.root.add(this.staticSprite.sprite);
+      
+      this.staticSprite.sprite.position.set(
+        this.root.position.x, 
+        this.root.position.y - (props.spriteMarginBottom ?? 0), 
+        this.root.position.z - 2
+      );
+
+      if (props.spriteScale) this.staticSprite.sprite.scale.set(...props.spriteScale); 
     }
   }
 }

@@ -39,6 +39,10 @@ export class PlayerController {
     });
 
     addEventListener('blur', () => (this.keyboardState = {}));
+
+    addEventListener('update-player-position', ({detail}) => {
+      this.player?.position?.copy(detail.position);
+    });
   }
 
   enablePathfinding(pathfinder: Pathfinding, scene: Scene) {

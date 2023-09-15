@@ -1,0 +1,14 @@
+{ "columns":2,
+ "image":"..\/..\/public\/sprites\/trees-large.png",
+ "imageheight":320,
+ "imagewidth":320,
+ "margin":0,
+ "name":"trees-large",
+ "spacing":0,
+ "tilecount":9,
+ "tiledversion":"1.10.2",
+ "tileheight":160,
+ "tilewidth":160,
+ "type":"tileset",
+ "version":"1.10"
+}

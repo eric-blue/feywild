@@ -4,27 +4,32 @@ import {StaticSprite} from '../static/sprite';
 
 interface Props {
   position: Vector3;
-  seed: number;
+  width: number;
+  height: number;
+  depth: number;
+
+  spriteSheet: string;
+  tilesPosition: number;
+
+  large?: boolean;
 }
 
-export function Tree({position, seed}: Props) {
+export function Tree({position, width, height, depth, spriteSheet, tilesPosition, large}: Props) {
   const tree = new Static(
     {StaticSprite},
     {
-      position: position,
-      spriteSheet: './sprites/trees.png',
-      tilesHorizontal: 6,
-      tilesVertical: 6,
-      tilesPosition: generateConsistentNumber(seed),
+      position,
+      spriteSheet,
+      spriteScale: [large ? 8 : 4, large ? 8 : 5, 1],
+      spriteMarginBottom: large ? 2 : 0.65,
+      tilesHorizontal: large ? 2 : 6,
+      tilesVertical: large ? 2 : 4,
+      tilesPosition,
+      width,
+      height,
+      depth,
     }
   );
 
   return tree;
-}
-
-function generateConsistentNumber(index: number) {
-  // Simple mixing function to change index
-  const mixedIndex = (index * 7 + 3) % 6;
-
-  return mixedIndex;
 }

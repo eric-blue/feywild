@@ -18,7 +18,7 @@ import {getPlayerPosition} from '../models/helpers';
  * The Before-fore (pre-invasion map)
  */
 export async function SceneOne(gamestate: Gamestate) {
-  const {ready, scene, pathfinder, playerSpawnPoint} = await OpenWorldMap();
+  const {ready, scene, pathfinder} = await OpenWorldMap(gamestate);
 
   await ready;
 
@@ -36,7 +36,7 @@ export async function SceneOne(gamestate: Gamestate) {
     },
     {
       name: 'player',
-      position: playerPosition || playerSpawnPoint,
+      position: playerPosition,
       spriteSheet: './sprites/forest-sprite.png',
       zone: playerZone,
     }

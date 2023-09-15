@@ -1,5 +1,5 @@
 { "columns":16,
- "image":"tilesets\/forest.png",
+ "image":"..\/..\/public\/sprites\/forest.png",
  "imageheight":256,
  "imagewidth":256,
  "margin":0,
