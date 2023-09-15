@@ -1,0 +1,18 @@
+{ "object":
+    {
+     "gid":9,
+     "height":96,
+     "id":9,
+     "name":"",
+     "rotation":0,
+     "type":"",
+     "visible":true,
+     "width":64
+    },
+ "tileset":
+    {
+     "firstgid":1,
+     "source":"..\/trees.json"
+    },
+ "type":"template"
+}

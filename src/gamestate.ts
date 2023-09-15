@@ -1,4 +1,4 @@
-import {Scene} from 'three';
+import {Scene, Vector3} from 'three';
 import {SoundEffects} from './sounds';
 import {Zone} from './types';
 
@@ -15,6 +15,11 @@ declare global {
     _orbitControls: boolean;
     _currentScene: Scene | undefined;
   }
+
+  interface WindowEventMap {
+    'startgame': CustomEvent<string>;
+    'update-player-position': CustomEvent<{position: Vector3}>;
+  }
 }
 
 export const SAVE_KEY = 'feywild-save';
@@ -30,12 +35,12 @@ window._currentScene;
 
 export interface GameState {
   saves: number;
-  playerPosition: {x: number; y: number; z: number} | undefined;
+  playerPosition: Vector3;
   playerInventory: {};
   playerZone: Zone;
   npcState: {
     [key: string]: {
-      position: {x: number; y: number; z: number};
+      position: Vector3;
       inventory?: {};
     };
   };
@@ -51,7 +56,7 @@ function onStartGame(detail: string | {[key: string]: unknown}) {
 export class Gamestate {
   state: GameState = {
     saves: 0,
-    playerPosition: undefined,
+    playerPosition: new Vector3(0, 0.5, 0),
     playerInventory: {},
     playerZone: 'forest-grove-nw',
     npcState: {},
@@ -63,6 +68,11 @@ export class Gamestate {
 
   setState(gamestate: Partial<GameState>) {
     this.state = {...this.state, ...gamestate};
+  }
+
+  setPlayerPosition(position: Vector3) {
+    this.state.playerPosition.copy(position);
+    dispatchEvent(new CustomEvent('update-player-position', {detail: {position}}));
   }
 
   newGame = () => {

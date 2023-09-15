@@ -1,5 +1,5 @@
 { "columns":6,
- "image":"tilesets\/trees.png",
+ "image":"..\/..\/public\/sprites\/trees.png",
  "imageheight":528,
  "imagewidth":384,
  "margin":0,

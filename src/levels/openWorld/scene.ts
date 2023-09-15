@@ -9,16 +9,16 @@ import {
   TextureLoader,
   Vector3,
   SRGBColorSpace,
-  BoxGeometry,
 } from 'three';
 import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {Pathfinding} from 'three-pathfinding';
 import {Tree} from '../../models/game-objects/tree';
+import { Static } from '../../models/static';
+import { Gamestate } from '../../gamestate';
 
-export async function OpenWorldMap() {
+export async function OpenWorldMap(gamestate: Gamestate) {
   const scene = new Scene();
   const pathfinder = new Pathfinding();
-  const playerSpawnPoint = new Vector3();
 
   scene.background = new Color('white');
   if (import.meta.env.DEV) window._currentScene = scene;
@@ -36,35 +36,78 @@ export async function OpenWorldMap() {
         path,
         loadedScene => {
           scene.add(...loadedScene.children);
-          const spawn = scene.children.find(({name}) => name === 'spawn');
-
-          if (spawn) {
-            playerSpawnPoint.copy(spawn.position);
-            scene.remove(spawn);
-          }
 
           const terrain = (scene.children as Mesh[]).filter(mesh => mesh?.geometry?.name === 'floor');
           terrain.forEach(async placeholder => {
             // temp check to reduce console noise
             if (placeholder.name === 'forest-grove-nw') {
-              const url = `../../tiled/${placeholder.name}.json`;
+              const dir = `../../tiled/`;
+              const url = `${dir}${placeholder.name}.json`;
               const {default: mapData} = await import(url);
 
-              mapData?.layers.forEach(({type, objects, name}: {type: string; objects: TiledObject[]; name: string}) => {
-                if (type === 'objectgroup') {
-                  objects?.forEach((obj: TiledObject) => {
-                    const threeObj = createThreeJsObject(obj);
-                    if (threeObj) {
-                      threeObj.name = name;
-                      threeObj.position.x += placeholder.position.x - 50; // offset for local reference
-                      threeObj.position.z += placeholder.position.z - 50; // offset for local reference
-                      threeObj.visible = name === 'collision';
-                      scene.add(threeObj);
-                    }
-                  });
-                }
-              });
+              /**
+               * load the Tiled object layers and apply them to the scene
+               */
+              await new Promise((resolveMapData) => {
+                mapData?.layers.forEach(({objects, name}: {type: string; objects: TiledObject[]; name: string}) => {
+                  if (name === 'player') {
+                    objects.forEach(obj => {
+                      const threeObj = createThreeJsObject(obj, placeholder.position.x - 50, placeholder.position.z - 50);
+  
+                      if (threeObj) {
+                        if (obj.name === 'spawn') gamestate.setPlayerPosition(threeObj.root.position);
+                      }
+                    });
+                  }
+  
+                  if (name === 'trees') {
+                    const spriteMargin = 0.75; // tree sprites have a ~0.75 margin before the trunk
+                    objects.forEach(async (obj) => {
+                      const {default: template} = await import(`${dir}${obj.template}`);
+                      const tiledObject = {
+                        ...obj,
+                        width: template.object.width,
+                        height: template.object.height,
+                      }
+                      
+                      /**
+                       * reworking the bounding box of the tree to wrap the trunk rather than the entire sprite
+                       */
+                      // const threePos = translateTiledToThreeJs(tiledObject, placeholder.position.x - 50, placeholder.position.z - 50);
+                      const threePos = translateTiledToThreeJs(tiledObject, placeholder.position.x - 50, placeholder.position.z - 50);
+                      threePos.depth = threePos.depth / 8;
+                      threePos.width = threePos.width / 8;
+                      threePos.position.y = (template.object.height / pixelsPerBlock / 2) - spriteMargin;
+                      
+                      const tree = Tree({
+                        ...threePos,
+                        tilesPosition: template.object.gid - 1,
+                        spriteSheet: `sprites/${template.tileset?.source.replace('../', '').replace('.json', '.png')}`,
+                        large: template.tileset?.source.includes('large') ?? false,
+                      });
 
+                      scene.add(tree.root, tree.staticSprite!.sprite);
+                    });
+                  }
+                  
+                  if (name === 'collisions') {
+                    objects?.forEach((obj: TiledObject) => {
+                      const threeObj = createThreeJsObject(obj, placeholder.position.x - 50, placeholder.position.z - 50);
+  
+                      if (threeObj) {
+                        threeObj.root.visible = false;
+                        scene.add(threeObj.root);
+                      }
+                    });
+                  }
+                });
+
+                resolveMapData(true);
+              })
+
+              /** 
+               * load the Tiled texture and applies it to the placeholder geometry model
+               */
               textureLoader.load(`./textures/${placeholder.name}.png`, texture => {
                 texture.minFilter = NearestFilter;
                 texture.magFilter = NearestFilter;
@@ -80,18 +123,6 @@ export async function OpenWorldMap() {
               });
             }
           });
-
-          // todo: convert to track TILED objects instead of three/editor cylinders
-          // const trees = scene.children.filter(({name}) => name === 'tree');
-          // trees?.forEach((placeholder, i) => {
-          //   const tree = Tree({
-          //     position: placeholder.position,
-          //     seed: i,
-          //   });
-
-          //   scene.remove(placeholder);
-          //   scene.add(tree.root);
-          // });
 
           const barriers = (scene.children as Mesh[]).filter(({name}) => name === 'barrier');
           barriers?.forEach(mesh => {
@@ -157,40 +188,32 @@ export async function OpenWorldMap() {
     scene,
     loader,
     pathfinder,
-    playerSpawnPoint,
   };
 }
 
 interface TiledObject {
+  id: number;
+  name?: string;
   x: number;
   y: number;
   width: number;
   height: number;
   rotation: number;
-  rectangle: boolean;
+  template?: boolean;
 }
 
 const pixelsPerBlock = 16;
-function createThreeJsObject(obj: TiledObject) {
-  let threeJsObj;
-  let width = 0,
-    height = 0;
+function translateTiledToThreeJs(obj: TiledObject, offsetX = 0, offsetZ = 0) {
+  const width = obj.width / pixelsPerBlock;
+  const height = obj.height / pixelsPerBlock;
+  const depth = obj.height / pixelsPerBlock;
+  const x = (obj.x / pixelsPerBlock) + (width / 2);
+  const z = (obj.y / pixelsPerBlock) - height + (height / 2) + 3;
+  const position = new Vector3(offsetX + x, 0.5, offsetZ + z);
 
-  // Depending on the type of object, you might create different Three.js objects
-  // For instance, a simple rectangle in Tiled might be represented as a PlaneGeometry in Three.js
-  if (obj.width && obj.height) {
-    width = obj.width / pixelsPerBlock;
-    height = obj.height / pixelsPerBlock;
-    const geometry = new BoxGeometry(width, 1, height);
-    const material = new MeshBasicMaterial({wireframe: true});
-    threeJsObj = new Mesh(geometry, material);
-  }
+  return {position, width, height, depth};
+}
 
-  // Set the object's position
-  const x = obj.x / pixelsPerBlock + width / 2;
-  const z = obj.y / pixelsPerBlock + height / 2;
-  threeJsObj?.position.set(x, 0.5, z);
-
-  // Add the object to your scene
-  return threeJsObj;
+function createThreeJsObject(obj: TiledObject, offsetX = 0, offsetZ = 0) {
+  return new Static({}, translateTiledToThreeJs(obj, offsetX, offsetZ));
 }

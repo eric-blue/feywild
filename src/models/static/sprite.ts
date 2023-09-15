@@ -18,7 +18,5 @@ export class StaticSprite {
 
     const material = new SpriteMaterial({map: this.map});
     this.sprite = new Sprite(material);
-    this.sprite.position.set(0, 0, -2);
-    this.sprite.scale.set(4, 5, 1);
   }
 }

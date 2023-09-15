@@ -115,6 +115,28 @@
         }, 
         {
          "draworder":"topdown",
+         "id":23,
+         "name":"player",
+         "objects":[
+                {
+                 "height":16,
+                 "id":101,
+                 "name":"spawn",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":79.4572544184135,
+                 "y":207.94399917797
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":10,
          "name":"collisions",
          "objects":[
@@ -139,15 +161,218 @@
                  "width":2.51603975342812,
                  "x":883.129953453265,
                  "y":12.5801987671405
+                }, 
+                {
+                 "height":190.463140586462,
+                 "id":59,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":15.0726226363387,
+                 "x":846.807344477939,
+                 "y":161.68813373527
+                }, 
+                {
+                 "height":28.7750068511921,
+                 "id":60,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32.2006029049054,
+                 "x":829.679364209372,
+                 "y":337.078651685393
+                }, 
+                {
+                 "height":140.449438202247,
+                 "id":61,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":18.4982186900521,
+                 "x":815.976979994519,
+                 "y":368.594135379556
+                }, 
+                {
+                 "height":58.9202521238695,
+                 "id":62,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":17.8130994793094,
+                 "x":799.534118936695,
+                 "y":531.652507536311
+                }, 
+                {
+                 "height":28.0898876404494,
+                 "id":63,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":17.1279802685667,
+                 "x":782.406138668128,
+                 "y":593.313236503152
+                }, 
+                {
+                 "height":11.6470265826254,
+                 "id":64,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":49.3285831734721,
+                 "x":750.890654973966,
+                 "y":626.1989586188
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":22,
+         "name":"trees",
+         "objects":[
+                {
+                 "id":68,
+                 "template":"templates\/tree-l-yellow-1.json",
+                 "x":-54.2540073982737,
+                 "y":86.3131935881628
+                }, 
+                {
+                 "id":69,
+                 "template":"templates\/tree-l-orange-1.json",
+                 "x":36.9913686806412,
+                 "y":71.5166461159063
+                }, 
+                {
+                 "id":70,
+                 "template":"templates\/tree-l-green-2.json",
+                 "x":383.888203863543,
+                 "y":71.5166461159063
+                }, 
+                {
+                 "id":71,
+                 "template":"templates\/tree-l-green-1.json",
+                 "x":756.267981915331,
+                 "y":85.4911631730374
+                }, 
+                {
+                 "id":72,
+                 "template":"templates\/tree-l-green-1.json",
+                 "x":-58.3641594739005,
+                 "y":389.64241676942
+                }, 
+                {
+                 "id":73,
+                 "template":"templates\/tree-l-green-1.json",
+                 "x":236.744759556104,
+                 "y":189.889025893958
+                }, 
+                {
+                 "id":74,
+                 "template":"templates\/tree-l-yellow-1.json",
+                 "x":461.981093300452,
+                 "y":58.3641594739005
+                }, 
+                {
+                 "id":80,
+                 "template":"templates\/tree-m-yellow-2.json",
+                 "x":790.793259350596,
+                 "y":122.482531853679
+                }, 
+                {
+                 "id":81,
+                 "template":"templates\/tree-m-green-4.json",
+                 "x":730.785039046445,
+                 "y":54.2540073982737
+                }, 
+                {
+                 "id":82,
+                 "template":"templates\/tree-m-green-4.json",
+                 "x":740.649404027949,
+                 "y":105.219893136046
+                }, 
+                {
+                 "id":87,
+                 "template":"templates\/tree-m-green-4.json",
+                 "x":236.744759556104,
+                 "y":117.550349362926
+                }, 
+                {
+                 "id":88,
+                 "template":"templates\/tree-m-green-4.json",
+                 "x":540.073982737361,
+                 "y":91.2453760789149
+                }, 
+                {
+                 "id":89,
+                 "template":"templates\/tree-s-green-1.json",
+                 "x":581.175503493629,
+                 "y":32.8812166050144
+                }, 
+                {
+                 "id":90,
+                 "template":"templates\/tree-m-yellow-1.json",
+                 "x":707.768187422935,
+                 "y":78.0928894369092
+                }, 
+                {
+                 "id":91,
+                 "template":"templates\/tree-m-green-2.json",
+                 "x":753.801890669955,
+                 "y":133.990957665434
+                }, 
+                {
+                 "id":92,
+                 "template":"templates\/tree-m-green-2.json",
+                 "x":678.175092478422,
+                 "y":67.4064940402795
+                }, 
+                {
+                 "id":93,
+                 "template":"templates\/tree-m-green-2.json",
+                 "x":364.159473900534,
+                 "y":32.059186189889
+                }, 
+                {
+                 "id":94,
+                 "template":"templates\/tree-m-green-2.json",
+                 "x":45.2116728318948,
+                 "y":99.4656802301685
+                }, 
+                {
+                 "id":96,
+                 "template":"templates\/tree-m-green-3.json",
+                 "x":-27.1270036991369,
+                 "y":428.277846280312
+                }, 
+                {
+                 "id":98,
+                 "template":"templates\/tree-m-green-3.json",
+                 "x":357.583230579531,
+                 "y":157.007809288944
+                }, 
+                {
+                 "id":99,
+                 "template":"templates\/tree-m-yellow-2.json",
+                 "x":332.922318125771,
+                 "y":198.931360460337
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
          "x":0,
          "y":0
         }],
- "nextlayerid":22,
- "nextobjectid":59,
+ "nextlayerid":24,
+ "nextobjectid":102,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -156,6 +381,14 @@
         {
          "firstgid":1,
          "source":"forest.json"
+        }, 
+        {
+         "firstgid":257,
+         "source":"trees-large.json"
+        }, 
+        {
+         "firstgid":266,
+         "source":"trees.json"
         }],
  "tilewidth":16,
  "type":"map",
