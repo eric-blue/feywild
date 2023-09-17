@@ -26,10 +26,6 @@ export async function OpenWorldMap(gamestate: Gamestate) {
   const loader = new ObjectLoader();
   const textureLoader = new TextureLoader();
 
-  const map = await loadWorld('scenes/open-world.json');
-  const navmesh = await loadNavmeshes('scenes/open-world.glb');
-  const ready = map && navmesh;
-
   async function loadWorld(path: string) {
     return new Promise((resolve, reject) => {
       loader.load(
@@ -73,7 +69,6 @@ export async function OpenWorldMap(gamestate: Gamestate) {
                       /**
                        * reworking the bounding box of the tree to wrap the trunk rather than the entire sprite
                        */
-                      // const threePos = translateTiledToThreeJs(tiledObject, placeholder.position.x - 50, placeholder.position.z - 50);
                       const threePos = translateTiledToThreeJs(tiledObject, placeholder.position.x - 50, placeholder.position.z - 50);
                       threePos.depth = threePos.depth / 8;
                       threePos.width = threePos.width / 8;
@@ -183,6 +178,10 @@ export async function OpenWorldMap(gamestate: Gamestate) {
     });
   }
 
+  const map = await loadWorld('scenes/open-world.json');
+  const navmesh = await loadNavmeshes('scenes/open-world.glb');
+  const ready = map && navmesh;
+
   return {
     ready,
     scene,
@@ -191,7 +190,7 @@ export async function OpenWorldMap(gamestate: Gamestate) {
   };
 }
 
-interface TiledObject {
+export interface TiledObject {
   id: number;
   name?: string;
   x: number;
@@ -208,7 +207,7 @@ function translateTiledToThreeJs(obj: TiledObject, offsetX = 0, offsetZ = 0) {
   const height = obj.height / pixelsPerBlock;
   const depth = obj.height / pixelsPerBlock;
   const x = (obj.x / pixelsPerBlock) + (width / 2);
-  const z = (obj.y / pixelsPerBlock) - height + (height / 2) + 3;
+  const z = (obj.y / pixelsPerBlock) - height + (height / 2) + 1.5;
   const position = new Vector3(offsetX + x, 0.5, offsetZ + z);
 
   return {position, width, height, depth};

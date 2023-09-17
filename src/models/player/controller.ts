@@ -90,7 +90,7 @@ export class PlayerController {
   }
 
   update(scene: Scene) {
-    const running = this.keyboardState['SHIFT'] ? 0.1 : 0;
+    const running = this.keyboardState['SHIFT'] ? 0.033 : 0;
     const moveSpeed = 0.1 + running;
 
     this.move(moveSpeed, scene);

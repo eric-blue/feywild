@@ -1,9 +1,12 @@
-import {DirectionalLight, Scene} from 'three';
+import {DirectionalLight, Fog, Scene} from 'three';
 
 export class Lights {
   sunlight = new DirectionalLight(0xffffff, 1.5);
 
   constructor(scene: Scene) {
+    // this should be configurable based on locale (dark in forest, bright in village)
+    scene.fog = new Fog(0x000000, 18, 45);
+
     this.sunlight.position.set(200, 800, -200);
     this.sunlight.target.position.set(0, 0, 0); // Point back at the center
     this.sunlight.castShadow = true; // Enable shadow casting for the light

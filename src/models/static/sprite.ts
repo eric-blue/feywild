@@ -1,4 +1,4 @@
-import {NearestFilter, Sprite, SpriteMaterial, Texture, TextureLoader} from 'three';
+import {NearestFilter, SRGBColorSpace, Sprite, SpriteMaterial, Texture, TextureLoader} from 'three';
 
 export class StaticSprite {
   private textureLoader = new TextureLoader();
@@ -9,6 +9,7 @@ export class StaticSprite {
     this.map = this.textureLoader.load(texture);
 
     this.map.magFilter = NearestFilter;
+    this.map.colorSpace = SRGBColorSpace;
     this.map.repeat.set(1 / tilesHorizontal, 1 / tilesVertical);
 
     const offsetX = (tilesPosition % tilesHorizontal) / tilesHorizontal;
