@@ -1,7 +1,6 @@
 import {Mesh} from 'three';
 import {addListener, removeListener} from '../helpers';
 
-// export type string = `interaction_${number}`;
 export interface DialogueNode {
   sender: string;
   receiver: string;
@@ -24,6 +23,7 @@ export class Dialogue {
   public onDialogueEnd?: () => void;
   public onDialogueStart?: () => void;
   uuid: string;
+  isFirstInteraction: boolean;
 
   constructor(
     public npc: Mesh,
@@ -32,6 +32,7 @@ export class Dialogue {
     this.dialog = document.querySelector('#modal');
     this.uuid = this.npc.uuid;
     this.activeInteraction = `${this.uuid}_interaction_0`;
+    this.isFirstInteraction = true;
 
     import(jsonPath).then(({default: json}) => {
       const swapUUIDs = JSON.stringify(json).replaceAll('interaction_', `${this.uuid}_interaction_`);
@@ -52,10 +53,14 @@ export class Dialogue {
         if (!this.dialog?.open && this.isTouchingPlayer?.()) toggleDialog();
         if (this.open) {
           const current = this.interactions?.[this.activeInteraction];
+
           // handle next on Enter/Space
-          if (current && !current.options.length && current.nextId) {
+          if (current && !current.options.length && current.nextId && !this.isFirstInteraction) {
             this.nextInteraction(current.nextId);
           }
+
+          // handle first interaction
+          if (this.isFirstInteraction) this.isFirstInteraction = false;
 
           // handle exit
           if (current && !current.options.length && !current.nextId) {
