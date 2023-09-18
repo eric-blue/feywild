@@ -31,7 +31,7 @@ export class SpriteFlipbook {
 
     this.update(0);
     this.loop(IDLE_DOWN.tiles, IDLE_SPEED);
-    
+
     this.player.add(this.sprite);
   }
 

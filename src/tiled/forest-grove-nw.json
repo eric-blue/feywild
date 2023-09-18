@@ -1714,7 +1714,7 @@
         }, 
         {
          "firstgid":285,
-         "source":"shadows.tsx"
+         "source":"shadows.json"
         }],
  "tilewidth":16,
  "type":"map",

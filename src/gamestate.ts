@@ -17,7 +17,7 @@ declare global {
   }
 
   interface WindowEventMap {
-    'startgame': CustomEvent<string>;
+    startgame: CustomEvent<string>;
     'update-player-position': CustomEvent<{position: Vector3}>;
   }
 }

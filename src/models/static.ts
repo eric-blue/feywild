@@ -45,14 +45,14 @@ export class Static {
         props.tilesVertical,
         props.tilesPosition
       );
-      
+
       this.staticSprite.sprite.position.set(
-        this.root.position.x, 
-        this.root.position.y - (props.spriteMarginBottom ?? 0), 
+        this.root.position.x,
+        this.root.position.y - (props.spriteMarginBottom ?? 0),
         this.root.position.z - (props.spriteMarginBottom ?? 0)
       );
 
-      if (props.spriteScale) this.staticSprite.sprite.scale.set(...props.spriteScale); 
+      if (props.spriteScale) this.staticSprite.sprite.scale.set(...props.spriteScale);
     }
   }
 }
