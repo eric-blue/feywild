@@ -7,13 +7,13 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "npx gts lint",
+    "lint": "bunx gts lint",
     "fix": "gts fix",
     "clean": "gts clean",
-    "prepare": "npm run compile",
-    "pretest": "npm run compile",
-    "posttest": "npm run lint",
-    "dialogue": "node dialogue-compiler"
+    "prepare": "bun run compile",
+    "pretest": "bun run compile",
+    "posttest": "bun run lint",
+    "dialogue": "bun src/twine/compile.js"
   },
   "dependencies": {
     "three": "0.155.0",

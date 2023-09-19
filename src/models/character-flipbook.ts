@@ -1,7 +1,7 @@
 import {Sprite, TextureLoader, SpriteMaterial, Texture, NearestFilter, Mesh, SRGBColorSpace} from 'three';
 import {Direction} from '../types';
 
-const IDLE_SPEED = 1.85;
+const IDLE_SPEED = 0.85;
 
 export class SpriteFlipbook {
   private player: Mesh;
