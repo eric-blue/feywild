@@ -15,7 +15,7 @@ interface Props {
   name?: string;
   position: GameState['playerPosition'];
   spriteSheet?: `./sprites/${string}.png`;
-  dialogueJSON?: string;
+  dialogueFilename?: string;
   zone: Zone;
   route?: Vector3[];
   stats?: {
@@ -60,7 +60,9 @@ export class Character {
 
   stats?: Props['stats'] = defaultStats;
   onAppear?: () => void;
-  onExit?: () => void;
+  onDialogueExit?: () => void;
+  onDialogueStart?: () => void;
+  onDialogueEnd?: () => void;
 
   constructor(
     {Controller, Orchestrator, InventoryModule, FlipbookModule, Dialogue, BodyswapModule}: CharacterComposition,
@@ -74,7 +76,7 @@ export class Character {
     const material = new MeshStandardMaterial({visible: false});
 
     this.root = new Mesh(geometry, material);
-    this.root.name = props.name || 'generic-character';
+    this.root.name = props.name || '???';
     if (props.stats) this.stats = {...this.stats, ...props.stats};
 
     if (props.position) {
@@ -89,7 +91,7 @@ export class Character {
     this.inventory = InventoryModule ? new InventoryModule() : undefined;
     this.controller = new Controller(this.root, props.zone);
     this.orchestrator = Orchestrator ? new Orchestrator(props.route) : undefined;
-    this.dialogue = Dialogue && props.dialogueJSON ? new Dialogue(this.root, props.dialogueJSON) : undefined;
+    this.dialogue = Dialogue && props.dialogueFilename ? new Dialogue(this.root, props.dialogueFilename) : undefined;
   }
 
   create(scene: Scene) {
@@ -100,7 +102,12 @@ export class Character {
 
       this.dialogue.onDialogueEnd = () => {
         this.controller.pauseMovement = false;
-        this.onExit?.();
+        this.onDialogueEnd?.();
+      };
+
+      this.dialogue.onDialogueExit = () => {
+        this.controller.pauseMovement = false;
+        this.onDialogueExit?.();
       };
 
       this.dialogue.onDialogueStart = () => {

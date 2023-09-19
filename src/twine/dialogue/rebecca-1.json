@@ -1,0 +1,89 @@
+{
+  "StoryTitle": {
+    "text": "rebecca-1",
+    "options": []
+  },
+  "StoryData": {
+    "text": "{\n  \"ifid\": \"61E5A48D-76E1-4D93-9FAE-2492598A40AA\",\n  \"format\": \"Harlowe\",\n  \"format-version\": \"3.3.7\",\n  \"start\": \"START\",\n  \"zoom\": 1\n}",
+    "options": []
+  },
+  "END": {
+    "text": "",
+    "options": []
+  },
+  "EXIT": {
+    "text": "",
+    "options": []
+  },
+  "ImnotacatImaminkWellactuallyImanevermind": {
+    "text": "?...",
+    "options": [
+      {
+        "text": "NEXT1",
+        "id": "NEXT1"
+      }
+    ]
+  },
+  "Meow": {
+    "text": "MEOW",
+    "options": [
+      {
+        "text": "Meow",
+        "id": "Meow"
+      },
+      {
+        "text": "leave",
+        "id": "EXIT"
+      }
+    ]
+  },
+  "NEXT1": {
+    "text": "That's silly. You're a silly kitty!",
+    "options": [
+      {
+        "text": "NEXT2",
+        "id": "NEXT2"
+      }
+    ]
+  },
+  "NEXT2": {
+    "text": "<em><strong>Rebeccaaaa!</strong> Who is it you're talking to sweetie?</em>",
+    "options": [
+      {
+        "text": "NEXT3",
+        "id": "NEXT3"
+      }
+    ]
+  },
+  "NEXT3": {
+    "text": "<em>No one, Mommmm!</em>",
+    "options": [
+      {
+        "text": "NEXT4",
+        "id": "NEXT4"
+      }
+    ]
+  },
+  "NEXT4": {
+    "text": "I gotta go!",
+    "options": [
+      {
+        "text": "close",
+        "id": "END"
+      }
+    ]
+  },
+  "START": {
+    "text": "Hey little kitty! Are you lost??",
+    "options": [
+      {
+        "text": "Meow",
+        "id": "Meow"
+      },
+      {
+        "text": "I’m not a cat, I’m a mink. Well actually, I’m a… never mind",
+        "id": "ImnotacatImaminkWellactuallyImanevermind"
+      }
+    ]
+  }
+}

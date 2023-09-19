@@ -71,12 +71,13 @@ export async function SceneOne(gamestate: Gamestate) {
     {
       position: new Vector3(1, 0.5, 16),
       spriteSheet: './sprites/mink.png',
-      dialogueJSON: '../../../public/dialogue/rebecca.json', // this is DEEP
+      dialogueFilename: 'rebecca-1',
       zone: 'village-square',
     }
   );
 
-  NPC2.onExit = () => console.log('goodbye');
+  NPC2.onDialogueEnd = () => console.log('goodbye');
+  NPC2.onDialogueExit = () => console.log('ok nevermind then');
   NPC2.create(scene);
 
   const NPC3Route = [
@@ -96,14 +97,14 @@ export async function SceneOne(gamestate: Gamestate) {
       position: new Vector3(-5, 0.5, 1),
       route: NPC3Route,
       spriteSheet: './sprites/forest-sprite.png',
-      dialogueJSON: '../../../public/dialogue/example.json',
+      dialogueFilename: 'rebecca-1',
       zone: 'village-square',
     }
   );
 
   NPC3.controller.enablePathfinding(pathfinder, scene);
 
-  NPC3.onExit = () => {
+  NPC3.onDialogueEnd = () => {
     console.log('kthxbye');
     // NPC3.destroy(scene);
   };

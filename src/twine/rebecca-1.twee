@@ -1,0 +1,64 @@
+:: StoryTitle
+rebecca-1
+
+
+:: StoryData
+{
+  "ifid": "61E5A48D-76E1-4D93-9FAE-2492598A40AA",
+  "format": "Harlowe",
+  "format-version": "3.3.7",
+  "start": "START",
+  "zoom": 1
+}
+
+
+:: END {"position":"650,550","size":"100,100"}
+
+
+
+:: EXIT {"position":"800,300","size":"100,100"}
+
+
+
+:: I’m not a cat, I’m a mink. Well actually, I’m a… never mind {"position":"400,425","size":"100,100"}
+?...
+
+* [[NEXT1]]
+
+
+:: Meow {"position":"700,75","size":"100,100"}
+MEOW
+
+* [[Meow]]
+* [[leave|EXIT]]
+
+
+:: NEXT1 {"position":"400,550","size":"100,100"}
+That's silly. You're a silly kitty!
+
+* [[NEXT2]]
+
+
+:: NEXT2 {"position":"525,425","size":"100,100"}
+//''Rebeccaaaa!'' Who is it you're talking to sweetie?//
+
+* [[NEXT3]]
+
+
+:: NEXT3 {"position":"525,550","size":"100,100"}
+//No one, Mommmm!//
+
+* [[NEXT4]]
+
+
+:: NEXT4 {"position":"650,425","size":"100,100"}
+I gotta go!
+
+* [[close|END]]
+
+
+:: START {"position":"550,200","size":"100,100"}
+Hey little kitty! Are you lost??
+
+* [[Meow]]
+* [[I’m not a cat, I’m a mink. Well actually, I’m a… never mind]]
