@@ -3,6 +3,8 @@ import {getPlayerPosition} from '../helpers';
 
 export class Orchestrator {
   public routeGenerator?: Generator<Vector3>;
+  private elapsedTime = 0;
+  private lastAttackTime = 0;
 
   constructor(route?: Vector3[]) {
     if (route) this.setRoute(route);
@@ -25,8 +27,13 @@ export class Orchestrator {
     return getPlayerPosition(scene);
   }
 
-  attack(predicate: () => boolean) {
-    if (predicate()) console.log('attack!');
-    setTimeout(() => this.attack(() => predicate()), 1000);
+  attack(delta: number, predicate: () => boolean) {
+    this.elapsedTime += delta;
+
+    if (this.elapsedTime - this.lastAttackTime >= 1 && predicate()) {
+      console.log('attack!');
+
+      this.lastAttackTime = this.elapsedTime;
+    }
   }
 }

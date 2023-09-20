@@ -103,6 +103,10 @@ dialog {
   max-width: 650px;
   padding: 0 20px;
 
+  & strong {
+    text-decoration: underline;
+  }
+
   > ol {
     list-style: none;
     padding: 0;
@@ -112,11 +116,14 @@ dialog {
     color: inherit;
     padding: 5px 0;
     position: relative;
+    text-align: left;
+    line-height: 1;
 
     &:hover {
       border-color: transparent;
       text-decoration: underline;
     }
+
     &:focus,
     &:focus-visible {
       outline: none;

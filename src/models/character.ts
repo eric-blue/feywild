@@ -22,6 +22,7 @@ interface Props {
     reach: number;
     farsight: number;
     speed: number;
+    type: 'enemy' | 'player' | 'friendly';
   };
 }
 
@@ -40,6 +41,7 @@ const defaultStats = {
   reach: 2.25,
   farsight: 10,
   speed: 0.1,
+  type: 'friendly' as const,
 };
 
 /**
@@ -121,11 +123,6 @@ export class Character {
           const next = this.orchestrator!.routeGenerator!.next().value;
           this.controller.target = next;
         };
-      } else {
-        // assume enemy
-        this.controller.onReachDestination = () => {
-          // this.orchestrator!.attack(() => isTouchingPlayer(this.stats?.reach || 2, this.root, scene));
-        };
       }
     }
     scene.add(this.root);
@@ -138,5 +135,10 @@ export class Character {
   update(scene: Scene, delta: number) {
     this.controller.update(scene);
     this.flipbook?.update(delta, this.controller.simpleDirection());
+
+    if (this.stats?.type === 'enemy') {
+      const touch = () => isTouchingPlayer(this.stats?.reach || 2, this.root, scene)
+      this.orchestrator?.attack(delta, touch);
+    }
   }
 }

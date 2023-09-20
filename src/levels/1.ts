@@ -55,6 +55,12 @@ export async function SceneOne(gamestate: Gamestate) {
       position: new Vector3(0, 0, 13),
       spriteSheet: './sprites/forest-sprite.png',
       zone: 'village-square',
+      stats: {
+        speed: 0.025,
+        farsight: 10,
+        reach: 2.25,
+        type: 'enemy',
+      }
     }
   );
 
