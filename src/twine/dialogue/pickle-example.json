@@ -1,0 +1,111 @@
+{
+  "StoryTitle": {
+    "text": "pickle-example",
+    "options": []
+  },
+  "StoryData": {
+    "text": "{\n  \"ifid\": \"BC784CE6-E8A8-4FBA-A77E-E9ED8B7729FE\",\n  \"format\": \"Entweedle\",\n  \"format-version\": \"1.1.1\",\n  \"start\": \"START\",\n  \"zoom\": 1\n}",
+    "options": []
+  },
+  "END": {
+    "text": "",
+    "options": []
+  },
+  "NEXT1": {
+    "text": "You: Sure, ask me for another pickle any other time.",
+    "options": [
+      {
+        "text": "END",
+        "id": "END"
+      }
+    ]
+  },
+  "NEXT2": {
+    "text": "You: Yeah sure! No sweat!",
+    "options": [
+      {
+        "text": "NEXT3",
+        "id": "NEXT3"
+      }
+    ]
+  },
+  "NEXT3": {
+    "text": "And by the way I think that note is on the wrong fret.",
+    "options": [
+      {
+        "text": "END",
+        "id": "END"
+      }
+    ]
+  },
+  "NoIdontGoawayDontcomebackanotherday": {
+    "text": "OK",
+    "options": [
+      {
+        "text": "END",
+        "id": "END"
+      }
+    ]
+  },
+  "NoandIwouldntgiveittoyouanywayBugmeforapicklesomeotherday": {
+    "text": "Well, OK, I guess that's fine. I'll bug you for a pickle some other time.",
+    "options": [
+      {
+        "text": "END",
+        "id": "END"
+      }
+    ]
+  },
+  "NobutIthinkIknowamanwhodoesHesrightovertherehescoveredinfuzz": {
+    "text": "Oh, thanks a lot.",
+    "options": [
+      {
+        "text": "NEXT2",
+        "id": "NEXT2"
+      }
+    ]
+  },
+  "OhYeahsurehereyouareIkeepmypicklesallthetimeinthislittlejar": {
+    "text": "Oh, no thanks. I'm just curious.",
+    "options": [
+      {
+        "text": "END",
+        "id": "END"
+      }
+    ]
+  },
+  "START": {
+    "text": "Hey, I'm just curious. Do you have a pickle? Do you have a pickle? Have a pickle, pickle, pickle?",
+    "options": [
+      {
+        "text": "No, and I wouldn't give it to you anyway. Bug me for a pickle some other day",
+        "id": "NoandIwouldntgiveittoyouanywayBugmeforapicklesomeotherday"
+      },
+      {
+        "text": "Well, as a matter of fact I do. Oops! I guess I left it in my other shoe",
+        "id": "WellasamatteroffactIdoOopsIguessIleftitinmyothershoe"
+      },
+      {
+        "text": "No I don't. Go away! Don't come back another day!",
+        "id": "NoIdontGoawayDontcomebackanotherday"
+      },
+      {
+        "text": "No, but I think I know a man who does. He's right over there, he's covered in fuzz",
+        "id": "NobutIthinkIknowamanwhodoesHesrightovertherehescoveredinfuzz"
+      },
+      {
+        "text": "Oh, Yeah sure, here you are. I keep my pickles all the time in this little jar",
+        "id": "OhYeahsurehereyouareIkeepmypicklesallthetimeinthislittlejar"
+      }
+    ]
+  },
+  "WellasamatteroffactIdoOopsIguessIleftitinmyothershoe": {
+    "text": "Oh, OK that's fine.",
+    "options": [
+      {
+        "text": "NEXT1",
+        "id": "NEXT1"
+      }
+    ]
+  }
+}

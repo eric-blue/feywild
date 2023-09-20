@@ -1,0 +1,74 @@
+:: StoryTitle
+pickle-example
+
+
+:: StoryData
+{
+  "ifid": "BC784CE6-E8A8-4FBA-A77E-E9ED8B7729FE",
+  "format": "Entweedle",
+  "format-version": "1.1.1",
+  "start": "START",
+  "zoom": 1
+}
+
+
+:: END {"position":"400,775","size":"100,100"}
+
+
+
+:: NEXT1 {"position":"775,625","size":"100,100"}
+You: Sure, ask me for another pickle any other time.
+
+* [[END]]
+
+
+:: NEXT2 {"position":"900,625","size":"100,100"}
+You: Yeah sure! No sweat!
+
+* [[NEXT3]]
+
+
+:: NEXT3 {"position":"900,750","size":"100,100"}
+And by the way I think that note is on the wrong fret.
+
+* [[END]]
+
+
+:: No I don't. Go away! Don't come back another day! {"position":"525,500","size":"100,100"}
+OK
+
+* [[END]]
+
+
+:: No, and I wouldn't give it to you anyway. Bug me for a pickle some other day {"position":"400,500","size":"100,100"}
+Well, OK, I guess that's fine. I'll bug you for a pickle some other time.
+
+* [[END]]
+
+
+:: No, but I think I know a man who does. He's right over there, he's covered in fuzz {"position":"900,500","size":"100,100"}
+Oh, thanks a lot.
+
+* [[NEXT2]]
+
+
+:: Oh, Yeah sure, here you are. I keep my pickles all the time in this little jar {"position":"650,500","size":"100,100"}
+Oh, no thanks. I'm just curious.
+
+* [[END]]
+
+
+:: START {"position":"650,375","size":"100,100"}
+Hey, I'm just curious. Do you have a pickle? Do you have a pickle? Have a pickle, pickle, pickle?
+
+* [[No, and I wouldn't give it to you anyway. Bug me for a pickle some other day]]
+* [[Well, as a matter of fact I do. Oops! I guess I left it in my other shoe]]
+* [[No I don't. Go away! Don't come back another day!]]
+* [[No, but I think I know a man who does. He's right over there, he's covered in fuzz]]
+* [[Oh, Yeah sure, here you are. I keep my pickles all the time in this little jar]]
+
+
+:: Well, as a matter of fact I do. Oops! I guess I left it in my other shoe {"position":"775,500","size":"100,100"}
+Oh, OK that's fine.
+
+* [[NEXT1]]

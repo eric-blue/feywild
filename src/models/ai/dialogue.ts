@@ -75,6 +75,25 @@ export class Dialogue {
   }
 
   populateMarkup(passage?: string) {
+
+    const focusNext = (increment = 1) => {
+      const list = Array.from(this.dialog?.querySelectorAll('li button') ?? []) as HTMLButtonElement[];
+      const current = list?.findIndex(button => button === document.activeElement);
+
+      list[current + increment > list.length ? 0 : current + increment]?.focus();
+
+      window.soundManager.play('focus', {volume: 0.15});
+    };
+
+    const handleKeyDown = ({key}: KeyboardEvent) => {
+      if (this.open && !window.paused) {
+        if (key === 'ArrowUp' || key.toUpperCase() === 'W') focusNext(-1);
+        if (key === 'ArrowLeft' || key.toUpperCase() === 'A') focusNext(-1);
+        if (key === 'ArrowDown' || key.toUpperCase() === 'S') focusNext();
+        if (key === 'ArrowRight' || key.toUpperCase() === 'D') focusNext();
+      }
+    };
+    
     // this injects the current passage into html
     if (this.passages && passage) {
       this.activePassage = passage;
@@ -116,36 +135,22 @@ export class Dialogue {
           if (i === 0) {
             document.querySelector<HTMLButtonElement>(`#option-${option.id}`)?.focus();
           }
-          addListener(`#option-${option.id}`, id => this.answer(id));
+          addListener(`#option-${option.id}`, id => {
+            removeEventListener('keydown', handleKeyDown);
+            this.answer(id)
+          });
         });
 
-        const focusNext = (increment = 1) => {
-          const list = Array.from(this.dialog?.querySelectorAll('li button') ?? []) as HTMLButtonElement[];
-          const current = list?.findIndex(button => button === document.activeElement);
-
-          list[current + increment > list.length ? 0 : current + increment]?.focus();
-
-          window.soundManager.play('focus', {volume: 0.15});
-        };
-
-        const handleKeyDown = ({key}: KeyboardEvent) => {
-          if (this.open && !window.paused) {
-            if (key === 'ArrowUp' || key.toUpperCase() === 'W') focusNext(-1);
-            if (key === 'ArrowLeft' || key.toUpperCase() === 'A') focusNext(-1);
-            if (key === 'ArrowDown' || key.toUpperCase() === 'S') focusNext();
-            if (key === 'ArrowRight' || key.toUpperCase() === 'D') focusNext();
-          }
-        };
         addEventListener('keydown', handleKeyDown);
 
         const cleanup = () => {
           this.dialog?.removeEventListener('close', cleanup);
           removeEventListener('keydown', handleKeyDown);
-
+    
           options.forEach(option => {
             removeListener(`#option-${option.id}`, id => this.answer(id));
           });
-
+    
           this.exitDialogue();
         };
 
