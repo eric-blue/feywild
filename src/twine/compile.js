@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync } from 'fs';
+import path from 'node:path';
 
 const [filename] = process.argv.slice(2);
 
@@ -7,7 +8,7 @@ if (!filename) {
   process.exit(1);
 }
 
-const tweeInput = readFileSync(filename, 'utf-8');
+const tweeInput = readFileSync(path.join(import.meta.dir, filename), 'utf-8');
 
 const passages = tweeInput.split(':: ').slice(1).reduce((acc, passage) => {
   let [key, ...rest] = passage.split('\n');
@@ -47,7 +48,7 @@ function safeHtmlId(text) {
     .substring(0, 128); // Limit the length to 128 characters to avoid excessively long IDs
 }
 
-const outputFilename = `./dialogue/${filename.split('/').pop().replace(/\.[^/.]+$/, '')}.json`;
+const outputFilename = path.join(import.meta.dir, '/dialogue/', `${filename.split('/').pop().replace(/\.[^/.]+$/, '')}.json`);
 writeFileSync(outputFilename, JSON.stringify(passages, null, 2));
 
 console.log(`File has been written to ${outputFilename}`);

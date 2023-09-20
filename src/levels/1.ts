@@ -52,8 +52,8 @@ export async function SceneOne(gamestate: Gamestate) {
       Orchestrator,
     },
     {
-      position: new Vector3(0, 0.5, 13),
-      spriteSheet: './sprites/trout.png',
+      position: new Vector3(0, 0, 13),
+      spriteSheet: './sprites/forest-sprite.png',
       zone: 'village-square',
     }
   );
@@ -70,7 +70,7 @@ export async function SceneOne(gamestate: Gamestate) {
     },
     {
       position: new Vector3(1, 0.5, 16),
-      spriteSheet: './sprites/mink.png',
+      spriteSheet: './sprites/forest-sprite.png',
       dialogueFilename: 'rebecca-1',
       zone: 'village-square',
     }
@@ -110,11 +110,30 @@ export async function SceneOne(gamestate: Gamestate) {
   };
   NPC3.create(scene);
 
+  const NPC4 = new Character(
+    {
+      Controller: AIController,
+      FlipbookModule: SpriteFlipbook,
+      Dialogue,
+    },
+    {
+      position: new Vector3(278, 0.5, 168),
+      spriteSheet: './sprites/forest-sprite.png',
+      dialogueFilename: 'pickle-example',
+      zone: 'forest-grove-nw',
+      name: `pickle guy`
+    }
+  );
+
+  NPC4.onDialogueEnd = () => console.log('goodbye');
+  NPC4.onDialogueExit = () => console.log('ok nevermind then');
+  NPC4.create(scene);
+
   return {
     scene,
     sunlight,
     camera,
     player,
-    NPCs: [NPC1, NPC2, NPC3],
+    NPCs: [NPC1, NPC2, NPC3, NPC4],
   };
 }
