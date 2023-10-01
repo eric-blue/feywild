@@ -19,7 +19,7 @@ interface Props {
 }
 
 export async function NPC({tiledObject, zoneData, scene, pathfinder}: Props) {
-  const {template, position, properties} = await translateTiledTemplateToThreeJs<TiledNPCProperties>(
+  const {template, position, properties, name} = await translateTiledTemplateToThreeJs<TiledNPCProperties>(
     tiledObject,
     zoneData.position.x - 50,
     zoneData.position.z - 50
@@ -34,6 +34,7 @@ export async function NPC({tiledObject, zoneData, scene, pathfinder}: Props) {
     },
     {
       position,
+      name,
       spriteSheet: `sprites/${template.tileset?.source.replaceAll('../', '').replace('.json', '') as string}.png`,
       zone: zoneData.name,
       dialogueFilename: properties?.dialogueFilename,
