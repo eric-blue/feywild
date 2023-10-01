@@ -14,10 +14,10 @@ import {isTouchingPlayer} from './helpers';
 interface Props {
   name?: string;
   position: GameState['playerPosition'];
-  spriteSheet?: `./sprites/${string}.png`;
+  spriteSheet?: any;
   dialogueFilename?: string;
   zone: Zone;
-  route?: Vector3[];
+  route?: [x: number, y: number, z: number][];
   stats?: {
     reach: number;
     farsight: number;
@@ -74,7 +74,7 @@ export class Character {
       zone: 'village-square',
     }
   ) {
-    const geometry = new BoxGeometry(0.25, 2, 2);
+    const geometry = new BoxGeometry(0.25, 2, 1);
     const material = new MeshStandardMaterial({visible: false});
 
     this.root = new Mesh(geometry, material);

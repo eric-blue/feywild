@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.6",
+    "@types/lodash": "^4.14.199",
     "@types/node": "^20.4.5",
     "@types/three": "^0.155.0",
     "gts": "^5.0.0",

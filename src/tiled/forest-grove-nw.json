@@ -217,6 +217,7 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":100,
          "id":24,
+         "locked":true,
          "name":"shadows",
          "opacity":1,
          "type":"tilelayer",
@@ -228,19 +229,30 @@
         {
          "draworder":"topdown",
          "id":23,
-         "locked":true,
          "name":"player",
          "objects":[
                 {
-                 "height":16,
                  "id":101,
-                 "name":"spawn",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
+                 "template":"templates\/player-spawn-point.json",
                  "x":432.336095817212,
                  "y":223.839442484222
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":25,
+         "name":"npc",
+         "objects":[
+                {
+                 "id":433,
+                 "template":"templates\/pickle-man.json",
+                 "x":320.075949367088,
+                 "y":352.392405063292
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1693,8 +1705,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":25,
- "nextobjectid":429,
+ "nextlayerid":26,
+ "nextobjectid":434,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -1715,6 +1727,10 @@
         {
          "firstgid":285,
          "source":"shadows.json"
+        }, 
+        {
+         "firstgid":541,
+         "source":"forest-sprite.json"
         }],
  "tilewidth":16,
  "type":"map",

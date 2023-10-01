@@ -23,16 +23,17 @@ export class Dialogue {
   public onDialogueExit?: () => void;
   public onDialogueStart?: () => void;
   public onDialogueEnd?: () => void;
-  // isFirstPassage: boolean;
 
   constructor(
     public npc: Mesh,
     filename: string
   ) {
     this.dialog = document.querySelector('#modal');
-    // this.isFirstPassage = true;
 
-    import(`../../twine/dialogue/${filename}.json`).then(({default: json}) => {
+    const dialogFile = filename.split('/').at(-1);
+    const path = `../../twine/dialogue/${dialogFile}`;
+
+    import(path).then(({default: json}) => {
       this.passages = json;
     });
 
@@ -47,14 +48,6 @@ export class Dialogue {
             const [next] = current.options;
             this.answer(next.id);
           }
-
-          // handle first passage
-          // if (this.isFirstPassage) this.isFirstPassage = false;
-
-          // handle exit
-          // if (current && !current.text) {
-          //   this.toggleDialog();
-          // }
         }
       }
     });

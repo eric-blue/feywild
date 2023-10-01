@@ -18,7 +18,7 @@ import {getPlayerPosition} from '../models/helpers';
  * The Before-fore (pre-invasion map)
  */
 export async function SceneOne(gamestate: Gamestate) {
-  const {ready, scene, pathfinder} = await OpenWorldMap(gamestate);
+  const {ready, scene, npcs, pathfinder} = await OpenWorldMap(gamestate);
 
   await ready;
 
@@ -37,7 +37,7 @@ export async function SceneOne(gamestate: Gamestate) {
     {
       name: 'player',
       position: playerPosition,
-      spriteSheet: './sprites/forest-sprite.png',
+      spriteSheet: 'sprites/forest-sprite.png',
       zone: playerZone,
     }
   );
@@ -53,7 +53,7 @@ export async function SceneOne(gamestate: Gamestate) {
     },
     {
       position: new Vector3(0, 0, 13),
-      spriteSheet: './sprites/forest-sprite.png',
+      spriteSheet: 'sprites/forest-sprite.png',
       zone: 'village-square',
       stats: {
         speed: 0.025,
@@ -76,8 +76,8 @@ export async function SceneOne(gamestate: Gamestate) {
     },
     {
       position: new Vector3(1, 0.5, 16),
-      spriteSheet: './sprites/forest-sprite.png',
-      dialogueFilename: 'rebecca-1',
+      spriteSheet: 'sprites/forest-sprite.png',
+      dialogueFilename: `rebecca-1.json`,
       zone: 'village-square',
     }
   );
@@ -86,11 +86,11 @@ export async function SceneOne(gamestate: Gamestate) {
   NPC2.onDialogueExit = () => console.log('ok nevermind then');
   NPC2.create(scene);
 
-  const NPC3Route = [
-    new Vector3(-5, 0.5, 10),
-    new Vector3(5, 0.5, 10),
-    new Vector3(5, 0.5, 1),
-    new Vector3(-5, 0.5, 1),
+  const NPC3Route: [x: number, y: number, z: number][] = [
+    [-5, 0.5, 10],
+    [5, 0.5, 10],
+    [5, 0.5, 1],
+    [-5, 0.5, 1],
   ];
   const NPC3 = new Character(
     {
@@ -102,8 +102,8 @@ export async function SceneOne(gamestate: Gamestate) {
     {
       position: new Vector3(-5, 0.5, 1),
       route: NPC3Route,
-      spriteSheet: './sprites/forest-sprite.png',
-      dialogueFilename: 'rebecca-1',
+      spriteSheet: 'sprites/forest-sprite.png',
+      dialogueFilename: 'rebecca-1.json',
       zone: 'village-square',
     }
   );
@@ -116,30 +116,15 @@ export async function SceneOne(gamestate: Gamestate) {
   };
   NPC3.create(scene);
 
-  const NPC4 = new Character(
-    {
-      Controller: AIController,
-      FlipbookModule: SpriteFlipbook,
-      Dialogue,
-    },
-    {
-      position: new Vector3(278, 0.5, 168),
-      spriteSheet: './sprites/forest-sprite.png',
-      dialogueFilename: 'pickle-example',
-      zone: 'forest-grove-nw',
-      name: `pickle guy`
-    }
-  );
-
-  NPC4.onDialogueEnd = () => console.log('goodbye');
-  NPC4.onDialogueExit = () => console.log('ok nevermind then');
-  NPC4.create(scene);
+  // NPC4.onDialogueEnd = () => console.log('goodbye');
+  // NPC4.onDialogueExit = () => console.log('ok nevermind then');
+  // NPC4.create(scene);
 
   return {
     scene,
     sunlight,
     camera,
     player,
-    NPCs: [NPC1, NPC2, NPC3, NPC4],
+    NPCs: [...npcs, NPC1, NPC2],
   };
 }
