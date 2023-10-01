@@ -112,13 +112,8 @@ export async function SceneOne(gamestate: Gamestate) {
 
   NPC3.onDialogueEnd = () => {
     console.log('kthxbye');
-    // NPC3.destroy(scene);
   };
   NPC3.create(scene);
-
-  // NPC4.onDialogueEnd = () => console.log('goodbye');
-  // NPC4.onDialogueExit = () => console.log('ok nevermind then');
-  // NPC4.create(scene);
 
   return {
     scene,
