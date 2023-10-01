@@ -1,4 +1,4 @@
-import type OpenWorldMap from "./literal-types/open-world.json";
+import type OpenWorldMap from "./literal-types/open-world.json.d.ts";
 
 export type WASD = 'up' | 'left' | 'down' | 'right';
 export type IDLE = `idle-${WASD}`;
