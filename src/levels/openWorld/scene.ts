@@ -7,18 +7,23 @@ import {
   ObjectLoader,
   Scene,
   TextureLoader,
-  Vector3,
   SRGBColorSpace,
 } from 'three';
 import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {Pathfinding} from 'three-pathfinding';
 import {Tree} from '../../models/game-objects/tree';
-import {Static} from '../../models/static';
 import {Gamestate} from '../../gamestate';
+import {Character} from '../../models/character';
+import {Zone} from '../../types';
+import {TiledObject, createThreeJsObject, translateTiledTemplateToThreeJs, PIXELS_PER_BLOCK} from '../helpers';
+import {NPC} from '../../models/character-npc';
+
+const TILED_DIR = '../../tiled/';
 
 export async function OpenWorldMap(gamestate: Gamestate) {
   const scene = new Scene();
   const pathfinder = new Pathfinding();
+  const npcs: Character[] = [];
 
   scene.background = new Color('white');
   if (import.meta.env.DEV) window._currentScene = scene;
@@ -30,87 +35,96 @@ export async function OpenWorldMap(gamestate: Gamestate) {
     return new Promise((resolve, reject) => {
       loader.load(
         path,
-        loadedScene => {
+        async loadedScene => {
           scene.add(...loadedScene.children);
+          const meshes = scene.children as Mesh[];
+          const terrain = meshes.filter(mesh => mesh?.geometry?.name === 'floor');
+          const barriers = meshes.filter(({name}) => name === 'barrier');
 
-          const terrain = (scene.children as Mesh[]).filter(mesh => mesh?.geometry?.name === 'floor');
-          terrain.forEach(async placeholder => {
+          for (const placeholder of terrain) {
             // temp check to reduce console noise
             if (placeholder.name === 'forest-grove-nw') {
-              const dir = '../../tiled/';
-              const url = `${dir}${placeholder.name}.json`;
+              const url = `${TILED_DIR}${placeholder.name}.json`;
               const {default: mapData} = await import(url);
 
               /**
                * load the Tiled object layers and apply them to the scene
                */
-              await new Promise(resolveMapData => {
-                mapData?.layers.forEach(({objects, name}: {type: string; objects: TiledObject[]; name: string}) => {
-                  if (name === 'player') {
-                    objects.forEach(obj => {
-                      const threeObj = createThreeJsObject(
-                        obj,
-                        placeholder.position.x - 50,
-                        placeholder.position.z - 50
-                      );
+              for (const layer of mapData?.layers ?? []) {
+                const {objects, name}: {type: string; objects: TiledObject[]; name: string} = layer;
 
-                      if (threeObj) {
-                        if (obj.name === 'spawn') gamestate.setPlayerPosition(threeObj.root.position);
-                      }
-                    });
+                if (name === 'player') {
+                  for (const tiledObject of objects) {
+                    const threeObj = await createThreeJsObject(
+                      tiledObject,
+                      placeholder.position.x - 50,
+                      placeholder.position.z - 50
+                    );
+
+                    if (threeObj) {
+                      if (threeObj.root.name === 'spawn') gamestate.setPlayerPosition(threeObj.root.position);
+                    }
                   }
+                }
 
-                  if (name === 'trees') {
-                    const spriteMargin = 0.75; // tree sprites have a ~0.75 margin before the trunk
-                    objects.forEach(async obj => {
-                      const {default: template} = await import(`${dir}${obj.template}`);
-                      const tiledObject = {
-                        ...obj,
-                        width: template.object.width,
-                        height: template.object.height,
-                      };
-
-                      /**
-                       * reworking the bounding box of the tree to wrap the trunk rather than the entire sprite
-                       */
-                      const threePos = translateTiledToThreeJs(
-                        tiledObject,
-                        placeholder.position.x - 50,
-                        placeholder.position.z - 50
-                      );
-                      threePos.depth = threePos.depth / 8;
-                      threePos.width = threePos.width / 8;
-                      threePos.position.y = template.object.height / pixelsPerBlock / 2 - spriteMargin;
-
-                      const tree = Tree({
-                        ...threePos,
-                        tilesPosition: template.object.gid - 1,
-                        spriteSheet: `sprites/${template.tileset?.source.replace('../', '').replace('.json', '.png')}`,
-                        large: template.tileset?.source.includes('large') ?? false,
-                      });
-
-                      scene.add(tree.root, tree.staticSprite!.sprite);
+                if (name === 'npc') {
+                  for (const tiledObject of objects) {
+                    const npc = await NPC({
+                      tiledObject,
+                      scene,
+                      pathfinder,
+                      zoneData: {
+                        name: placeholder.name as Zone,
+                        position: placeholder.position,
+                      },
                     });
+
+                    npcs.push(npc);
                   }
+                }
 
-                  if (name === 'collisions') {
-                    objects?.forEach((obj: TiledObject) => {
-                      const threeObj = createThreeJsObject(
-                        obj,
-                        placeholder.position.x - 50,
-                        placeholder.position.z - 50
-                      );
+                if (name === 'trees') {
+                  const spriteMargin = 0.75; // tree sprites have a ~0.75 margin before the trunk
+                  for (const tiledObject of objects) {
+                    const {template, ...threePos} = await translateTiledTemplateToThreeJs(
+                      tiledObject,
+                      placeholder.position.x - 50,
+                      placeholder.position.z - 50
+                    );
 
-                      if (threeObj) {
-                        threeObj.root.visible = false;
-                        scene.add(threeObj.root);
-                      }
+                    /**
+                     * reworking the bounding box of the tree to wrap the trunk rather than the entire sprite
+                     */
+                    threePos.depth = threePos.depth / 8;
+                    threePos.width = threePos.width / 8;
+                    threePos.position.y = template.object.height / PIXELS_PER_BLOCK / 2 - spriteMargin;
+
+                    const tree = Tree({
+                      ...threePos,
+                      tilesPosition: template.object.gid - 1,
+                      spriteSheet: `sprites/${template.tileset?.source.replaceAll('../', '').replace('.json', '.png')}`,
+                      large: template.tileset?.source.includes('large') ?? false,
                     });
-                  }
-                });
 
-                resolveMapData(true);
-              });
+                    scene.add(tree.root, tree.staticSprite!.sprite);
+                  }
+                }
+
+                if (name === 'collisions') {
+                  for (const tiledObject of objects) {
+                    const threeObj = await createThreeJsObject(
+                      tiledObject,
+                      placeholder.position.x - 50,
+                      placeholder.position.z - 50
+                    );
+
+                    if (threeObj) {
+                      threeObj.root.visible = false;
+                      scene.add(threeObj.root);
+                    }
+                  }
+                }
+              }
 
               /**
                * load the Tiled texture and applies it to the placeholder geometry model
@@ -129,12 +143,9 @@ export async function OpenWorldMap(gamestate: Gamestate) {
                 scene.add(floor);
               });
             }
-          });
+          }
 
-          const barriers = (scene.children as Mesh[]).filter(({name}) => name === 'barrier');
-          barriers?.forEach(mesh => {
-            mesh.visible = false;
-          });
+          for (const barrier of barriers) barrier.visible = false;
 
           resolve(true);
         },
@@ -198,33 +209,7 @@ export async function OpenWorldMap(gamestate: Gamestate) {
     ready,
     scene,
     loader,
+    npcs,
     pathfinder,
   };
-}
-
-export interface TiledObject {
-  id: number;
-  name?: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  rotation: number;
-  template?: boolean;
-}
-
-const pixelsPerBlock = 16;
-function translateTiledToThreeJs(obj: TiledObject, offsetX = 0, offsetZ = 0) {
-  const width = obj.width / pixelsPerBlock;
-  const height = obj.height / pixelsPerBlock;
-  const depth = obj.height / pixelsPerBlock;
-  const x = obj.x / pixelsPerBlock + width / 2;
-  const z = obj.y / pixelsPerBlock - height + height / 2 + 1.5;
-  const position = new Vector3(offsetX + x, 0.5, offsetZ + z);
-
-  return {position, width, height, depth};
-}
-
-function createThreeJsObject(obj: TiledObject, offsetX = 0, offsetZ = 0) {
-  return new Static({}, translateTiledToThreeJs(obj, offsetX, offsetZ));
 }

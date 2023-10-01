@@ -14,10 +14,10 @@ import {isTouchingPlayer} from './helpers';
 interface Props {
   name?: string;
   position: GameState['playerPosition'];
-  spriteSheet?: `./sprites/${string}.png`;
+  spriteSheet?: string;
   dialogueFilename?: string;
   zone: Zone;
-  route?: Vector3[];
+  route?: [x: number, y: number, z: number][];
   stats?: {
     reach: number;
     farsight: number;
@@ -74,7 +74,7 @@ export class Character {
       zone: 'village-square',
     }
   ) {
-    const geometry = new BoxGeometry(0.25, 2, 2);
+    const geometry = new BoxGeometry(0.25, 2, 1);
     const material = new MeshStandardMaterial({visible: false});
 
     this.root = new Mesh(geometry, material);
@@ -137,7 +137,7 @@ export class Character {
     this.flipbook?.update(delta, this.controller.simpleDirection());
 
     if (this.stats?.type === 'enemy') {
-      const touch = () => isTouchingPlayer(this.stats?.reach || 2, this.root, scene)
+      const touch = () => isTouchingPlayer(this.stats?.reach || 2, this.root, scene);
       this.orchestrator?.attack(delta, touch);
     }
   }

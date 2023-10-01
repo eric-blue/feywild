@@ -1,0 +1,12 @@
+{ "object":
+    {
+     "height":16,
+     "id":101,
+     "name":"spawn",
+     "rotation":0,
+     "type":"",
+     "visible":true,
+     "width":16
+    },
+ "type":"template"
+}

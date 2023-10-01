@@ -2,5 +2,8 @@
   "extends": "./node_modules/gts/",
   "rules": {
     "curly": ["error", "multi-line"]
+  },
+  "parserOptions": {
+    "ecmaVersion": "latest"
   }
 }

@@ -93,7 +93,6 @@ export class AIController {
           this.pathfindingHelper?.setPlayerPosition(characterPosition);
           this.pathfindingHelper?.setTargetPosition(targetPosition);
 
-          // this.pathfindingHelper.reset().setPlayerPosition( targetPosition );
           if (closestTargetNode) {
             this.pathfindingHelper?.setNodePosition(closestTargetNode.centroid);
           }

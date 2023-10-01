@@ -88,7 +88,7 @@ function loadSprite(loadedTexture: Texture, tilesHorizontal: number, tilesVertic
   const material = new SpriteMaterial({map});
   const sprite = new Sprite(material);
   sprite.position.set(0, 0.5, 0);
-  sprite.scale.set(1.5, 1.5, 1);
+  sprite.scale.set(2, 2, 1);
 
   return {map, sprite};
 }
@@ -108,7 +108,6 @@ export const IDLE_RIGHT = new SpriteAnimation([0, 1, 2, 3], 'IDLE_RIGHT');
 export const RUN_UP = new SpriteAnimation([56, 57, 58, 59, 60, 61, 64, 65, 66, 67, 68, 69], 'RUN_UP');
 export const RUN_LEFT = new SpriteAnimation([32, 33, 34, 35, 36, 37, 40, 41, 42, 43, 44, 45], 'RUN_LEFT');
 export const RUN_DOWN = new SpriteAnimation([80, 81, 82, 83, 84, 85, 88, 89, 90, 91, 92, 93], 'RUN_DOWN');
-// export const RUN_DOWN = new SpriteAnimation([80, 81, 82, 88, 89, 90], 'RUN_DOWN');
 export const RUN_RIGHT = new SpriteAnimation([8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21], 'RUN_RIGHT');
 
 const animations = {
