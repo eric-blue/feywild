@@ -1,4 +1,4 @@
-{
+declare const schema: {
 	"metadata": {
 		"version": 4.6,
 		"type": "Object",
@@ -1986,4 +1986,4 @@
 				"material": "ca5781fd-b8d6-4639-8110-1984c68bd45e"
 			}]
 	}
-}
+}; export default schema;

@@ -104,7 +104,7 @@ export async function SceneOne(gamestate: Gamestate) {
       route: NPC3Route,
       spriteSheet: 'sprites/forest-sprite.png',
       dialogueFilename: 'rebecca-1.json',
-      zone: 'village-square',
+      zone: 'forest-grove-nw',
     }
   );
 
