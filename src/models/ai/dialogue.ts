@@ -16,8 +16,8 @@ export type Passages = {
 export class Dialogue {
   dialog: HTMLDialogElement | null;
   open = false;
-  
-  activePassage: string = "START";
+
+  activePassage = 'START';
   public passages?: Passages;
   public isTouchingPlayer?: () => boolean;
   public onDialogueExit?: () => void;
@@ -60,7 +60,7 @@ export class Dialogue {
 
     if (this.open) this.openDialogue();
     if (!this.open) this.exitDialogue();
-  };
+  }
 
   answer(option: string) {
     this.populateMarkup(option.replace('option-', ''));
@@ -68,7 +68,6 @@ export class Dialogue {
   }
 
   populateMarkup(passage?: string) {
-
     const focusNext = (increment = 1) => {
       const list = Array.from(this.dialog?.querySelectorAll('li button') ?? []) as HTMLButtonElement[];
       const current = list?.findIndex(button => button === document.activeElement);
@@ -86,7 +85,7 @@ export class Dialogue {
         if (key === 'ArrowRight' || key.toUpperCase() === 'D') focusNext();
       }
     };
-    
+
     // this injects the current passage into html
     if (this.passages && passage) {
       this.activePassage = passage;
@@ -95,7 +94,7 @@ export class Dialogue {
       if (!text) {
         if (passage === 'END') this.onDialogueEnd?.();
         if (passage === 'EXIT') this.onDialogueExit?.();
-        this.toggleDialog(); 
+        this.toggleDialog();
         return;
       }
 
@@ -130,7 +129,7 @@ export class Dialogue {
           }
           addListener(`#option-${option.id}`, id => {
             removeEventListener('keydown', handleKeyDown);
-            this.answer(id)
+            this.answer(id);
           });
         });
 
@@ -139,11 +138,11 @@ export class Dialogue {
         const cleanup = () => {
           this.dialog?.removeEventListener('close', cleanup);
           removeEventListener('keydown', handleKeyDown);
-    
+
           options.forEach(option => {
             removeListener(`#option-${option.id}`, id => this.answer(id));
           });
-    
+
           this.exitDialogue();
         };
 
@@ -151,7 +150,7 @@ export class Dialogue {
       }
     } else {
       this.dialog!.innerHTML = '';
-      this.activePassage = `START`;
+      this.activePassage = 'START';
     }
   }
 
@@ -160,7 +159,7 @@ export class Dialogue {
    */
   openDialogue() {
     this.onDialogueStart?.();
-    this.activePassage = `START`;
+    this.activePassage = 'START';
     this.populateMarkup(this.activePassage);
   }
 

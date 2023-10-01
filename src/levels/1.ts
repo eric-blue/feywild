@@ -60,7 +60,7 @@ export async function SceneOne(gamestate: Gamestate) {
         farsight: 10,
         reach: 2.25,
         type: 'enemy',
-      }
+      },
     }
   );
 
@@ -77,7 +77,7 @@ export async function SceneOne(gamestate: Gamestate) {
     {
       position: new Vector3(1, 0.5, 16),
       spriteSheet: 'sprites/forest-sprite.png',
-      dialogueFilename: `rebecca-1.json`,
+      dialogueFilename: 'rebecca-1.json',
       zone: 'village-square',
     }
   );

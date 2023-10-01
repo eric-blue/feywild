@@ -1,5 +1,5 @@
-import { Vector3 } from "three";
-import { Static } from "../models/static";
+import {Vector3} from 'three';
+import {Static} from '../models/static';
 
 export interface TiledObject<T = {}> {
   id: number;
@@ -43,10 +43,15 @@ export function translateTiledToThreeJs<T = {}>(obj: TiledObject<T>, offsetX = 0
 export async function translateTiledTemplateToThreeJs<T = {}>(obj: TiledTemplate, offsetX = 0, offsetZ = 0) {
   const {default: template} = await import(`../tiled/${obj.template}`);
 
-  const properties = template.object.properties ? Object.fromEntries(template.object.properties?.map(
-    ({name, value}: {name: string; value: string}) => [`${name[0].toLowerCase()}${name.slice(1)}`, value])
-  ) : {};
-  
+  const properties = template.object.properties
+    ? Object.fromEntries(
+        template.object.properties?.map(({name, value}: {name: string; value: string}) => [
+          `${name[0].toLowerCase()}${name.slice(1)}`,
+          value,
+        ])
+      )
+    : {};
+
   const tiledObject = {
     name: template.object.name,
     ...obj,
@@ -58,7 +63,9 @@ export async function translateTiledTemplateToThreeJs<T = {}>(obj: TiledTemplate
   return {...translateTiledToThreeJs<T>(tiledObject, offsetX, offsetZ), template};
 }
 
-export async function createThreeJsObject(obj: TiledObject|TiledTemplate, offsetX = 0, offsetZ = 0) {
-  if ("template" in obj) return new Static({}, await translateTiledTemplateToThreeJs(obj as TiledTemplate, offsetX, offsetZ));
+export async function createThreeJsObject(obj: TiledObject | TiledTemplate, offsetX = 0, offsetZ = 0) {
+  if ('template' in obj) {
+    return new Static({}, await translateTiledTemplateToThreeJs(obj as TiledTemplate, offsetX, offsetZ));
+  }
   return new Static({}, translateTiledToThreeJs(obj as TiledObject, offsetX, offsetZ));
 }

@@ -13,10 +13,10 @@ import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {Pathfinding} from 'three-pathfinding';
 import {Tree} from '../../models/game-objects/tree';
 import {Gamestate} from '../../gamestate';
-import { Character } from '../../models/character';
-import { Zone } from '../../types';
-import { TiledObject, createThreeJsObject, translateTiledTemplateToThreeJs, PIXELS_PER_BLOCK } from '../helpers';
-import { NPC } from '../../models/character-npc';
+import {Character} from '../../models/character';
+import {Zone} from '../../types';
+import {TiledObject, createThreeJsObject, translateTiledTemplateToThreeJs, PIXELS_PER_BLOCK} from '../helpers';
+import {NPC} from '../../models/character-npc';
 
 const TILED_DIR = '../../tiled/';
 
@@ -60,22 +60,22 @@ export async function OpenWorldMap(gamestate: Gamestate) {
                       placeholder.position.x - 50,
                       placeholder.position.z - 50
                     );
-                    
+
                     if (threeObj) {
                       if (threeObj.root.name === 'spawn') gamestate.setPlayerPosition(threeObj.root.position);
                     }
-                  };
+                  }
                 }
 
                 if (name === 'npc') {
                   for (const tiledObject of objects) {
                     const npc = await NPC({
-                      tiledObject, 
-                      scene, 
+                      tiledObject,
+                      scene,
                       pathfinder,
                       zoneData: {
-                        name: placeholder.name as Zone, 
-                        position: placeholder.position
+                        name: placeholder.name as Zone,
+                        position: placeholder.position,
                       },
                     });
 
@@ -107,7 +107,7 @@ export async function OpenWorldMap(gamestate: Gamestate) {
                     });
 
                     scene.add(tree.root, tree.staticSprite!.sprite);
-                  };
+                  }
                 }
 
                 if (name === 'collisions') {
@@ -122,9 +122,9 @@ export async function OpenWorldMap(gamestate: Gamestate) {
                       threeObj.root.visible = false;
                       scene.add(threeObj.root);
                     }
-                  };
+                  }
                 }
-              };
+              }
 
               /**
                * load the Tiled texture and applies it to the placeholder geometry model
@@ -143,7 +143,7 @@ export async function OpenWorldMap(gamestate: Gamestate) {
                 scene.add(floor);
               });
             }
-          };
+          }
 
           for (const barrier of barriers) barrier.visible = false;
 

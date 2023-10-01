@@ -1,12 +1,12 @@
-import { Scene, Vector3 } from "three";
-import { translateTiledTemplateToThreeJs, TiledNPCProperties, TiledObject } from "../levels/helpers";
-import { Zone } from "../types";
-import { AIController } from "./ai/controller";
-import { Dialogue } from "./ai/dialogue";
-import { Character } from "./character";
-import { SpriteFlipbook } from "./character-flipbook";
-import { Orchestrator } from "./ai/orchestrator";
-import { Pathfinding } from "three-pathfinding";
+import {Scene, Vector3} from 'three';
+import {translateTiledTemplateToThreeJs, TiledNPCProperties, TiledObject} from '../levels/helpers';
+import {Zone} from '../types';
+import {AIController} from './ai/controller';
+import {Dialogue} from './ai/dialogue';
+import {Character} from './character';
+import {SpriteFlipbook} from './character-flipbook';
+import {Orchestrator} from './ai/orchestrator';
+import {Pathfinding} from 'three-pathfinding';
 
 interface Props {
   tiledObject: TiledObject;
@@ -33,8 +33,8 @@ export async function NPC({tiledObject, zoneData, scene, pathfinder}: Props) {
       Orchestrator: properties?.routeJson ? Orchestrator : undefined,
     },
     {
-      position, 
-      spriteSheet: `sprites/${(template.tileset?.source.replaceAll('../', '').replace('.json', '')) as string}.png`,
+      position,
+      spriteSheet: `sprites/${template.tileset?.source.replaceAll('../', '').replace('.json', '') as string}.png`,
       zone: zoneData.name,
       dialogueFilename: properties?.dialogueFilename,
       route: properties?.routeJson ? JSON.parse(properties.routeJson) : undefined,
@@ -43,10 +43,10 @@ export async function NPC({tiledObject, zoneData, scene, pathfinder}: Props) {
         farsight: properties?.farsight ?? 10,
         speed: properties?.speed ?? 0.1,
         type: properties?.enemy ? 'enemy' : 'friendly',
-      }
+      },
     }
   );
-  
+
   if (properties?.routeJson) {
     npc.controller.enablePathfinding(pathfinder, scene);
   }

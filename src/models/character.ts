@@ -14,7 +14,7 @@ import {isTouchingPlayer} from './helpers';
 interface Props {
   name?: string;
   position: GameState['playerPosition'];
-  spriteSheet?: any;
+  spriteSheet?: string;
   dialogueFilename?: string;
   zone: Zone;
   route?: [x: number, y: number, z: number][];
@@ -137,7 +137,7 @@ export class Character {
     this.flipbook?.update(delta, this.controller.simpleDirection());
 
     if (this.stats?.type === 'enemy') {
-      const touch = () => isTouchingPlayer(this.stats?.reach || 2, this.root, scene)
+      const touch = () => isTouchingPlayer(this.stats?.reach || 2, this.root, scene);
       this.orchestrator?.attack(delta, touch);
     }
   }
