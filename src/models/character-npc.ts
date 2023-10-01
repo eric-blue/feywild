@@ -52,6 +52,10 @@ export async function NPC({tiledObject, zoneData, scene, pathfinder}: Props) {
     npc.controller.enablePathfinding(pathfinder, scene);
   }
 
+  if (properties?.enemy) {
+    npc.controller.target = npc.orchestrator?.trackPlayer(scene);
+  }
+
   npc.create(scene);
 
   // how to do this...?

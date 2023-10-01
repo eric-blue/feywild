@@ -16,7 +16,8 @@
     "prepare": "bun run compile",
     "pretest": "bun run compile",
     "posttest": "bun run lint",
-    "dialogue": "bun src/twine/compile.js"
+    "dialogue": "bun src/twine/compile.js",
+    "strongly-type-json": "touch ./src/literal-types/open-world.json.d.ts && echo -E \"declare const schema: $(cat ./public/scenes/open-world.json); export default schema;\" > ./src/literal-types/open-world.json.d.ts"
   },
   "dependencies": {
     "three": "0.155.0",
