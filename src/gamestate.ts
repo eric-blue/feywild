@@ -71,7 +71,6 @@ export class Gamestate {
   }
 
   setPlayerPosition(position: Vector3) {
-    console.log(this.state.playerPosition)
     this.state.playerPosition?.copy(position);
     dispatchEvent(new CustomEvent('update-player-position', {detail: {position}}));
   }
