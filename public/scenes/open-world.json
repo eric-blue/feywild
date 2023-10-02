@@ -235,7 +235,6 @@
 			{
 				"uuid": "4708ed55-2f2b-4418-82d0-3d4c28861d40",
 				"type": "AmbientLight",
-				"name": "AmbientLight",
 				"layers": 1,
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,2.242639206900817,0,1],
 				"up": [0,1,0],
@@ -490,7 +489,7 @@
 			{
 				"uuid": "5124a49c-7f89-47d6-bbf4-5337d5764a8a",
 				"type": "Mesh",
-				"name": "Box",
+				"name": "forest-grove-sw",
 				"receiveShadow": true,
 				"layers": 1,
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,300,0,300,1],

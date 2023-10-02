@@ -43,7 +43,15 @@ export async function OpenWorldMap(gamestate: Gamestate) {
 
           for (const placeholder of terrain) {
             // temp check to reduce console noise
-            if (placeholder.name === 'forest-grove-nw') {
+
+            const activeAreas = [
+              'forest-grove-nw', 
+              'forest-grove-ne', 
+              'forest-grove-sw', 
+              'forest-grove-se'
+            ];
+
+            if (activeAreas.includes(placeholder.name)) {
               const url = `${TILED_DIR}${placeholder.name}.json`;
               const {default: mapData} = await import(url);
 
