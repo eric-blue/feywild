@@ -92,7 +92,6 @@ export async function OpenWorldMap(gamestate: Gamestate) {
                 }
 
                 if (name === 'trees') {
-                  console.log(objects)
                   const spriteMargin = 0.75; // tree sprites have a ~0.75 margin before the trunk
                   for (const tiledObject of objects) {
                     const {template, ...threePos} = await translateTiledTemplateToThreeJs(
