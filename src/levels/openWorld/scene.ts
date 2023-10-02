@@ -43,7 +43,15 @@ export async function OpenWorldMap(gamestate: Gamestate) {
 
           for (const placeholder of terrain) {
             // temp check to reduce console noise
-            if (placeholder.name === 'forest-grove-nw') {
+
+            const activeAreas = [
+              'forest-grove-nw', 
+              'forest-grove-ne', 
+              'forest-grove-sw', 
+              'forest-grove-se'
+            ];
+
+            if (activeAreas.includes(placeholder.name)) {
               const url = `${TILED_DIR}${placeholder.name}.json`;
               const {default: mapData} = await import(url);
 
@@ -84,6 +92,7 @@ export async function OpenWorldMap(gamestate: Gamestate) {
                 }
 
                 if (name === 'trees') {
+                  console.log(objects)
                   const spriteMargin = 0.75; // tree sprites have a ~0.75 margin before the trunk
                   for (const tiledObject of objects) {
                     const {template, ...threePos} = await translateTiledTemplateToThreeJs(
