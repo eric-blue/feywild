@@ -91,12 +91,65 @@ menu {
   }
 }
 
+#hud {
+  --health: 1;
+  --base-health: 1;
+  --health-percentage: calc(var(--health) / var(--base-health) * 100%);
+  height: auto;
+  background-color: transparent;
+  top: 0;
+  display: flex;
+  flex-basis: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 8px 5px;
+
+  > .health-bar {
+    background-color: whitesmoke;
+    height: 20px;
+    border: 3px solid black;
+    width: 33%;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      display: block;
+      height: 100%;
+      width: var(--health-percentage);
+      background-color: lightcoral;
+    }
+
+    > span {
+      position: absolute;
+      top: 0;
+      left: 8px;
+      line-height: 1.25;
+      font-size: 1.2rem;
+    }
+  }
+
+  > .status-affects {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    margin: 8px 5px;
+
+    > li {
+      margin-top: 0;
+      font-size: 1.5rem;
+      line-height: 1.65rem;
+    }
+  }
+}
+
 dialog {
   background: white;
   border-radius: 7px;
   color: #000c00;
   border-width: 2px;
-  top: 10px;
+  top: 40px;
   left: 10px;
   right: 10px;
   width: -webkit-fill-available;

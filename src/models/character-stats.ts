@@ -10,6 +10,12 @@ export interface BaseStats {
 
 export interface CharacterStatState extends BaseStats {
   unconscious: boolean;
+  baseHealth: number;
+  baseFarsight: number;
+  baseSpeed: number;
+  basePower: number;
+  baseDefence: number;
+  
   blinded: boolean;
   blindedSeconds: number;
   stunned: boolean;
@@ -55,19 +61,19 @@ export class CharacterStats {
   type: 'enemy' | 'friendly';
   
   farsight: number;
-  private baseFarsight: number;
+  protected baseFarsight: number;
   
   speed: number;
-  private baseSpeed: number;
+  protected baseSpeed: number;
 
   power: number;
-  private basePower: number;
+  protected basePower: number;
 
   defence: number;
-  private baseDefence: number;
+  protected baseDefence: number;
 
   health: number;
-  private baseHealth: number;
+  protected baseHealth: number;
 
   constructor(
     {reach, farsight, speed, type, health, power, defence}: BaseStats,
@@ -80,7 +86,7 @@ export class CharacterStats {
 
     this.basePower = this.power = power ?? 1;
     this.baseDefence = this.defence = defence ?? 1;
-    this.baseHealth = this.health = health ?? 1;
+    this.baseHealth = this.health = health ?? 2;
   }
 
   heal(amount: number) {
@@ -208,11 +214,16 @@ export class CharacterStats {
       unconscious: this.unconscious,
       reach: this.reach,
       farsight: this.farsight,
+      baseFarsight: this.baseFarsight,
       speed: this.speed,
+      baseSpeed: this.baseSpeed,
       type: this.type,
       health: this.health,
+      baseHealth: this.baseHealth,
       power: this.power,
+      basePower: this.basePower,
       defence: this.defence,
+      baseDefence: this.baseDefence,
       blinded: this.blinded,
       blindedSeconds: this.blindedSeconds,
       stunned: this.stunned,

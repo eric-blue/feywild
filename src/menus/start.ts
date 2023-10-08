@@ -5,7 +5,7 @@ import {addListener} from '../models/helpers';
 
 export class StartMenu {
   topLevelScene = new Scene();
-  menu: HTMLOListElement | null;
+  menu: HTMLMenuElement | null;
 
   constructor(gamestate: Gamestate) {
     const soundManager = new SoundEffects(new Camera());

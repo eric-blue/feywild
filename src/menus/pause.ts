@@ -2,7 +2,7 @@ import {Gamestate} from '../gamestate';
 import {addListener} from '../models/helpers';
 
 export class PauseMenu {
-  menu: HTMLOListElement | null;
+  menu: HTMLMenuElement | null;
   open = false;
 
   constructor(gamestate: Gamestate) {
