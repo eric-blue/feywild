@@ -52,13 +52,15 @@ export function init(canvas?: HTMLCanvasElement) {
         if (!gameIsLoading && !savingInProgress && !paused) {
           const delta = clock.getDelta();
 
-          gamestate.setState({playerPosition: player.root.position});
-
           const dev = import.meta.env.DEV;
           if (!dev || (dev && !window._orbitControls)) camera.update();
 
-          player.update(scene, delta);
-          NPCs.forEach(npc => npc.update(scene, delta));
+          gamestate.state.playerState = player.update(scene, delta);
+
+          NPCs.forEach(npc => {
+            const updates = npc.update(scene, delta);
+            gamestate.state.npcState[npc.id] = updates;
+          });
 
           // have the sun follow you to save of resources
           sunlight.target.position.copy(player.root.position);

@@ -1,6 +1,6 @@
 import {Scene, Vector3} from 'three';
 import {SoundEffects} from './sounds';
-import {Zone} from './types';
+import { CharacterState } from './models/character';
 
 declare global {
   interface Window {
@@ -35,14 +35,9 @@ window._currentScene;
 
 export interface GameState {
   saves: number;
-  playerPosition: Vector3;
-  playerInventory: {};
-  playerZone: Zone;
+  playerState: Partial<CharacterState>;
   npcState: {
-    [key: string]: {
-      position: Vector3;
-      inventory?: {};
-    };
+    [key: string]: Partial<CharacterState>;
   };
   health: number;
   level: number;
@@ -56,9 +51,11 @@ function onStartGame(detail: string | {[key: string]: unknown}) {
 export class Gamestate {
   state: GameState = {
     saves: 0,
-    playerPosition: new Vector3(0, 0.5, 0),
-    playerInventory: {},
-    playerZone: 'forest-grove-nw',
+    playerState: {
+      position: new Vector3(0, 0.5, 0),
+      inventory: {},
+      zone: 'forest-grove-nw',
+    },
     npcState: {},
     health: 100,
     level: 3,
@@ -71,7 +68,7 @@ export class Gamestate {
   }
 
   setPlayerPosition(position: Vector3) {
-    this.state.playerPosition?.copy(position);
+    this.state.playerState.position?.copy(position);
     dispatchEvent(new CustomEvent('update-player-position', {detail: {position}}));
   }
 

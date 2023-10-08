@@ -37,7 +37,7 @@ export function translateTiledToThreeJs<T = {}>(obj: TiledObject<T>, offsetX = 0
   const z = obj.y / PIXELS_PER_BLOCK - height + height / 2 + 1.5;
   const position = new Vector3(offsetX + x, 0.5, offsetZ + z);
 
-  return {position, width, height, depth, name: obj.name, properties: obj.properties};
+  return {id: obj.id, position, width, height, depth, name: obj.name, properties: obj.properties};
 }
 
 export async function translateTiledTemplateToThreeJs<T = {}>(obj: TiledTemplate, offsetX = 0, offsetZ = 0) {

@@ -4,8 +4,6 @@ import {Pathfinding, PathfindingHelper} from 'three-pathfinding';
 import {checkCollisions, getSimpleDirection} from '../helpers';
 
 export class PlayerController {
-  private player: Mesh;
-
   private keyboardState: KeyboardState = {};
   // Set up initial character properties
   private direction = new Vector3();
@@ -19,10 +17,7 @@ export class PlayerController {
   public onReachDestination?: () => void;
   public pauseMovement = false;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(player: Mesh, _zone: Zone) {
-    this.player = player;
-
+  constructor(private player: Mesh, public zone: Zone) {
     addEventListener('keydown', event => {
       const key = event.key.toUpperCase();
       this.keyboardState[key] = true;

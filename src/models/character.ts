@@ -4,16 +4,17 @@ import {PlayerController} from './player/controller';
 import type {GameState} from '../gamestate';
 import {Inventory} from './player/inventory';
 import {SpriteFlipbook} from './character-flipbook';
-import {Zone} from '../types';
+import {Direction, Zone} from '../types';
 import {Orchestrator} from './ai/orchestrator';
 import {Dialogue} from './ai/dialogue';
 import {Bodyswap} from './player/bodyswap';
 
 import {isTouchingPlayer} from './helpers';
+import { BaseStats, CharacterStatState, CharacterStats } from './character-stats';
 
 interface Props {
   name?: string;
-  position: GameState['playerPosition'];
+  position: GameState['playerState']['position'];
   spriteSheet?: string;
   dialogueFilename?: string;
   zone: Zone;
@@ -26,23 +27,24 @@ interface Props {
   };
 }
 
+type Newable<T> = new (...args: any[]) => T;
+
 interface CharacterComposition {
-  Controller: new (
-    ...args: ConstructorParameters<typeof PlayerController | typeof AIController>
-  ) => PlayerController | AIController;
-  Orchestrator?: new (...args: ConstructorParameters<typeof Orchestrator>) => Orchestrator;
-  InventoryModule?: new (...args: ConstructorParameters<typeof Inventory>) => Inventory;
-  FlipbookModule?: new (...args: ConstructorParameters<typeof SpriteFlipbook>) => SpriteFlipbook;
-  Dialogue?: new (...args: ConstructorParameters<typeof Dialogue>) => Dialogue;
-  BodyswapModule?: new (...args: ConstructorParameters<typeof Bodyswap>) => Bodyswap;
+  Controller: Newable<PlayerController|AIController>;
+  Orchestrator?: Newable<Orchestrator>;
+  InventoryModule?: Newable<Inventory>;
+  FlipbookModule?: Newable<SpriteFlipbook>;
+  Dialogue?: Newable<Dialogue>;
+  BodyswapModule?: Newable<Bodyswap>;
+  CharacterStats?: Newable<CharacterStats>;
 }
 
-const defaultStats = {
-  reach: 2.25,
-  farsight: 10,
-  speed: 0.1,
-  type: 'friendly' as const,
-};
+export interface CharacterState extends CharacterStatState {
+  position: Vector3;
+  direction: Direction;
+  zone: Zone; 
+  inventory?: {};
+}
 
 /**
  * A base actor class for spawning in NPCs or player
@@ -55,19 +57,20 @@ export class Character {
   root: Mesh;
   controller: PlayerController | AIController;
   orchestrator?: Orchestrator;
+  stats?: CharacterStats;
   inventory?: Inventory;
   flipbook?: SpriteFlipbook;
   dialogue?: Dialogue;
   bodyswap?: Bodyswap;
 
-  stats?: Props['stats'] = defaultStats;
   onAppear?: () => void;
   onDialogueExit?: () => void;
   onDialogueStart?: () => void;
   onDialogueEnd?: () => void;
 
   constructor(
-    {Controller, Orchestrator, InventoryModule, FlipbookModule, Dialogue, BodyswapModule}: CharacterComposition,
+    public id: number,
+    {Controller, Orchestrator, InventoryModule, FlipbookModule, Dialogue, BodyswapModule, CharacterStats}: CharacterComposition,
     props: Props = {
       position: new Vector3(0.5, 0.5, 0.5),
       spriteSheet: undefined,
@@ -79,7 +82,7 @@ export class Character {
 
     this.root = new Mesh(geometry, material);
     this.root.name = props.name || '???';
-    if (props.stats) this.stats = {...this.stats, ...props.stats};
+    this.stats = CharacterStats ? new CharacterStats({...this.stats, ...props.stats}) : undefined;
 
     if (props.position) {
       this.root.position.set(props.position.x, props.position.y, props.position.z);
@@ -125,6 +128,31 @@ export class Character {
         };
       }
     }
+
+    if (this.stats) {
+      // some console.logs for now, but this is where we'd
+      // stitch together other modules along with events
+      // controlled by the scene.
+      this.stats.actions = {
+        onDeath: () => console.log(`${this.root.name} has died!`),
+        onReceiveDamage: (amount: number) => console.log(`${this.root.name} took ${amount} damage!`),
+        onHeal: (amount: number) => console.log(`${this.root.name} healed ${amount} health!`),
+        onRevive: () => console.log(`${this.root.name} has been revived!`),
+        onBlindStart: () => console.log(`${this.root.name} has been blinded!`),
+        onBlindEnd: () => console.log(`${this.root.name} is no longer blind!`),
+        onStunStart: () => console.log(`${this.root.name} has been stunned!`),
+        onStunEnd: () => console.log(`${this.root.name} is no longer stunned!`),
+        onWeakenStart: () => console.log(`${this.root.name} has been weakened!`),
+        onWeakenEnd: () => console.log(`${this.root.name} is no longer weakened!`),
+        onCrippleStart: () => console.log(`${this.root.name} has been crippled!`),
+        onCrippleEnd: () => console.log(`${this.root.name} is no longer crippled!`),
+        
+        onBodySwap: (newStats: BaseStats) => console.log(`${this.root.name} has swapped bodies!`, newStats),
+      }
+
+      if (this.bodyswap) this.bodyswap.onSwap = (newStats) => this.stats?.swapBodies(newStats);
+    }
+
     scene.add(this.root);
   }
 
@@ -134,11 +162,20 @@ export class Character {
 
   update(scene: Scene, delta: number) {
     this.controller.update(scene);
-    this.flipbook?.update(delta, this.controller.simpleDirection());
+    const direction = this.controller.simpleDirection();
+    this.flipbook?.update(delta, direction);
+    const currentStats = this.stats?.update(delta);
 
     if (this.stats?.type === 'enemy') {
       const touch = () => isTouchingPlayer(this.stats?.reach || 2, this.root, scene);
       this.orchestrator?.attack(delta, touch);
     }
+
+    return {
+      position: this.root.position,
+      zone: this.controller.zone,
+      direction,
+      ...currentStats,
+    };
   }
 }
