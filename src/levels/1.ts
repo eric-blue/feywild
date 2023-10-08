@@ -2,7 +2,7 @@ import {Vector3} from 'three';
 import {Lights} from '../lights';
 import {AIController} from '../models/ai/controller';
 import {Character} from '../models/character';
-import {SpriteFlipbook} from '../models/character-flipbook';
+import {SpriteFlipbook} from '../models/shared/flipbook';
 import {PlayerController} from '../models/player/controller';
 import {Inventory} from '../models/player/inventory';
 import {OpenWorldMap} from './openWorld/scene';
@@ -13,7 +13,7 @@ import {Dialogue} from '../models/ai/dialogue';
 import {Bodyswap} from '../models/player/bodyswap';
 
 import {getPlayerPosition} from '../models/helpers';
-import { CharacterStats } from '../models/character-stats';
+import { CharacterStats } from '../models/shared/stats';
 
 /**
  * The Before-fore (pre-invasion map)

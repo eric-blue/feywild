@@ -240,14 +240,13 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
          "id":25,
-         "locked":true,
          "name":"npc",
          "objects":[
                 {
@@ -255,16 +254,45 @@
                  "template":"templates\/pickle-man.json",
                  "x":447.924050632911,
                  "y":303.3417721519
+                }, 
+                {
+                 "id":437,
+                 "name":"Bad Boy",
+                 "properties":[
+                        {
+                         "name":"DialogueFilename",
+                         "type":"file",
+                         "value":""
+                        }, 
+                        {
+                         "name":"Enemy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"Farsight",
+                         "type":"float",
+                         "value":9
+                        }, 
+                        {
+                         "name":"RouteJson",
+                         "type":"string",
+                         "value":""
+                        }],
+                 "template":"templates\/pickle-man.json",
+                 "x":475.570436507937,
+                 "y":244.295634920635
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
          "id":10,
+         "locked":true,
          "name":"collisions",
          "objects":[
                 {
@@ -364,6 +392,7 @@
         {
          "draworder":"topdown",
          "id":22,
+         "locked":true,
          "name":"trees",
          "objects":[
                 {
@@ -1708,12 +1737,12 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],
  "nextlayerid":26,
- "nextobjectid":437,
+ "nextobjectid":438,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

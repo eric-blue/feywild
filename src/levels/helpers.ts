@@ -1,5 +1,6 @@
 import {Vector3} from 'three';
 import {Static} from '../models/static';
+import { InitStats } from '../models/shared/stats';
 
 export interface TiledObject<T = {}> {
   id: number;
@@ -11,17 +12,15 @@ export interface TiledObject<T = {}> {
   properties?: T;
 }
 
-export interface TiledTemplate {
+export interface TiledTemplate<T = {}> {
   id: number;
   template?: boolean;
+  properties?: T;
   x: number;
   y: number;
 }
 
-export interface TiledNPCProperties {
-  farsight: number;
-  reach: number;
-  speed: number;
+export interface TiledNPCProperties extends Omit<InitStats, 'type'> {
   enemy: boolean;
   dialogueFilename?: string;
   routeJson?: string;
@@ -43,7 +42,7 @@ export function translateTiledToThreeJs<T = {}>(obj: TiledObject<T>, offsetX = 0
 export async function translateTiledTemplateToThreeJs<T = {}>(obj: TiledTemplate, offsetX = 0, offsetZ = 0) {
   const {default: template} = await import(`../tiled/${obj.template}`);
 
-  const properties = template.object.properties
+  const properties = template.object.properties 
     ? Object.fromEntries(
         template.object.properties?.map(({name, value}: {name: string; value: string}) => [
           `${name[0].toLowerCase()}${name.slice(1)}`,
@@ -57,7 +56,7 @@ export async function translateTiledTemplateToThreeJs<T = {}>(obj: TiledTemplate
     ...obj,
     width: template.object.width,
     height: template.object.height,
-    properties: properties as T,
+    properties: {...properties, ...obj.properties} as T,
   };
 
   return {...translateTiledToThreeJs<T>(tiledObject, offsetX, offsetZ), template};

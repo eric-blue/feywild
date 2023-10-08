@@ -6,6 +6,11 @@
      "name":"Pickle Man",
      "properties":[
             {
+             "name":"Defence",
+             "type":"float",
+             "value":1
+            }, 
+            {
              "name":"DialogueFilename",
              "type":"file",
              "value":"..\/..\/twine\/dialogue\/pickle-example.json"
@@ -19,6 +24,16 @@
              "name":"Farsight",
              "type":"float",
              "value":10
+            }, 
+            {
+             "name":"Health",
+             "type":"float",
+             "value":1
+            }, 
+            {
+             "name":"Power",
+             "type":"float",
+             "value":1
             }, 
             {
              "name":"Reach",

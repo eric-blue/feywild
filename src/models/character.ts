@@ -3,14 +3,14 @@ import {AIController} from './ai/controller';
 import {PlayerController} from './player/controller';
 import type {GameState} from '../gamestate';
 import {Inventory} from './player/inventory';
-import {SpriteFlipbook} from './character-flipbook';
+import {SpriteFlipbook} from './shared/flipbook';
 import {Direction, Zone} from '../types';
 import {Orchestrator} from './ai/orchestrator';
 import {Dialogue} from './ai/dialogue';
 import {Bodyswap} from './player/bodyswap';
 
 import {isTouchingPlayer} from './helpers';
-import { BaseStats, CharacterStatState, CharacterStats } from './character-stats';
+import { BaseStats, CharacterStatState, CharacterStats, InitStats } from './shared/stats';
 
 interface Props {
   name?: string;
@@ -19,12 +19,7 @@ interface Props {
   dialogueFilename?: string;
   zone: Zone;
   route?: [x: number, y: number, z: number][];
-  stats?: {
-    reach: number;
-    farsight: number;
-    speed: number;
-    type: 'enemy' | 'player' | 'friendly';
-  };
+  stats?: InitStats;
 }
 
 type Newable<T> = new (...args: any[]) => T;
@@ -82,7 +77,7 @@ export class Character {
 
     this.root = new Mesh(geometry, material);
     this.root.name = props.name || '???';
-    this.stats = CharacterStats ? new CharacterStats({...this.stats, ...props.stats}) : undefined;
+    this.stats = CharacterStats ? new CharacterStats({...props.stats}) : undefined;
 
     if (props.position) {
       this.root.position.set(props.position.x, props.position.y, props.position.z);

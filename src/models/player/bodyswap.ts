@@ -1,5 +1,5 @@
-import {SpriteFlipbook} from '../character-flipbook';
-import { BaseStats } from '../character-stats';
+import {SpriteFlipbook} from '../shared/flipbook';
+import { BaseStats } from '../shared/stats';
 
 type UsefulStats = Pick<BaseStats, "defence"|"farsight"|"power"|"reach"|"speed">;
 interface BodyForm extends UsefulStats {

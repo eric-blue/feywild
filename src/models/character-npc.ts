@@ -4,8 +4,8 @@ import {Zone} from '../types';
 import {AIController} from './ai/controller';
 import {Dialogue} from './ai/dialogue';
 import {Character} from './character';
-import {SpriteFlipbook} from './character-flipbook';
-import {CharacterStats} from './character-stats';
+import {SpriteFlipbook} from './shared/flipbook';
+import {CharacterStats} from './shared/stats';
 import {Orchestrator} from './ai/orchestrator';
 import {Pathfinding} from 'three-pathfinding';
 
@@ -19,6 +19,9 @@ interface Props {
   pathfinder: Pathfinding;
 }
 
+/**
+ * an abstraction for creating Characters from Tiled objects
+ */
 export async function NPC({tiledObject, zoneData, scene, pathfinder}: Props) {
   const {id, template, position, properties, name} = await translateTiledTemplateToThreeJs<TiledNPCProperties>(
     tiledObject,
