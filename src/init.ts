@@ -3,6 +3,7 @@ import {Gamestate} from './gamestate';
 import {PauseMenu} from './menus/pause';
 import {StartMenu} from './menus/start';
 import {SceneOne} from './levels/1';
+import { HUD } from './menus/hud';
 
 interface SceneMachine {
   [key: number]: (state: Gamestate) => ReturnType<typeof SceneOne>;
@@ -24,6 +25,7 @@ export function init(canvas?: HTMLCanvasElement) {
 
     addEventListener('startgame', async () => {
       new PauseMenu(gamestate);
+      const hud = new HUD(gamestate);
 
       const {scene, sunlight, camera, player, NPCs} = await scenes[gamestate.state.scene](gamestate);
 
@@ -51,6 +53,7 @@ export function init(canvas?: HTMLCanvasElement) {
 
         if (!gameIsLoading && !savingInProgress && !paused) {
           const delta = clock.getDelta();
+          hud.update();
 
           const dev = import.meta.env.DEV;
           if (!dev || (dev && !window._orbitControls)) camera.update();
