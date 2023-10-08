@@ -13,6 +13,7 @@ import {Dialogue} from '../models/ai/dialogue';
 import {Bodyswap} from '../models/player/bodyswap';
 
 import {getPlayerPosition} from '../models/helpers';
+import { CharacterStats } from '../models/character-stats';
 
 /**
  * The Before-fore (pre-invasion map)
@@ -25,20 +26,22 @@ export async function SceneOne(gamestate: Gamestate) {
   const {sunlight} = new Lights(scene);
   const camera = new Camera();
 
-  const {playerPosition, playerZone} = gamestate.state;
+  const {position, zone} = gamestate.state.playerState;
 
   const player = new Character(
+    1,
     {
       Controller: PlayerController,
       InventoryModule: Inventory,
       FlipbookModule: SpriteFlipbook,
       BodyswapModule: Bodyswap,
+      CharacterStats,
     },
     {
       name: 'player',
-      position: playerPosition,
+      position,
       spriteSheet: 'sprites/forest-sprite.png',
-      zone: playerZone,
+      zone: zone ?? 'forest-grove-nw',
     }
   );
 
@@ -46,6 +49,7 @@ export async function SceneOne(gamestate: Gamestate) {
   camera.setTarget(() => getPlayerPosition(scene));
 
   const NPC1 = new Character(
+    2,
     {
       Controller: AIController,
       FlipbookModule: SpriteFlipbook,
@@ -69,10 +73,12 @@ export async function SceneOne(gamestate: Gamestate) {
   NPC1.controller.target = NPC1.orchestrator?.trackPlayer(scene);
 
   const NPC2 = new Character(
+    3,
     {
       Controller: AIController,
       FlipbookModule: SpriteFlipbook,
       Dialogue,
+      CharacterStats,
     },
     {
       position: new Vector3(1, 0.5, 16),
@@ -93,11 +99,13 @@ export async function SceneOne(gamestate: Gamestate) {
     [-5, 0.5, 1],
   ];
   const NPC3 = new Character(
+    4,
     {
       Controller: AIController,
       FlipbookModule: SpriteFlipbook,
       Orchestrator,
       Dialogue,
+      CharacterStats,
     },
     {
       position: new Vector3(-5, 0.5, 1),

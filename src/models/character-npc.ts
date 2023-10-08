@@ -5,6 +5,7 @@ import {AIController} from './ai/controller';
 import {Dialogue} from './ai/dialogue';
 import {Character} from './character';
 import {SpriteFlipbook} from './character-flipbook';
+import {CharacterStats} from './character-stats';
 import {Orchestrator} from './ai/orchestrator';
 import {Pathfinding} from 'three-pathfinding';
 
@@ -19,18 +20,20 @@ interface Props {
 }
 
 export async function NPC({tiledObject, zoneData, scene, pathfinder}: Props) {
-  const {template, position, properties, name} = await translateTiledTemplateToThreeJs<TiledNPCProperties>(
+  const {id, template, position, properties, name} = await translateTiledTemplateToThreeJs<TiledNPCProperties>(
     tiledObject,
     zoneData.position.x - 50,
     zoneData.position.z - 50
   );
 
   const npc = new Character(
+    id,
     {
       Controller: AIController,
       FlipbookModule: SpriteFlipbook,
       Dialogue: properties?.dialogueFilename ? Dialogue : undefined,
       Orchestrator: properties?.routeJson ? Orchestrator : undefined,
+      CharacterStats,
     },
     {
       position,

@@ -108,7 +108,7 @@ export class Dialogue {
         </p>`
         : '';
 
-      if (this.passages && options.length > 1) {
+      if (passage && options.length > 1) {
         html += `<ol>
           ${options
             .map(
@@ -119,6 +119,8 @@ export class Dialogue {
             .join('')}
         </ol>`;
       }
+
+      html+= `<hr/><p><em>press ENTER or SPACE</em></p>`;
 
       this.dialog!.innerHTML = html;
 
