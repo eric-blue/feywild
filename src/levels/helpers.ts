@@ -15,7 +15,7 @@ export interface TiledObject<T = {}> {
 export interface TiledTemplate<T = {}> {
   id: number;
   template?: boolean;
-  properties?: T;
+  properties?: T[];
   x: number;
   y: number;
 }
@@ -39,12 +39,21 @@ export function translateTiledToThreeJs<T = {}>(obj: TiledObject<T>, offsetX = 0
   return {id: obj.id, position, width, height, depth, name: obj.name, properties: obj.properties};
 }
 
-export async function translateTiledTemplateToThreeJs<T = {}>(obj: TiledTemplate, offsetX = 0, offsetZ = 0) {
+export async function translateTiledTemplateToThreeJs<T = {}>(obj: TiledTemplate<T>, offsetX = 0, offsetZ = 0) {
   const {default: template} = await import(`../tiled/${obj.template}`);
 
   const properties = template.object.properties 
     ? Object.fromEntries(
-        template.object.properties?.map(({name, value}: {name: string; value: string}) => [
+        template.object.properties?.map(({name, value}: any) => [
+          `${name[0].toLowerCase()}${name.slice(1)}`,
+          value,
+        ])
+      )
+    : {};
+
+  const objProperties = obj.properties 
+    ? Object.fromEntries(
+        obj.properties?.map(({name, value}: any) => [
           `${name[0].toLowerCase()}${name.slice(1)}`,
           value,
         ])
@@ -56,7 +65,7 @@ export async function translateTiledTemplateToThreeJs<T = {}>(obj: TiledTemplate
     ...obj,
     width: template.object.width,
     height: template.object.height,
-    properties: {...properties, ...obj.properties} as T,
+    properties: {...properties, ...objProperties} as T,
   };
 
   return {...translateTiledToThreeJs<T>(tiledObject, offsetX, offsetZ), template};

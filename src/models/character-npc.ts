@@ -1,5 +1,5 @@
 import {Scene, Vector3} from 'three';
-import {translateTiledTemplateToThreeJs, TiledNPCProperties, TiledObject} from '../levels/helpers';
+import {translateTiledTemplateToThreeJs, TiledNPCProperties, TiledObject, TiledTemplate} from '../levels/helpers';
 import {Zone} from '../types';
 import {AIController} from './ai/controller';
 import {Dialogue} from './ai/dialogue';
@@ -10,7 +10,7 @@ import {Orchestrator} from './ai/orchestrator';
 import {Pathfinding} from 'three-pathfinding';
 
 interface Props {
-  tiledObject: TiledObject;
+  tiledObject: TiledTemplate<TiledNPCProperties>;
   zoneData: {
     name: Zone;
     position: Vector3;
