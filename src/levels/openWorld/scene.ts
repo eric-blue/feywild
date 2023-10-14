@@ -8,22 +8,23 @@ import {
   Scene,
   TextureLoader,
   SRGBColorSpace,
+  Vector3,
 } from 'three';
 import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {Pathfinding} from 'three-pathfinding';
 import {Tree} from '../../models/game-objects/tree';
-import {Gamestate} from '../../gamestate';
 import {Character} from '../../models/character';
 import {Zone} from '../../types';
-import {TiledObject, createThreeJsObject, translateTiledTemplateToThreeJs, PIXELS_PER_BLOCK} from '../helpers';
+import {TiledObject, createThreeJsObject, translateTiledTemplateToThreeJs, PIXELS_PER_BLOCK, TiledTemplate, TiledNPCProperties} from '../helpers';
 import {NPC} from '../../models/character-npc';
 
 const TILED_DIR = '../../tiled/';
 
-export async function OpenWorldMap(gamestate: Gamestate) {
+export async function OpenWorldMap() {
   const scene = new Scene();
   const pathfinder = new Pathfinding();
   const npcs: Character[] = [];
+  let spawn = new Vector3();
 
   scene.background = new Color('white');
   if (import.meta.env.DEV) window._currentScene = scene;
@@ -70,7 +71,7 @@ export async function OpenWorldMap(gamestate: Gamestate) {
                     );
 
                     if (threeObj) {
-                      if (threeObj.root.name === 'spawn') gamestate.setPlayerPosition(threeObj.root.position);
+                      if (threeObj.root.name === 'spawn') spawn = threeObj.root.position;
                     }
                   }
                 }
@@ -78,7 +79,7 @@ export async function OpenWorldMap(gamestate: Gamestate) {
                 if (name === 'npc') {
                   for (const tiledObject of objects) {
                     const npc = await NPC({
-                      tiledObject,
+                      tiledObject: tiledObject as TiledTemplate<TiledNPCProperties>,
                       scene,
                       pathfinder,
                       zoneData: {
@@ -95,7 +96,7 @@ export async function OpenWorldMap(gamestate: Gamestate) {
                   const spriteMargin = 0.75; // tree sprites have a ~0.75 margin before the trunk
                   for (const tiledObject of objects) {
                     const {template, ...threePos} = await translateTiledTemplateToThreeJs(
-                      tiledObject,
+                      tiledObject as TiledTemplate<TiledNPCProperties>,
                       placeholder.position.x - 50,
                       placeholder.position.z - 50
                     );
@@ -219,5 +220,6 @@ export async function OpenWorldMap(gamestate: Gamestate) {
     loader,
     npcs,
     pathfinder,
+    spawn
   };
 }

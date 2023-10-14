@@ -1,10 +1,18 @@
 import {Scene, Vector3} from 'three';
 import {getPlayerPosition} from '../helpers';
 
+/**
+ * Think of this module as a conductor for the AI.
+ * It's responsible for acting as a brain. 
+ * **Not needed for the player character.
+ */
 export class Orchestrator {
   public routeGenerator?: Generator<Vector3>;
   private elapsedTime = 0;
-  private lastAttackTime = 0;
+  private lastTick = 0;
+  public actions: {
+    onNextTick?: () => void;
+  } = {};
 
   constructor(route?: [x: number, y: number, z: number][]) {
     if (route) this.setRoute(route);
@@ -28,13 +36,12 @@ export class Orchestrator {
     return getPlayerPosition(scene);
   }
 
-  attack(delta: number, predicate: () => boolean) {
+  nextTick(delta: number, predicate: () => boolean) {
     this.elapsedTime += delta;
 
-    if (this.elapsedTime - this.lastAttackTime >= 1 && predicate()) {
-      console.log('attack!');
-
-      this.lastAttackTime = this.elapsedTime;
+    if (this.elapsedTime - this.lastTick >= 1 && predicate()) {
+      this.actions.onNextTick?.();
+      this.lastTick = this.elapsedTime;
     }
   }
 }

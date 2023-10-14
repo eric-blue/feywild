@@ -80,5 +80,6 @@ const soundsToLoad = {
   select: 'sounds/MI_SFX 28.mp3',
   focus: 'sounds/MI_SFX 29.mp3',
   chatter: 'sounds/MI_SFX 35.mp3',
+  oof: 'sounds/roblox-oof.mp3',
   //... add more sounds as needed
 };

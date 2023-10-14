@@ -14,18 +14,19 @@ export class PlayerController {
   private pathfindingHelper = new PathfindingHelper();
 
   target?: Vector3;
-  public onReachDestination?: () => void;
   public pauseMovement = false;
+  
+  public actions: {
+    onKeydown?: (key: KeyboardEvent['key']) => void;
+    onReachDestination?: () => void;
+  } = {};
 
   constructor(private player: Mesh, public zone: Zone) {
     addEventListener('keydown', event => {
       const key = event.key.toUpperCase();
       this.keyboardState[key] = true;
 
-      if (event.key === ' ' && !event.repeat) {
-        // this should be moved to a diff module
-        console.log('ATTACK'); // Call the attack function when spacebar is pressed
-      }
+      if (!event.repeat) this.actions?.onKeydown?.(key);
     });
 
     addEventListener('keyup', event => {

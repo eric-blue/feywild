@@ -19,10 +19,14 @@ export class Dialogue {
 
   activePassage = 'START';
   public passages?: Passages;
+  
   public isTouchingPlayer?: () => boolean;
-  public onDialogueExit?: () => void;
-  public onDialogueStart?: () => void;
-  public onDialogueEnd?: () => void;
+
+  public actions: {
+    onDialogueExit?: () => void,
+    onDialogueStart?: () => void,
+    onDialogueEnd?: () => void,
+  } = {};
 
   constructor(
     public npc: Mesh,
@@ -92,8 +96,8 @@ export class Dialogue {
       const {text, options} = this.passages[passage];
 
       if (!text) {
-        if (passage === 'END') this.onDialogueEnd?.();
-        if (passage === 'EXIT') this.onDialogueExit?.();
+        if (passage === 'END') this.actions.onDialogueEnd?.();
+        if (passage === 'EXIT') this.actions.onDialogueExit?.();
         this.toggleDialog();
         return;
       }
@@ -160,7 +164,7 @@ export class Dialogue {
    * open dialogue dialog
    */
   openDialogue() {
-    this.onDialogueStart?.();
+    this.actions?.onDialogueStart?.();
     this.activePassage = 'START';
     this.populateMarkup(this.activePassage);
   }

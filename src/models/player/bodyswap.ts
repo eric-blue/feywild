@@ -1,4 +1,3 @@
-import {SpriteFlipbook} from '../shared/flipbook';
 import { BaseStats } from '../shared/stats';
 
 type UsefulStats = Pick<BaseStats, "defence"|"farsight"|"power"|"reach"|"speed">;
@@ -13,9 +12,11 @@ const forms: {[key: number]: BodyForm} = {
 }
 
 export class Bodyswap {
-  public onSwap?: (newStats: UsefulStats) => void;
+  public actions: {
+    onSwap?: (newStats: BodyForm) => void;
+  } = {};
 
-  constructor(public flipbook: SpriteFlipbook) {
+  constructor() {
     addEventListener('keydown', ({key}) => {
       this.swap(key as `${number}`);
     });
@@ -25,7 +26,6 @@ export class Bodyswap {
     const body = forms[parseFloat(key) as number];
     if (!body) return;
 
-    this.flipbook.swapTexture(`./sprites/${body.sprite}.png`);
-    this.onSwap?.(body);
+    this.actions.onSwap?.(body);
   }
 }

@@ -4,6 +4,7 @@ import {PauseMenu} from './menus/pause';
 import {StartMenu} from './menus/start';
 import {SceneOne} from './levels/1';
 import { HUD } from './menus/hud';
+import { GameOverMenu } from './menus/game-over';
 
 interface SceneMachine {
   [key: number]: (state: Gamestate) => ReturnType<typeof SceneOne>;
@@ -25,6 +26,7 @@ export function init(canvas?: HTMLCanvasElement) {
 
     addEventListener('startgame', async () => {
       new PauseMenu(gamestate);
+      new GameOverMenu(gamestate);
       const hud = new HUD(gamestate);
 
       const {scene, sunlight, camera, player, NPCs} = await scenes[gamestate.state.scene](gamestate);

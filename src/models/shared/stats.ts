@@ -47,7 +47,7 @@ interface StatsActions {
 }
 
 export class CharacterStats {
-  private unconscious = false;
+  unconscious = false;
 
   blinded = false;
   private blindedSeconds = 0;
@@ -78,10 +78,11 @@ export class CharacterStats {
 
   health: number;
   protected baseHealth: number;
+  
+  public actions: StatsActions = {}
 
   constructor(
     {unconscious, reach, farsight, speed, type, health, power, defence}: InitStats,
-    public actions: StatsActions
   ) {
     this.unconscious = unconscious ?? false;
     this.reach = reach ?? 2.25;
@@ -89,7 +90,7 @@ export class CharacterStats {
     this.baseSpeed = this.speed = speed ?? 0.1;
     this.type = type ?? 'friendly';
 
-    this.basePower = this.power = power ?? 1;
+    this.basePower = this.power = power ?? 2;
     this.baseDefence = this.defence = defence ?? 1;
     this.baseHealth = this.health = health ?? 2;
   }
@@ -108,6 +109,8 @@ export class CharacterStats {
     const dmg = Math.max(attack - this.defence, 0);
     this.health = Math.max(this.health - dmg, 0);
     this.actions.onReceiveDamage?.(dmg);
+    
+    window.soundManager.play('oof', {volume: 0.25});
 
     if (this.health <= 0) {
       this.unconscious = true;
