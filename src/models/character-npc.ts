@@ -1,11 +1,12 @@
 import {Scene, Vector3} from 'three';
-import {translateTiledTemplateToThreeJs, TiledNPCProperties, TiledObject, TiledTemplate} from '../levels/helpers';
+import {translateTiledTemplateToThreeJs, TiledNPCProperties, TiledTemplate} from '../levels/helpers';
 import {Zone} from '../types';
 import {AIController} from './ai/controller';
 import {Dialogue} from './ai/dialogue';
 import {Character} from './character';
 import {SpriteFlipbook} from './shared/flipbook';
 import {CharacterStats} from './shared/stats';
+import {CharacterCombat} from './shared/combat';
 import {Orchestrator} from './ai/orchestrator';
 import {Pathfinding} from 'three-pathfinding';
 
@@ -37,6 +38,7 @@ export async function NPC({tiledObject, zoneData, scene, pathfinder}: Props) {
       Dialogue: properties?.dialogueFilename ? Dialogue : undefined,
       Orchestrator: properties?.routeJson ? Orchestrator : undefined,
       CharacterStats,
+      CharacterCombat,
     },
     {
       position,
@@ -58,13 +60,10 @@ export async function NPC({tiledObject, zoneData, scene, pathfinder}: Props) {
     npc.controller.enablePathfinding(pathfinder, scene);
   }
 
-  if (properties?.enemy) {
-    npc.controller.target = npc.orchestrator?.trackPlayer(scene);
-  }
-
   npc.create(scene);
 
   // how to do this...?
+  // need to pass in a set of SCENE actions to the orchestrator
   // NPC4.onDialogueEnd = () => console.log('goodbye');
   // NPC4.onDialogueExit = () => console.log('ok nevermind then');
   return npc;

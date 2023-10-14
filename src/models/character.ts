@@ -11,6 +11,9 @@ import {Bodyswap} from './player/bodyswap';
 
 import {isTouchingPlayer} from './helpers';
 import { BaseStats, CharacterStatState, CharacterStats, InitStats } from './shared/stats';
+import { CharacterCombat } from './shared/combat';
+
+const SPEAK_DISTANCE = 2.2;
 
 interface Props {
   name?: string;
@@ -22,16 +25,15 @@ interface Props {
   stats?: InitStats;
 }
 
-type Newable<T> = new (...args: any[]) => T;
-
 interface CharacterComposition {
-  Controller: Newable<PlayerController|AIController>;
-  Orchestrator?: Newable<Orchestrator>;
-  InventoryModule?: Newable<Inventory>;
-  FlipbookModule?: Newable<SpriteFlipbook>;
-  Dialogue?: Newable<Dialogue>;
-  BodyswapModule?: Newable<Bodyswap>;
-  CharacterStats?: Newable<CharacterStats>;
+  Controller: new (...args: ConstructorParameters<typeof PlayerController| typeof AIController>) => PlayerController | AIController;
+  Orchestrator?: new (...args: ConstructorParameters<typeof Orchestrator>) => Orchestrator;
+  InventoryModule?: new (...args: ConstructorParameters<typeof Inventory>) => Inventory;
+  FlipbookModule?: new (...args: ConstructorParameters<typeof SpriteFlipbook>) => SpriteFlipbook;
+  Dialogue?: new (...args: ConstructorParameters<typeof Dialogue>) => Dialogue;
+  BodyswapModule?:  new (...args: ConstructorParameters<typeof Bodyswap>) => Bodyswap;
+  CharacterStats?: new (...args: ConstructorParameters<typeof CharacterStats>) => CharacterStats;
+  CharacterCombat?: new (...args: ConstructorParameters<typeof CharacterCombat>) => CharacterCombat;
 }
 
 export interface CharacterState extends CharacterStatState {
@@ -57,6 +59,7 @@ export class Character {
   flipbook?: SpriteFlipbook;
   dialogue?: Dialogue;
   bodyswap?: Bodyswap;
+  combatController?: CharacterCombat;
 
   onAppear?: () => void;
   onDialogueExit?: () => void;
@@ -65,7 +68,7 @@ export class Character {
 
   constructor(
     public id: number,
-    {Controller, Orchestrator, InventoryModule, FlipbookModule, Dialogue, BodyswapModule, CharacterStats}: CharacterComposition,
+    {Controller, Orchestrator, InventoryModule, FlipbookModule, Dialogue, BodyswapModule, CharacterStats, CharacterCombat}: CharacterComposition,
     props: Props = {
       position: new Vector3(0.5, 0.5, 0.5),
       spriteSheet: undefined,
@@ -78,58 +81,72 @@ export class Character {
     this.root = new Mesh(geometry, material);
     this.root.name = props.name || '???';
     this.stats = CharacterStats ? new CharacterStats({...props.stats}) : undefined;
+    if (this.stats) {
+      this.combatController = CharacterCombat ? new CharacterCombat(this.root, props.zone, this.stats) : undefined;
+    }
 
     if (props.position) {
       this.root.position.set(props.position.x, props.position.y, props.position.z);
     }
 
     if (FlipbookModule && props.spriteSheet) {
-      this.flipbook = new FlipbookModule(this.root, props.spriteSheet);
-      this.bodyswap = BodyswapModule ? new BodyswapModule(this.flipbook) : undefined;
+      this.flipbook = new FlipbookModule(this.root, props.spriteSheet as `./sprites/${string}.png`);
     }
 
+    this.bodyswap = BodyswapModule ? new BodyswapModule() : undefined;
     this.inventory = InventoryModule ? new InventoryModule() : undefined;
     this.controller = new Controller(this.root, props.zone);
     this.orchestrator = Orchestrator ? new Orchestrator(props.route) : undefined;
     this.dialogue = Dialogue && props.dialogueFilename ? new Dialogue(this.root, props.dialogueFilename) : undefined;
   }
-
+  
+  /**
+   * used to attach actions to the character's modules
+   * and add the character to the scene
+   */
   create(scene: Scene) {
     if (this.dialogue) {
       this.dialogue.isTouchingPlayer = () => {
-        return isTouchingPlayer(2.2, this.root, scene);
-      };
+        return isTouchingPlayer(SPEAK_DISTANCE, this.root, scene);
+      },
 
-      this.dialogue.onDialogueEnd = () => {
-        this.controller.pauseMovement = false;
-        this.onDialogueEnd?.();
-      };
+      this.dialogue.actions = {
+        onDialogueEnd: () => {
+          this.controller.pauseMovement = false;
+          this.onDialogueEnd?.();
+        },
+        onDialogueExit: () => {
+          this.controller.pauseMovement = false;
+          this.onDialogueExit?.();
+        },
+        onDialogueStart: () => {
+          this.controller.pauseMovement = true;
+        },
+      }
 
-      this.dialogue.onDialogueExit = () => {
-        this.controller.pauseMovement = false;
-        this.onDialogueExit?.();
-      };
-
-      this.dialogue.onDialogueStart = () => {
-        this.controller.pauseMovement = true;
-      };
     }
 
-    if (this.orchestrator) {
-      if (this.orchestrator.routeGenerator) {
-        this.controller.onReachDestination = () => {
-          const next = this.orchestrator!.routeGenerator!.next().value;
-          this.controller.target = next;
-        };
-      }
+    if (this.orchestrator?.routeGenerator) {
+      this.controller.actions.onReachDestination = () => {
+        const next = this.orchestrator!.routeGenerator!.next().value;
+        this.controller.target = next;
+      };
     }
 
     if (this.stats) {
-      // some console.logs for now, but this is where we'd
-      // stitch together other modules along with events
-      // controlled by the scene.
+      /**
+       * some console.logs for now, but this is where we'd stitch together 
+       * other modules along with events controlled by the scene.
+       */
       this.stats.actions = {
-        onDeath: () => console.log(`${this.root.name} has died!`),
+        // todo add GAME OVER scene action here
+        onDeath: () => {
+          console.log(`${this.root.name} has died!`);
+          if (this.controller instanceof PlayerController) {
+            const event = new CustomEvent('gameover');
+            window.dispatchEvent(event);
+          }
+        },
         onReceiveDamage: (amount: number) => console.log(`${this.root.name} took ${amount} damage!`),
         onHeal: (amount: number) => console.log(`${this.root.name} healed ${amount} health!`),
         onRevive: () => console.log(`${this.root.name} has been revived!`),
@@ -144,8 +161,46 @@ export class Character {
         
         onBodySwap: (newStats: BaseStats) => console.log(`${this.root.name} has swapped bodies!`, newStats),
       }
+    }
 
-      if (this.bodyswap) this.bodyswap.onSwap = (newStats) => this.stats?.swapBodies(newStats);
+    if (this.combatController) {
+      this.combatController.actions = {
+        onFirstFrame: (type) => { // toggle flipbook to attack frame
+          console.log(type)
+        }, 
+        onNextFrame: (type) => { // toggle flipbook to attack frame
+          console.log(type)
+        }, 
+        onLastFrame: (type) => { // reset flipbook to idle/last
+          console.log(type)
+        }, 
+      }
+
+      if (this.controller instanceof PlayerController) {
+        // need better name
+        const things: {[key: KeyboardEvent['key']]: () => void} = {
+          ' ': () => { this.combatController?.attack() },
+          'R': () => { this.combatController?.defend() },
+        }
+
+        this.controller.actions.onKeydown = (key: KeyboardEvent['key']) => things[key]?.();
+      }
+
+      if (this.controller instanceof AIController && this.orchestrator) {
+        this.controller.target = this.orchestrator.trackPlayer(scene);
+        this.orchestrator.actions.onNextTick = () => {
+          this.combatController?.attack();
+        };
+      }
+    }
+    
+    if (this.bodyswap) {
+      this.bodyswap.actions = {
+        onSwap: (newStats) => {
+          this.stats?.swapBodies(newStats);
+          this.flipbook?.swapTexture(`./sprites/${newStats.sprite}.png`);
+        },
+      }
     }
 
     scene.add(this.root);
@@ -160,10 +215,11 @@ export class Character {
     const direction = this.controller.simpleDirection();
     this.flipbook?.update(delta, direction);
     const currentStats = this.stats?.update(delta);
+    this.combatController?.update(delta);
 
-    if (this.stats?.type === 'enemy') {
+    if (this.controller instanceof AIController && this.stats?.type === 'enemy') {
       const touch = () => isTouchingPlayer(this.stats?.reach || 2, this.root, scene);
-      this.orchestrator?.attack(delta, touch);
+      this.orchestrator?.nextTick(delta, touch);
     }
 
     return {

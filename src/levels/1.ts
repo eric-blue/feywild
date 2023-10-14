@@ -14,12 +14,13 @@ import {Bodyswap} from '../models/player/bodyswap';
 
 import {getPlayerPosition} from '../models/helpers';
 import { CharacterStats } from '../models/shared/stats';
+import { CharacterCombat } from '../models/shared/combat';
 
 /**
  * The Before-fore (pre-invasion map)
  */
 export async function SceneOne(gamestate: Gamestate) {
-  const {ready, scene, npcs, pathfinder} = await OpenWorldMap(gamestate);
+  const {ready, scene, npcs, pathfinder, spawn} = await OpenWorldMap();
 
   await ready;
 
@@ -27,6 +28,7 @@ export async function SceneOne(gamestate: Gamestate) {
   const camera = new Camera();
 
   const {position, zone} = gamestate.state.playerState;
+  const startingPosition = gamestate.state.saves > 0 ? position : spawn;
 
   const player = new Character(
     1,
@@ -36,10 +38,11 @@ export async function SceneOne(gamestate: Gamestate) {
       FlipbookModule: SpriteFlipbook,
       BodyswapModule: Bodyswap,
       CharacterStats,
+      CharacterCombat,
     },
     {
       name: 'player',
-      position,
+      position: startingPosition,
       spriteSheet: 'sprites/forest-sprite.png',
       zone: zone ?? 'forest-grove-nw',
     }
@@ -54,6 +57,8 @@ export async function SceneOne(gamestate: Gamestate) {
       Controller: AIController,
       FlipbookModule: SpriteFlipbook,
       Orchestrator,
+      CharacterStats,
+      CharacterCombat,
     },
     {
       position: new Vector3(0, 0, 13),

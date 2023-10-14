@@ -17,8 +17,11 @@ export class AIController {
   target?: Vector3;
   isNavigating = false;
 
-  public onReachDestination?: () => void;
   public pauseMovement = false;
+
+  public actions: {
+    onReachDestination?: () => void;
+  } = {};
 
   constructor(
     public npc: Mesh,
@@ -114,7 +117,7 @@ export class AIController {
           if (distance > farsight) this.waypoint.copy(this.origin);
           if (distance <= reach && this.isNavigating) {
             this.isNavigating = false;
-            this.onReachDestination?.();
+            this.actions.onReachDestination?.();
           }
         }
       }

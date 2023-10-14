@@ -3,6 +3,8 @@ import {Direction} from '../../types';
 
 const IDLE_SPEED = 0.85;
 
+type SpritePath = `./sprites/${string}.png`;
+
 export class SpriteFlipbook {
   private player: Mesh;
   private textureLoader = new TextureLoader();
@@ -20,12 +22,12 @@ export class SpriteFlipbook {
   private playSpriteIndices: number[] = [];
   sprite: Sprite;
 
-  constructor(player: Mesh, texture: string, tilesHorizontal = 8, tilesVertical = 16) {
+  constructor(player: Mesh, texture: SpritePath, tilesHorizontal = 8, tilesVertical = 16) {
     this.player = player;
     this.tilesHorizontal = tilesHorizontal;
     this.tilesVertical = tilesVertical;
 
-    const {map, sprite} = loadSprite(this.textureLoader.load(texture), tilesHorizontal, tilesVertical);
+    const {map, sprite} = this.loadSprite(texture, tilesHorizontal, tilesVertical);
     this.map = map;
     this.sprite = sprite;
 
@@ -67,31 +69,32 @@ export class SpriteFlipbook {
     }
   }
 
-  swapTexture(texture: `./sprites/${string}.png`) {
+  swapTexture(texture: SpritePath) {
     this.player.remove(this.sprite);
 
-    const {map, sprite} = loadSprite(this.textureLoader.load(texture), this.tilesHorizontal, this.tilesVertical);
+    const {map, sprite} = this.loadSprite(texture, this.tilesHorizontal, this.tilesVertical);
     this.map = map;
     this.sprite = sprite;
 
     this.player.add(this.sprite);
   }
+  
+  private loadSprite(texture: SpritePath, tilesHorizontal: number, tilesVertical: number) {
+    const map = this.textureLoader.load(texture);
+  
+    map.magFilter = NearestFilter;
+    map.repeat.set(1 / tilesHorizontal, 1 / tilesVertical);
+    map.colorSpace = SRGBColorSpace;
+  
+    const material = new SpriteMaterial({map});
+    const sprite = new Sprite(material);
+    sprite.position.set(0, 0.5, 0);
+    sprite.scale.set(2, 2, 1);
+  
+    return {map, sprite};
+  }
 }
 
-function loadSprite(loadedTexture: Texture, tilesHorizontal: number, tilesVertical: number) {
-  const map = loadedTexture;
-
-  map.magFilter = NearestFilter;
-  map.repeat.set(1 / tilesHorizontal, 1 / tilesVertical);
-  map.colorSpace = SRGBColorSpace;
-
-  const material = new SpriteMaterial({map});
-  const sprite = new Sprite(material);
-  sprite.position.set(0, 0.5, 0);
-  sprite.scale.set(2, 2, 1);
-
-  return {map, sprite};
-}
 
 export class SpriteAnimation {
   constructor(

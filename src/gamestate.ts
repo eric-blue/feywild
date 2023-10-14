@@ -1,6 +1,7 @@
-import {Scene, Vector3} from 'three';
+import {Mesh, Scene, Vector3} from 'three';
 import {SoundEffects} from './sounds';
 import { CharacterState } from './models/character';
+import { CharacterStats } from './models/shared/stats';
 
 declare global {
   interface Window {
@@ -19,6 +20,7 @@ declare global {
   interface WindowEventMap {
     startgame: CustomEvent<string>;
     'update-player-position': CustomEvent<{position: Vector3}>;
+    'send-melee-damage': CustomEvent<{sender: Mesh; zone: string; senderStats: CharacterStats}>;
   }
 }
 
@@ -63,13 +65,28 @@ export class Gamestate {
     // ...other game-related data
   };
 
+  constructor() {
+    console.log('setting player position', this.state.playerState.position, this.state.playerState.position?.copy)
+  }
+
   setState(gamestate: Partial<GameState>) {
     this.state = {...this.state, ...gamestate};
   }
 
   setPlayerPosition(position: Vector3) {
-    this.state.playerState.position?.copy(position);
-    dispatchEvent(new CustomEvent('update-player-position', {detail: {position}}));
+    this.state.playerState.position!.x = position.x;
+    this.state.playerState.position!.y = position.y;
+    this.state.playerState.position!.z = position.z;
+
+    const playerExists = window._currentScene?.getObjectByName('player');
+
+    if (playerExists) {
+      dispatchEvent(new CustomEvent('update-player-position', {detail: {position}}));
+    } else {
+      console.warn('waiting on player to exist in scene');
+      setTimeout(() => this.setPlayerPosition(position), 200);
+    }
+
   }
 
   newGame = () => {
@@ -78,13 +95,13 @@ export class Gamestate {
   };
 
   continueGame = () => {
+    console.log('continue game')
     window.gameIsLoading = true;
     const serializedData = localStorage.getItem(SAVE_KEY);
 
     if (serializedData) {
       const loadedGameState = JSON.parse(serializedData);
-      this.state = loadedGameState;
-
+      this.state = {...loadedGameState};
       onStartGame('continue');
     }
   };
@@ -106,7 +123,7 @@ export class Gamestate {
 
       if (serializedData) {
         const loadedGameState = JSON.parse(serializedData);
-        this.state = loadedGameState;
+        this.state = {...loadedGameState};
       }
     }
   };
