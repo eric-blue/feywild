@@ -95,7 +95,6 @@ export class Gamestate {
   };
 
   continueGame = () => {
-    console.log('continue game')
     window.gameIsLoading = true;
     const serializedData = localStorage.getItem(SAVE_KEY);
 
