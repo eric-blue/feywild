@@ -89,7 +89,7 @@ export class SpriteFlipbook {
     const material = new SpriteMaterial({map});
     const sprite = new Sprite(material);
     sprite.position.set(0, 0.5, 0);
-    sprite.scale.set(2, 2, 1);
+    sprite.scale.set(1.5, 1.5, 1);
   
     return {map, sprite};
   }
