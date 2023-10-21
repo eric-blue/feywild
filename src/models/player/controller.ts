@@ -18,6 +18,7 @@ export class PlayerController {
   
   public actions: {
     onKeydown?: (key: KeyboardEvent['key']) => void;
+    onKeyUp?: (key: KeyboardEvent['key']) => void;
     onReachDestination?: () => void;
   } = {};
 
@@ -32,6 +33,8 @@ export class PlayerController {
     addEventListener('keyup', event => {
       const key = event.key.toUpperCase();
       this.keyboardState[key] = false;
+
+      if (!event.repeat) this.actions?.onKeyUp?.(key);
     });
 
     addEventListener('blur', () => (this.keyboardState = {}));

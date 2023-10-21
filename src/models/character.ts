@@ -165,25 +165,30 @@ export class Character {
 
     if (this.combatController) {
       this.combatController.actions = {
-        onFirstFrame: (type) => { // toggle flipbook to attack frame
-          console.log(type)
+        onFirstFrame: (type) => {
+          this.flipbook?.startManualAnimate(type);
         }, 
-        onNextFrame: (type) => { // toggle flipbook to attack frame
-          console.log(type)
+        onNextFrame: (_type) => {
+          this.flipbook?.continueManualAnimate();
         }, 
-        onLastFrame: (type) => { // reset flipbook to idle/last
-          console.log(type)
+        onLastFrame: (type) => {
+          if (type === 'attack') this.flipbook?.endManualAnimate();
+          if (type === 'defend') { /** nothing */ }
         }, 
       }
 
       if (this.controller instanceof PlayerController) {
-        // need better name
-        const things: {[key: KeyboardEvent['key']]: () => void} = {
+        const actions: {[key: KeyboardEvent['key']]: () => void} = {
           ' ': () => { this.combatController?.attack() },
           'R': () => { this.combatController?.defend() },
         }
 
-        this.controller.actions.onKeydown = (key: KeyboardEvent['key']) => things[key]?.();
+        const keyUpActions: {[key: KeyboardEvent['key']]: () => void} = {
+          'R': () => { this.flipbook?.endManualAnimate() },
+        }
+
+        this.controller.actions.onKeydown = (key: KeyboardEvent['key']) => actions[key]?.();
+        this.controller.actions.onKeyUp = (key: KeyboardEvent['key']) => keyUpActions[key]?.();
       }
 
       if (this.controller instanceof AIController && this.orchestrator) {

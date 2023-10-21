@@ -2,7 +2,9 @@ import type OpenWorldMap from "./literal-types/open-world.json.d.ts";
 
 export type WASD = 'up' | 'left' | 'down' | 'right';
 export type IDLE = `idle-${WASD}`;
-export type Direction = WASD | IDLE;
+export type ATTACK = `attack-${WASD}`;
+export type DEFEND = `defend-${WASD}`;
+export type Direction = WASD | IDLE | ATTACK | DEFEND;
 
 export interface KeyboardState {
   [key: string]: boolean;
