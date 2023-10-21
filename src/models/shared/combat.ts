@@ -6,7 +6,7 @@ const TOTAL_TIME = 0.075;
 const FRAMES = 4;
 const FRAME_TIME = TOTAL_TIME / FRAMES;
 
-type CombatType = 'attack' | 'defend' | 'ouch';
+export type CombatType = 'attack' | 'defend' | 'ouch';
 
 export class CharacterCombat {
   public actions: {
@@ -71,24 +71,16 @@ export class CharacterCombat {
 
   update(delta: number) {
     if (this.animating) {
+      const {onLastFrame, onNextFrame} = this.actions;
       this.animatingSeconds += delta;
 
       if (this.animatingSeconds >= TOTAL_TIME) {
         this.animating = false;
         this.animatingSeconds = 0;
-        this.actions.onLastFrame?.(this.currentAnimate);
+        onLastFrame?.(this.currentAnimate);
+
       } else if (this.animatingSeconds >= FRAME_TIME) {
-        this.actions.onNextFrame?.(this.currentAnimate);
-      }
-
-      if (this.animatingSeconds >= FRAME_TIME) {
-        this.actions.onNextFrame?.(this.currentAnimate);
-      }
-
-      if (this.animatingSeconds >= TOTAL_TIME) { // assume length of animation
-        this.animating = false;
-        this.animatingSeconds = 0;
-        this.actions.onLastFrame?.(this.currentAnimate);
+        onNextFrame?.(this.currentAnimate);
       }
     }
   }

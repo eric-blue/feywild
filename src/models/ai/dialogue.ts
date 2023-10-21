@@ -42,12 +42,12 @@ export class Dialogue {
     });
 
     addEventListener('keypress', event => {
-      if (!window.paused && (event.key === ' ' || event.key === 'Enter') && !event.repeat) {
+      if (!window.paused && event.key === 'Enter' && !event.repeat) {
         if (!this.dialog?.open && this.isTouchingPlayer?.()) this.toggleDialog();
         if (this.open && this.activePassage) {
           const current = this.passages?.[this.activePassage];
 
-          // handle next on Enter/Space
+          // handle next on Enter
           if (current && current.options.length <= 1) {
             const [next] = current.options;
             this.answer(next.id);
@@ -124,7 +124,7 @@ export class Dialogue {
         </ol>`;
       }
 
-      html+= `<hr/><p><em>press ENTER or SPACE</em></p>`;
+      html+= `<hr/><p><em>press ENTER</em></p>`;
 
       this.dialog!.innerHTML = html;
 
