@@ -19,7 +19,7 @@ interface Props {
   name?: string;
   position: GameState['playerState']['position'];
   spriteSheet?: string;
-  dialogueFilename?: string;
+  dialogueFile?: string;
   zone: Zone;
   route?: [x: number, y: number, z: number][];
   stats?: InitStats;
@@ -97,7 +97,7 @@ export class Character {
     this.inventory = InventoryModule ? new InventoryModule() : undefined;
     this.controller = new Controller(this.root, props.zone);
     this.orchestrator = Orchestrator ? new Orchestrator(props.route) : undefined;
-    this.dialogue = Dialogue && props.dialogueFilename ? new Dialogue(this.root, props.dialogueFilename) : undefined;
+    this.dialogue = Dialogue && props.dialogueFile ? new Dialogue(this.root, props.dialogueFile) : undefined;
   }
   
   /**
@@ -121,6 +121,7 @@ export class Character {
         },
         onDialogueStart: () => {
           this.controller.pauseMovement = true;
+          this.onDialogueStart?.();
         },
       }
 
@@ -129,7 +130,8 @@ export class Character {
     if (this.orchestrator?.routeGenerator) {
       this.controller.actions.onReachDestination = () => {
         const next = this.orchestrator!.routeGenerator!.next().value;
-        this.controller.target = next;
+        if (next) this.controller.target = next;
+        else this.destroy(scene);
       };
     }
 

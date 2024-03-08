@@ -22,7 +22,7 @@ export interface TiledTemplate<T = {}> {
 
 export interface TiledNPCProperties extends Omit<InitStats, 'type'> {
   enemy: boolean;
-  dialogueFilename?: string;
+  modelId?: string;
   routeJson?: string;
 }
 

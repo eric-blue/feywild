@@ -11,11 +11,6 @@
              "value":1
             }, 
             {
-             "name":"DialogueFilename",
-             "type":"file",
-             "value":"..\/..\/twine\/dialogue\/pickle-example.json"
-            }, 
-            {
              "name":"Enemy",
              "type":"bool",
              "value":false
@@ -29,6 +24,11 @@
              "name":"Health",
              "type":"float",
              "value":1
+            }, 
+            {
+             "name":"ModelId",
+             "type":"string",
+             "value":"pickle-man"
             }, 
             {
              "name":"Power",

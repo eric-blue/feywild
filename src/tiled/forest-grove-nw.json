@@ -248,13 +248,7 @@
          "draworder":"topdown",
          "id":25,
          "name":"npc",
-         "objects":[
-                {
-                 "id":433,
-                 "template":"templates\/pickle-man.json",
-                 "x":383.590717299578,
-                 "y":482.675105485233
-                }],
+         "objects":[],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,

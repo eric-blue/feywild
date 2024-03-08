@@ -1,0 +1,23 @@
+{
+  "StoryTitle": {
+    "text": "pickle-example-2",
+    "options": []
+  },
+  "StoryData": {
+    "text": "{\n  \"ifid\": \"BC784CE6-E8A8-4FBA-A77E-E9ED8B772XFE\",\n  \"format\": \"Entweedle\",\n  \"format-version\": \"1.1.1\",\n  \"start\": \"START\",\n  \"zoom\": 1\n}",
+    "options": []
+  },
+  "END": {
+    "text": "",
+    "options": []
+  },
+  "START": {
+    "text": "I've nothing more to say about that.",
+    "options": [
+      {
+        "text": "END",
+        "id": "END"
+      }
+    ]
+  }
+}

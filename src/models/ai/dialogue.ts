@@ -35,6 +35,9 @@ export class Dialogue {
     this.dialog = document.querySelector('#modal');
 
     const dialogFile = filename.split('/').at(-1);
+
+    // TODO: this really shouldn't directly attach here... some sort of intermediary is needed to weave the two together
+    console.log(dialogFile, filename)
     const path = `../../twine/dialogue/${dialogFile}`;
 
     import(path).then(({default: json}) => {

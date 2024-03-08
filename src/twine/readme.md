@@ -29,10 +29,10 @@ The dialogue system works by importing [compiled json files](./dialogue/) into a
 # Exporting the dialogue
 - From Twine editor, go to `Build > Export as Twee` and save the file in `src/twine`
 - Open a terminal and run `bun dialogue -- your-twee-filename.twee`
-- You should see a new file created in `src/twine/dialogue`
+- You should see a new file created in `src/models/game-objects/**/dialogue`
 
 # Importing dialogue into the scene
-- When defining a `Character` (see [`1.ts`](../levels/1.ts) for an example), pass it in via the property `dialogueFilename`. Example: `dialogueFilename: "rebecca-1"` will reference the file `src/twine/dialogue/rebecc-1.json`.
+- When defining a `Character` (see [`1.ts`](../levels/1.ts) for an example), pass it in via the property `dialogueFile`. Example: `dialogueFile: "rebecca-1"` will reference the file `src/models/game-objects/dialogue/rebecca-1.json`.
 - Next, optionally define the `Character`'s `onDialogueStart`, `onDialogueEnd`, and `onDialogueExit` methods
 
 # Links
