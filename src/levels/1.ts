@@ -88,7 +88,7 @@ export async function SceneOne(gamestate: Gamestate) {
     {
       position: new Vector3(1, 0.5, 16),
       spriteSheet: 'sprites/forest-sprite.png',
-      dialogueFilename: 'rebecca-1.json',
+      dialogueFile: 'rebecca-1.json',
       zone: 'village-square',
     }
   );
@@ -116,7 +116,7 @@ export async function SceneOne(gamestate: Gamestate) {
       position: new Vector3(-5, 0.5, 1),
       route: NPC3Route,
       spriteSheet: 'sprites/forest-sprite.png',
-      dialogueFilename: 'rebecca-1.json',
+      dialogueFile: 'rebecca-1.json',
       zone: 'forest-grove-nw',
     }
   );

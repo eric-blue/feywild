@@ -12,7 +12,7 @@ import {
 } from 'three';
 import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {Pathfinding} from 'three-pathfinding';
-import {Tree} from '../../models/game-objects/tree';
+import {Tree} from '../../models/game-objects/_generic/tree';
 import {Character} from '../../models/character';
 import {Zone} from '../../types';
 import {TiledObject, createThreeJsObject, translateTiledTemplateToThreeJs, PIXELS_PER_BLOCK, TiledTemplate, TiledNPCProperties} from '../helpers';
@@ -54,7 +54,7 @@ export async function OpenWorldMap() {
 
             if (activeAreas.includes(placeholder.name)) {
               const url = `${TILED_DIR}${placeholder.name}.json`;
-              const {default: mapData} = await import(url);
+              const {default: mapData} = await import(url /* @vite-ignore */); 
 
               /**
                * load the Tiled object layers and apply them to the scene

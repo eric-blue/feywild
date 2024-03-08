@@ -1,0 +1,21 @@
+:: StoryTitle
+pickle-example-2
+
+
+:: StoryData
+{
+  "ifid": "BC784CE6-E8A8-4FBA-A77E-E9ED8B772XFE",
+  "format": "Entweedle",
+  "format-version": "1.1.1",
+  "start": "START",
+  "zoom": 1
+}
+
+
+:: END {"position":"400,775","size":"100,100"}
+
+
+:: START {"position":"650,375","size":"100,100"}
+I've nothing more to say about that.
+
+* [[END]]

@@ -10,6 +10,8 @@ import {CharacterCombat} from './shared/combat';
 import {Orchestrator} from './ai/orchestrator';
 import {Pathfinding} from 'three-pathfinding';
 
+const configs = import.meta.glob('./game-objects/*/config.ts');
+
 interface Props {
   tiledObject: TiledTemplate<TiledNPCProperties>;
   zoneData: {
@@ -30,12 +32,22 @@ export async function NPC({tiledObject, zoneData, scene, pathfinder}: Props) {
     zoneData.position.z - 50
   );
 
+  let config = null;
+
+  if (properties?.modelId) {
+    const path = `./game-objects/${properties.modelId}/config.js`;
+    config = await configs?.[path]?.() ?? null;
+  }
+
+  console.log(config);
+  const dialogueFile = undefined;
+
   const npc = new Character(
     id,
     {
       Controller: AIController,
       FlipbookModule: SpriteFlipbook,
-      Dialogue: properties?.dialogueFilename ? Dialogue : undefined,
+      Dialogue: dialogueFile ? Dialogue : undefined,
       Orchestrator: properties?.routeJson ? Orchestrator : undefined,
       CharacterStats,
       CharacterCombat,
@@ -45,7 +57,7 @@ export async function NPC({tiledObject, zoneData, scene, pathfinder}: Props) {
       name,
       spriteSheet: `sprites/${template.tileset?.source.replaceAll('../', '').replace('.json', '') as string}.png`,
       zone: zoneData.name,
-      dialogueFilename: properties?.dialogueFilename,
+      dialogueFile,
       route: properties?.routeJson ? JSON.parse(properties.routeJson) : undefined,
       stats: {
         reach: properties?.reach ?? 2.25,
@@ -63,6 +75,8 @@ export async function NPC({tiledObject, zoneData, scene, pathfinder}: Props) {
   npc.create(scene);
 
   // how to do this...?
+  // TODO: stitch model config here to attach actions to the character's modules
+
   // need to pass in a set of SCENE actions to the orchestrator
   // NPC4.onDialogueEnd = () => console.log('goodbye');
   // NPC4.onDialogueExit = () => console.log('ok nevermind then');

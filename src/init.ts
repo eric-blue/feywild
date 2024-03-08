@@ -31,6 +31,7 @@ export function init(canvas?: HTMLCanvasElement) {
 
       const {scene, sunlight, camera, player, NPCs} = await scenes[gamestate.state.scene](gamestate);
 
+      // NPC first tick to initialize their state and animations
       NPCs.forEach(npc => npc.controller.update(scene));
 
       function resizeRendererToDisplaySize(renderer: WebGLRenderer) {
@@ -67,7 +68,7 @@ export function init(canvas?: HTMLCanvasElement) {
             gamestate.state.npcState[npc.id] = updates;
           });
 
-          // have the sun follow you to save of resources
+          // have the sun follow you to save on resources
           sunlight.target.position.copy(player.root.position);
           sunlight.target.updateMatrixWorld();
         }

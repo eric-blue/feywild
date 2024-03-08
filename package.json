@@ -7,7 +7,7 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "bun --hot ./server/index.ts & vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "bunx gts lint",

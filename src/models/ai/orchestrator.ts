@@ -1,24 +1,28 @@
 import {Scene, Vector3} from 'three';
 import {getPlayerPosition} from '../helpers';
 
+type Coords = [x: number, y: number, z: number];
+
 /**
  * Think of this module as a conductor for the AI.
  * It's responsible for acting as a brain. 
  * **Not needed for the player character.
  */
 export class Orchestrator {
-  public routeGenerator?: Generator<Vector3>;
+  /** a `null` value triggers a destroy for the NPC */
+  public routeGenerator?: Generator<Vector3 | null, Vector3 | null, Vector3 | null>;
   private elapsedTime = 0;
   private lastTick = 0;
   public actions: {
     onNextTick?: () => void;
   } = {};
 
-  constructor(route?: [x: number, y: number, z: number][]) {
+  constructor(route?: (Coords | null)[]) {
     if (route) this.setRoute(route);
   }
 
-  *loop(route: Vector3[]): Generator<Vector3> {
+  /** returning a `null` value triggers a destroy for the NPC */
+  *loop(route: (Vector3 | null)[]): Generator<Vector3 | null> {
     let index = 0;
 
     while (true) {
@@ -27,8 +31,11 @@ export class Orchestrator {
     }
   }
 
-  setRoute(route: [x: number, y: number, z: number][]) {
-    const routeVector = route.map(([x, y, z]) => new Vector3(x, y, z));
+  setRoute(route: (Coords | null)[]) {
+    const routeVector = route.map((coord) => {
+      if (coord) return new Vector3(...coord);
+      return null;
+    });
     this.routeGenerator = this.loop(routeVector);
   }
 

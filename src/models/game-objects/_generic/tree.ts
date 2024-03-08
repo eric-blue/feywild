@@ -1,6 +1,6 @@
 import {Vector3} from 'three';
-import {Static} from '../static';
-import {StaticSprite} from '../static/sprite';
+import {Static} from '../../static';
+import {StaticSprite} from '../../static/sprite';
 
 interface Props {
   position: Vector3;
